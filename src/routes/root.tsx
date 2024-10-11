@@ -1,3 +1,4 @@
+import CustomFooter from '@/customizedComponents/CustomFooter';
 import MobileNav from '@/customizedComponents/MobileNav'
 import WebNav from '@/customizedComponents/WebNav'
 import { Outlet } from "react-router-dom";
@@ -10,6 +11,7 @@ export default function Root() {
       <WebNav/>
       <MobileNav/>
       <Outlet/>
+      <CustomFooter/>
     </>
   )
 }
