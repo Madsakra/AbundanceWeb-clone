@@ -9,9 +9,8 @@ const mainNavItems = [
 
     {name:'Home',ref:'/'},
     {name:'About Us',ref:'/about-us'},
-    {name:'Product',ref:'/product'},
     {name:'Meeting Minutes',ref:'https://docs.google.com/document/d/10VCUTN1K1YOH0w5VPIwiDr6No3rIiJ0wdlcVZk-JgYc/edit?tab=t.0'},
-
+    {name:'Project Overview',ref:'/project-overview'},
 ];
 
 

@@ -73,21 +73,25 @@ export default function CustomFooter() {
                 </div>
             
                 <div className="lg:mx-auto text-left">
-                    <h4 className="text-lg text-gray-900 font-medium mb-7">Blog</h4>
+                    <h4 className="text-lg text-gray-900 font-medium mb-7">Project Overview</h4>
                     <ul className="text-sm  transition-all duration-500">
-                        <li className="mb-6"><a href="javascript:;"  className="text-gray-600 hover:text-gray-900">Company Members</a></li>
-                        <li className="mb-6"><a href="javascript:;"  className=" text-gray-600 hover:text-gray-900">Company Goals</a></li>
-                        <li className="mb-6"><a href="javascript:;"  className=" text-gray-600 hover:text-gray-900">Company Mission</a></li>
+                        <li className="mb-6"><a href="javascript:;"  className="text-gray-600 hover:text-gray-900">User Manual Documentation</a></li>
+                        <li className="mb-6"><a href="javascript:;"  className=" text-gray-600 hover:text-gray-900">Technical Design Manual </a></li>
+                        <li className="mb-6"><a href="javascript:;"  className=" text-gray-600 hover:text-gray-900">Testing Documentation</a></li>
+                        <li className="mb-6"><a href="javascript:;"  className=" text-gray-600 hover:text-gray-900">Peer Assessment and Group Work Contribution Documentation</a></li>
+                        <li className="mb-6"><a href="javascript:;"  className=" text-gray-600 hover:text-gray-900">Final Report Documentation</a></li>
 
                     </ul>
                 </div>
                 {/*END COL*/}
                 <div className="lg:mx-auto text-left">
-                    <h4 className="text-lg text-gray-900 font-medium mb-7">Policy and T&Cs</h4>
+                    <h4 className="text-lg text-gray-900 font-medium mb-7">Project Meeting</h4>
                     <ul className="text-sm  transition-all duration-500">
-                        <li className="mb-6"><a href="javascript:;"  className="text-gray-600 hover:text-gray-900">Web Privacy and Cookie Notice</a></li>
-                        <li className="mb-6"><a href="javascript:;"  className=" text-gray-600 hover:text-gray-900">App T&Cs/Privacy</a></li>
-                        <li className="mb-6"><a href="javascript:;"  className=" text-gray-600 hover:text-gray-900">User Data Privacy</a></li>
+         
+                        <li className="mb-6">      
+                            <Link to='https://docs.google.com/document/d/10VCUTN1K1YOH0w5VPIwiDr6No3rIiJ0wdlcVZk-JgYc/edit?tab=t.0' target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900">
+                            Meeting Minutes</Link></li>
+                        
                     </ul>
                 </div>
             </div>
