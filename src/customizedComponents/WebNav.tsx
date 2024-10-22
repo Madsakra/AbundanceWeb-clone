@@ -1,17 +1,27 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 
 
 
 
-const mainNavItems = ['Home', 'About Us', 'Product'];
+const mainNavItems = [
+
+    {name:'Home',ref:'/'},
+    {name:'About Us',ref:'/about-us'},
+    {name:'Product',ref:'/product'},
+    {name:'Meeting Minutes',ref:'https://docs.google.com/document/d/10VCUTN1K1YOH0w5VPIwiDr6No3rIiJ0wdlcVZk-JgYc/edit?tab=t.0'},
+
+];
+
 
 
 export default function WebNav(){
     return (
         <div className="p-5 hidden gap-2 md:flex items-center border-2 ">
-            <div className="ms-2 flex items-center gap-2">
+            <Link className="ms-2 flex items-center gap-2" to="/">
         
+            
             <svg width="65" height="65" viewBox="0 0 65 65" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M33.3239 1.51177L58.2446 16.0324C58.929 16.4312 59.35 17.1636 59.35 17.9557V47.0443C59.35 47.8364 58.929 48.5688 58.2446 48.9676L33.3239 63.4882C32.6313 63.8918 31.7751 63.8918 31.0825 63.4882L6.16176 48.9676C5.47735 48.5688 5.05642 47.8364 5.05642 47.0443V17.9557C5.05642 17.1636 5.47736 16.4312 6.16177 16.0324L31.0825 1.51177C31.7751 1.1082 32.6313 1.1082 33.3239 1.51177Z" fill="#00ACAC" stroke="#00ACAC" stroke-width="1.48402"/>
             <path d="M33.6416 14.6125L39.8928 18.2216C40.6684 18.6694 41.1462 19.4969 41.1462 20.3925V27.6107C41.1462 28.5063 40.6684 29.3338 39.8928 29.7816L33.6416 33.3907C32.866 33.8385 31.9105 33.8385 31.1349 33.3907L24.8837 29.7816C24.1081 29.3338 23.6304 28.5063 23.6304 27.6107V20.3925C23.6304 19.4969 24.1081 18.6694 24.8837 18.2216L31.1349 14.6125C31.9105 14.1647 32.866 14.1647 33.6416 14.6125Z" fill="#00ACAC" stroke="white" stroke-width="0.922602"/>
@@ -52,15 +62,18 @@ export default function WebNav(){
 
 
             
-            </div>
+            </Link>
       
             
             <div className="flex justify-between ms-10  w-[90%]">
                 <div>
                 {mainNavItems.map((item,index)=>(
+                    <Link to={item.ref} target="_blank" rel="noopener noreferrer">
                     <Button key={index} variant="link" className="lg:text-lg text-[#009797]">
-                        {item}
-                    </Button>
+                        {item.name}
+                    </Button>                  
+                    </Link>
+  
                 ))}
                 </div>
 

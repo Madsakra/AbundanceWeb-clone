@@ -8,9 +8,17 @@ import {
 
  import { Button } from "@/components/ui/button";
  import { Menu as MenuIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 
- const mobileItems = ['Home', 'About Us', 'Product'];
+ const mobileItems = [
+
+  {name:'Home',ref:'/'},
+  {name:'About Us',ref:'/about-us'},
+  {name:'Product',ref:'/product'},
+  {name:'Meeting Minutes',ref:'https://docs.google.com/document/d/10VCUTN1K1YOH0w5VPIwiDr6No3rIiJ0wdlcVZk-JgYc/edit?tab=t.0'},
+
+];
 
 
  export default function MobileNav(){
@@ -76,16 +84,18 @@ import {
         <SheetContent side="right"> 
           <div className="flex flex-col items-start gap-3 mt-[10%] ">
             {mobileItems.map((item, index) => (
+              <Link to={item.ref}    className="border-b-2 justify-start w-full text-lg text-[#009797]">
               <Button
-                className="border-b-2 justify-start w-full text-lg text-[#009797]"
+             
                 key={index}
                 variant="link"
                 onClick={() => {
                   setOpen(false);
                 }}
               >
-                {item}
+                {item.name}
               </Button>
+              </Link>
             ))}
 
                 <div className="flex flex-col w-full gap-2 mt-[10%]">
