@@ -8,9 +8,7 @@ import { Link } from "react-router-dom";
 const mainNavItems = [
 
     {name:'Home',ref:'/'},
-    {name:'About Us',ref:'/about-us'},
-    {name:'Meeting Minutes',ref:'https://docs.google.com/document/d/10VCUTN1K1YOH0w5VPIwiDr6No3rIiJ0wdlcVZk-JgYc/edit?tab=t.0'},
-    {name:'Project Overview',ref:'/project-overview'},
+    {name:'Project Overview',ref:'https://hongjun820.wixsite.com/abundanceproject-1'},
 ];
 
 
@@ -67,7 +65,7 @@ export default function WebNav(){
             <div className="flex justify-between ms-10  w-[90%]">
                 <div>
                 {mainNavItems.map((item,index)=>(
-                    <Link to={item.ref} target="_blank" rel="noopener noreferrer">
+                    <Link to={item.ref}>
                     <Button key={index} variant="link" className="lg:text-lg text-[#009797]">
                         {item.name}
                     </Button>                  
@@ -78,7 +76,10 @@ export default function WebNav(){
 
                 
                 <div className="flex gap-4">
-                    <Button variant="link" className="bg-[#009797] text-white px-7 py-5 shadow-lg">Login</Button>
+                    <Link to="/login">
+                    <Button variant="link" className="bg-[#009797] text-white px-7 py-5 shadow-lg">Login</Button>                
+                    </Link>
+    
                     <Button variant="link" className="border-[0.5px] px-7 py-5 text-[#009797] border-[#009797] shadow-lg">Register</Button>
                 </div>
 

@@ -14,9 +14,7 @@ import { Link } from "react-router-dom";
  const mobileItems = [
 
   {name:'Home',ref:'/'},
-  {name:'About Us',ref:'/about-us'},
-  {name:'Meeting Minutes',ref:'https://docs.google.com/document/d/10VCUTN1K1YOH0w5VPIwiDr6No3rIiJ0wdlcVZk-JgYc/edit?tab=t.0'},
-  {name:'Project Overview',ref:'/project-overview'},
+  {name:'Project Overview',ref:'https://hongjun820.wixsite.com/abundanceproject-1'},
 ];
 
 
@@ -83,7 +81,10 @@ import { Link } from "react-router-dom";
         <SheetContent side="right"> 
           <div className="flex flex-col items-start gap-3 mt-[10%] ">
             {mobileItems.map((item, index) => (
-              <Link to={item.ref}    className="border-b-2 justify-start w-full text-lg text-[#009797]">
+              <Link to={item.ref}    
+              className="border-b-2 
+              justify-start w-full text-lg 
+              text-[#009797]">
               <Button
              
                 key={index}
@@ -98,8 +99,13 @@ import { Link } from "react-router-dom";
             ))}
 
                 <div className="flex flex-col w-full gap-2 mt-[10%]">
-                    <Button variant="link" className="bg-[#009797] text-white px-7 py-5 shadow-lg">Login</Button>
-                    <Button variant="link" className="border-[0.5px] px-7 py-5 text-[#009797] border-[#009797] shadow-lg">Register</Button>
+                    <Link to="/login">
+                    <Button variant="link" className="bg-[#009797] w-full text-white px-7 py-5 shadow-lg">Login</Button>   
+                    </Link>
+
+                    <Link to="/login">
+                    <Button variant="link" className="border-[0.5px] w-full px-7 py-5 text-[#009797] border-[#009797] shadow-lg">Register</Button>                    
+                    </Link>
                 </div>  
 
           </div>
