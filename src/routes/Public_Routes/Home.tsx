@@ -1,13 +1,14 @@
 import { Button } from '@/components/ui/button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faApple, faGooglePlay } from '@fortawesome/free-brands-svg-icons'; // Import the specific brand icon
-import abundance_dashboard from '../assets/Images/abundance_dashboard.png'
+import abundance_dashboard from '../../assets/Images/abundance_dashboard.png'
 import CustomAccordion from '@/customizedComponents/CustomAccordion';
-import loginImg from '../assets/Images/login.png'
-import registerImg from '../assets/Images/register.png'
-import placeholder1 from '../assets/Images/placeholder-1.png'
-import placeholder2 from '../assets/Images/placeholder-2.png'
+import loginImg from '../../assets/Images/login.png'
+import registerImg from '../../assets/Images/register.png'
+import placeholder1 from '../../assets/Images/placeholder-1.png'
+import placeholder2 from '../../assets/Images/placeholder-2.png'
 import { useState } from 'react';
+import Membershipbox from '@/customizedComponents/Membershipbox';
 
 
 
@@ -26,7 +27,14 @@ const featuresImages = [
 ]
 
 
+// DYNAMIC, TO PULL FROM DB
+const membershipTier = [
+  {title:'Free', price:0, recurring:"Month",currency:"SGD",features:["Free Manual Logging"], notAvailable:["No AI Features","No Caregivers","No Nutritionist"],joinNow:false},
+  {title:"Calories Premium",price:19, recurring:"Month",currency:"SGD",features:["AI Calories tracking", "Caregivers Available", "Nutritionist Available"], notAvailable:["Premium Glucose Features"],joinNow:true},
+  {title:"Glucose Premium", price:19, recurring:"Month",currency:"SGD", features:["AI glucose tracking",  "Caregivers Available", "Nutritionist Available"],notAvailable:["Premium Calories Features"],joinNow:true},
+  {title:"Full Premium", price:29, recurring:"Month",currency:"SGD", features:["AI glucose tracking",  "Caregivers Available", "Nutritionist Available","Glucose and Calories analysis"],joinNow:true},
 
+]
 
 
 export default function Home() {
@@ -91,47 +99,17 @@ export default function Home() {
 
 
 
-      <div className='min-h-[70vh] relative flex-grow bg-white w-full flex items-center flex-col p-4 md:p-10 gap-10'>
-        <h1 className='text-5xl font-bold text-center my-5 text-[#5D5D5D]'>Join Our <span className='text-[#009797]'>Membership</span></h1>
+      <div className='min-h-[70vh] relative flex-grow bg-white w-full flex items-center flex-col p-4 md:p-10 gap-10 mb-20'>
+        <h1 className='text-7xl font-bold text-center my-5 text-[#5D5D5D]'>Join Our <span className='text-[#009797]'>Membership</span></h1>
 
-        <div className='w-full xl:w-1/2 h-auto flex flex-col gap-4 lg:flex-row md:gap-10'>
-
-            <div className='w-full lg:w-1/2 shadow-xl rounded-2xl border-2 leading-loose text-center p-5 flex flex-col gap-2 md:gap-4'>
-              <p className='border-b-2 p-1 text-2xl'>Free Tier</p>
- 
-              <ul className=' p-4'>
-                <li><p>200 use of food scans daily</p></li>
-                <li><p>Ulimited Calories Recording</p></li>
-                <li><p>30 graph intakes daily</p></li>
-                <li><p>20 glucose AI predictions daily</p></li>
-
-
-              </ul>
-
-            </div>
-
-            <div className='lg:w-1/2  flex flex-col p-5 gap-2 md:gap-4 text-lg text-white text-center font-bold bg-[#009797] rounded-2xl shadow-lg  leading-loose'>
-              <p className='text-3xl font-black border-b-2 pb-1'>Premium Membership</p>
-              <ul className=' p-4' >
-                <li><p>Unlimited use of calories recording</p></li>
-                <li><p>No limit on graph intakes </p></li>
-                <li><p>No limit on glucose AI predictions</p></li>
-                <li><p>Will receive future updates first</p></li>
-                <li><p>Able to join our beta testing phase</p></li>
-
-              </ul>
-        
-       
-       
-          
-           
-              <button className='border-2 border-white w-full
-              rounded-xl p-4 mt-2 text-lg font-black hover:bg-white hover:text-[#009797]
-              '>Join Now</button>
-            </div>
-
-
+        <div className='mt-5 w-full h-auto grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4 justify-items-center'>
+          {membershipTier.map((tier,index)=>(
+            <Membershipbox {...tier} key={index}/>
+          ))}
         </div>
+
+
+
       </div>
 
     </div>

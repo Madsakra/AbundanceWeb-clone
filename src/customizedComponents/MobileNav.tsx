@@ -24,11 +24,11 @@ import { Link } from "react-router-dom";
         <Sheet open={open} onOpenChange={setOpen}>
 
       {/* Flex container for logo, name, and menu button */}
-      <div className="flex items-center justify-between w-full md:hidden border-2 p-4">
+      <div className="flex items-center justify-between w-full md:hidden border-b-2 p-4">
         {/* Logo and Company Name */}
-        <div className="flex items-center">
         
-
+        <Link className="flex items-center" to="/">
+        
         <svg width="65" height="65" viewBox="0 0 65 65" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M33.3239 1.51177L58.2446 16.0324C58.929 16.4312 59.35 17.1636 59.35 17.9557V47.0443C59.35 47.8364 58.929 48.5688 58.2446 48.9676L33.3239 63.4882C32.6313 63.8918 31.7751 63.8918 31.0825 63.4882L6.16176 48.9676C5.47735 48.5688 5.05642 47.8364 5.05642 47.0443V17.9557C5.05642 17.1636 5.47736 16.4312 6.16177 16.0324L31.0825 1.51177C31.7751 1.1082 32.6313 1.1082 33.3239 1.51177Z" fill="#00ACAC" stroke="#00ACAC" stroke-width="1.48402"/>
         <path d="M33.6416 14.6125L39.8928 18.2216C40.6684 18.6694 41.1462 19.4969 41.1462 20.3925V27.6107C41.1462 28.5063 40.6684 29.3338 39.8928 29.7816L33.6416 33.3907C32.866 33.8385 31.9105 33.8385 31.1349 33.3907L24.8837 29.7816C24.1081 29.3338 23.6304 28.5063 23.6304 27.6107V20.3925C23.6304 19.4969 24.1081 18.6694 24.8837 18.2216L31.1349 14.6125C31.9105 14.1647 32.866 14.1647 33.6416 14.6125Z" fill="#00ACAC" stroke="white" stroke-width="0.922602"/>
@@ -68,7 +68,7 @@ import { Link } from "react-router-dom";
         <h1 className="text-2xl text-[#009797] font-bold">Abundance</h1>
 
 
-        </div>
+        </Link>
 
         {/* This button will trigger open the mobile sheet menu */}
         <SheetTrigger asChild>
@@ -100,11 +100,14 @@ import { Link } from "react-router-dom";
 
                 <div className="flex flex-col w-full gap-2 mt-[10%]">
                     <Link to="/login">
-                    <Button variant="link" className="bg-[#009797] w-full text-white px-7 py-5 shadow-lg">Login</Button>   
+                    <Button variant="link" 
+                    onClick={()=>setOpen(false)} 
+                    className="bg-[#009797] w-full text-white px-7 py-5 shadow-lg">Login</Button>   
                     </Link>
 
-                    <Link to="/login">
-                    <Button variant="link" className="border-[0.5px] w-full px-7 py-5 text-[#009797] border-[#009797] shadow-lg">Register</Button>                    
+                    <Link to="/register">
+                    <Button variant="link" onClick={()=>setOpen(false)} 
+                    className="border-[0.5px] w-full px-7 py-5 text-[#009797] border-[#009797] shadow-lg">Register</Button>                    
                     </Link>
                 </div>  
 

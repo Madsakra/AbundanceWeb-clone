@@ -79,8 +79,10 @@ export default function WebNav(){
                     <Link to="/login">
                     <Button variant="link" className="bg-[#009797] text-white px-7 py-5 shadow-lg">Login</Button>                
                     </Link>
-    
+
+                    <Link to="/register">
                     <Button variant="link" className="border-[0.5px] px-7 py-5 text-[#009797] border-[#009797] shadow-lg">Register</Button>
+                    </Link>
                 </div>
 
 
