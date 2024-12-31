@@ -9,7 +9,7 @@ import feature1 from '../../assets/Images/feature-1.jpg'
 import feature3 from '../../assets/Images/feature3.jpg'
 import feature4 from '../../assets/Images/feature4.png'
 import feature5 from '../../assets/Images/feature5.jpg'
-import MotionFeature from '@/customizedComponents/motionFeature';
+import MotionFeature from '@/customizedComponents/MotionFeature';
 
 const featuresImages = [
   feature1,feature2,feature3,feature4,feature5
