@@ -50,10 +50,10 @@ export default function Home() {
     <div className='flex flex-col'>
         <div className='min-h-screen xl:h-[85vh] w-full  md:flex md:flex-col gap-3 relative
         xl:flex-row justify-center items-center mt-8 p-2 mb-20'>
-            <div className="w-full md:w-[600px] md:h-[300px]   p-4 md:p-0   flex flex-col gap-1 md:gap-4 text-center xl:text-start ">
+            <div className="w-full md:w-[600px] md:h-[300px]   p-4 md:p-0   flex flex-col gap-1 md:gap-4  xl:text-start ">
                 <h1 className='text-4xl md:text-6xl font-bold  '>BE THE <span className='text-[#009797]'>CHANGE</span></h1>
                 <h2 className='text-4xl md:text-6xl font-bold'>YOU WANT <span className='text-[#009797]'>TO SEE</span></h2>
-                <p className='text-lg font-light tracking-wide leading-relaxed xl:w-[90%]'>Welcom to Abundance, the calories and glucose management app made for people who want to take control of their health</p>
+                <p className='text-lg font-light tracking-wide my-4 xl:w-[90%]'>Welcom to Abundance, the calories and glucose management app made for people who want to take control of their health</p>
                 <p className='text-lg font-light '>Let us work together towards a brighter future!</p>
 
                 <div className='flex flex-col md:flex-row  mt-[4%] gap-2 md:gap-10 md:justify-center xl:justify-start'>
@@ -99,10 +99,10 @@ export default function Home() {
 
 
 
-      <div className='min-h-[70vh] relative flex-grow bg-white w-full flex items-center flex-col p-4 md:p-10 gap-10 mb-20'>
-        <h1 className='text-7xl font-bold text-center my-5 text-[#5D5D5D]'>Join Our <span className='text-[#009797]'>Membership</span></h1>
+      <div className='min-h-[70vh] relative flex-grow bg-white w-full flex items-center flex-col p-4 md:p-10 gap-10  mb-20'>
+        <h1 className='text-5xl xl:text-7xl font-bold text-center my-5 text-[#5D5D5D]'>Join Our <span className='text-[#009797]'>Membership</span></h1>
 
-        <div className='mt-5 w-full h-auto grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4 justify-items-center'>
+        <div className='mt-5 w-full h-auto grid grid-cols-1 lg:grid-cols-2  xl:grid-cols-4 gap-4 justify-items-center'>
           {membershipTier.map((tier,index)=>(
             <Membershipbox {...tier} key={index}/>
           ))}

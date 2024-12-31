@@ -15,9 +15,9 @@ export default function Membershipbox({
   title,price,recurring,features,notAvailable, joinNow
 }:MembershipProps) {
   return (
-    <div className="w-full md:w-96 h-[45rem] rounded-xl 
+    <div className="w-full md:w-full h-[45rem] rounded-xl 
      bg-white border-2 border-[#009797] flex flex-col justify-center items-center text-center gap-4">
-      <h1 className="text-4xl underline">{title}</h1>
+      <h1 className="text-2xl underline font-bold">{title}</h1>
       <h2 className="text-4xl mt-2 font-bold text-[#009797] mb-5">$ {price} / {recurring}</h2>
 
 
