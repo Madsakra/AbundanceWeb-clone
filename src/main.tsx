@@ -17,6 +17,7 @@ import ForgetPassword from './routes/Public_Routes/ForgetPassword';
 import '@fontsource/poppins';
 import ProtectedRoutes from './utils/ProtectedRoutes';
 import Dashboard from './routes/Authenticated/Dashboard';
+import NutritionistSubmission from './routes/Public_Routes/NutritionistSubmission';
 
 
 
@@ -47,6 +48,11 @@ const router = createBrowserRouter([
       {
         path:'/forget-password',
         element:<ForgetPassword/>
+      },
+
+      {
+        path:'/nutritionist-submission',
+        element:<NutritionistSubmission/>
       },
 
       // PROTECTED ROUTE WRAPPER

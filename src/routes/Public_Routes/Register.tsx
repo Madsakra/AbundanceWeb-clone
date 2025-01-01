@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import registerSplash from '../../assets/Images/login_splashes/register_splash.jpg'
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
@@ -25,6 +25,7 @@ export default function Register() {
 
 
   const [showPassword, setShowPassword] = useState(false);
+  let navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -33,6 +34,11 @@ export default function Register() {
 
   const handleSubmit = ()=>{
     console.log(email, password, confirmedPassword , role);
+
+    if (role === "Nutritionist")
+    {
+      navigate('/nutritionist-submission')
+    }
   }
 
 

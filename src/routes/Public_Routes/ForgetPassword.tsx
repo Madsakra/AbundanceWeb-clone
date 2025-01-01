@@ -1,59 +1,66 @@
+import { useNavigate } from "react-router";
+import forgetPassSplash from '../../assets/Images/login_splashes/forgetPassword_splash.jpg'
+import { useState } from 'react';
 
-import miniLogo from '../../assets/Images/mini-logo.svg'
+
 
 export default function ForgetPassword() {
+  const [email,setEmail] = useState("");
+
+  let navigate = useNavigate();
+
+
+
+  const handleSubmit = ()=>{
+    console.log(email);
+    navigate('/login')
+  }
+
+
+
   return (
-    <div className='w-full h-[80vh] flex items-center justify-center my-10'>
+    <div className='w-full h-full xl:h-[80vh] 
+     flex flex-col lg:flex-row mt-14 
+     items-center justify-evenly my-10'>
 
-        {/*OUTER CONTAINER*/}
-      <div className="w-80 h-[35rem] md:w-[26rem] bg-[#009797] -rotate-6 
-      flex items-center justify-center rounded-lg">
-      </div>
+      <img src={forgetPassSplash} className='w-96 h-96 '></img>
 
+        {/* INPUT FORM */}
+        <div className='w-96 xl:w-[30%] h-auto p-8'>
 
-        {/*INNER CONTAINER*/}
-      <div className="w-80 h-[35rem] md:w-[26rem]  
-      bg-white absolute rotate-0 shadow-lg 
-      rounded-lg flex flex-col gap-4">
-
-            <div className="flex flex-row gap-6 items-center p-10 mt-10 pb-6 md:pb-10 ">
-                   <img src={miniLogo} alt="logo" className='object-fill w-14 h-14 md:w-20 md:h-20' />
-                    <h1 className='text-2xl md:text-3xl font-bold'>Forget Password</h1>
+            <div className="inline-block text-center">
+              <span className="text-2xl font-bold">Password Reset</span>
+              <div className="mt-1 h-[5px] rounded bg-teal-500 w-full"></div>
             </div>
 
+            <div className='flex flex-col gap-4'>
 
-            <div className='my-2 mb-5 mx-10'>
-                <h1 className=''>Enter your Email Address below, we will send a link to you to reset your password</h1>
-            </div>
-
-
-            {/* INPUT FORMS */}
-            <div className='border-b-2 w-[80%] ml-10 '>
-                <input className='w-full p-3' type="email" placeholder='Email Address'/>
-            </div>
+                  <h2 className='text-md  mt-14 tracking-widest leading-relaxed'>
+                  Forgotten your password? No worries, enter your email below and we will send you a link to reset your password.
+                  </h2>
 
 
-            
+                  <input
+                  type="email"
+                  placeholder="Enter your email here"
+                  className="w-full px-6 py-4 bg-[#F1F1F1] rounded-full mt-10 outline-none border-0 font-extralight"
+                  onChange={(e)=>{setEmail(e.target.value)}}
+                />  
 
-            {/* SIGN IN BUTTON, FORGET PASSWORD */}
-            <div className='mt-5 w-[80%] ml-10 gap-4 md:gap-0
-            justify-between flex flex-col md:flex-row items-center'>
-                
-            <button className='w-full  p-3 rounded-md text-white bg-[#009797]
-            hover:bg-white hover:text-[#009797] hover:border-[#009797] border-2'>
 
-            <h1 className='text-lg font-bold'>Reset Password</h1>
-            </button>
-            
-
-            </div>
-  
-
+              {/*Reset BUTTON*/}
+              <button className='w-full p-4 bg-[#009797] mt-6 text-white text-lg font-semibold rounded-full'
+              onClick={handleSubmit}
+              >
+                Reset Password
+              </button>
 
 
         </div>
 
 
+
+    </div>
 
     </div>
   )

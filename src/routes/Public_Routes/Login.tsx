@@ -64,7 +64,7 @@ export default function Login() {
               </div>
 
 
-              <Link to="/register" className='my-6 self-end text-[#989595]'>Forget Password ?</Link>
+              <Link to="/forget-password" className='my-6 self-end text-[#989595]'>Forget Password ?</Link>
 
 
               {/*LOGIN BUTTON*/}
