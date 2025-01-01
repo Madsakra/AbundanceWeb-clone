@@ -15,7 +15,7 @@ type ReviewCardProps = {
 
 export default function AppReviewCard({avatar,name,score,reviews}:ReviewCardProps) {
   return (
-    <div className="w-full md:w-96 h-auto shadow-2xl flex flex-col p-8 rounded-2xl border-2" >
+    <div className="w-full md:w-96 h-auto shadow-2xl flex flex-col p-8 rounded-2xl" >
 
 
         <div className="flex flex-row gap-5">
@@ -31,7 +31,7 @@ export default function AppReviewCard({avatar,name,score,reviews}:ReviewCardProp
 
         <div className="flex flex-col gap-2 mt-10">
         {reviews.map((review,index)=>(
-            <div key={index} className="border-2 h-auto w-72 p-2 rounded-lg">
+            <div key={index} className="border-2 h-auto w-full p-2 rounded-lg flex-shrink">
                 <h1 className="text-sm">{review}</h1>
             </div>
         ))}
