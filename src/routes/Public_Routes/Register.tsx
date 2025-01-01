@@ -1,57 +1,122 @@
-import miniLogo from '../../assets/Images/mini-logo.svg'
+import { Link } from 'react-router-dom'
+import registerSplash from '../../assets/Images/login_splashes/register_splash.jpg'
+import { useState } from 'react';
+import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+
+
 
 export default function Register() {
+
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [confirmedPassword,setConfirmedPassword] = useState("");
+  const [role,setRole] = useState("");
+
+
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+
+  const handleSubmit = ()=>{
+    console.log(email, password, confirmedPassword , role);
+  }
+
+
   return (
-  
-    <div className='w-full h-[80vh] flex items-center justify-center my-10'>
+    <div className='w-full h-full xl:h-[80vh] 
+     flex flex-col lg:flex-row mt-14 
+     items-center justify-evenly my-10'>
 
-        {/*OUTER CONTAINER*/}
-      <div className="w-80 h-[35rem] md:w-[26rem] bg-[#009797] -rotate-6 
-      flex items-center justify-center rounded-lg">
-      </div>
+      <img src={registerSplash} className='w-96 h-96 '></img>
 
+        {/* INPUT FORM */}
+        <div className='w-96 xl:w-[30%] h-auto p-8'>
 
-        {/*INNER CONTAINER*/}
-      <div className="w-80 h-[35rem] md:w-[26rem]  
-      bg-white absolute rotate-0 shadow-lg 
-      rounded-lg flex flex-col gap-4">
-
-            <div className="flex flex-row gap-6 items-center p-10 pb-6 md:pb-10 ">
-                   <img src={miniLogo} alt="logo" className='object-fill w-14 h-14 md:w-20 md:h-20' />
-                    <h1 className='text-2xl md:text-3xl font-bold'>Register</h1>
+            <div className="inline-block text-center">
+              <span className="text-2xl font-bold">Register</span>
+              <div className="mt-1 h-[5px] rounded bg-teal-500 w-full"></div>
             </div>
 
+            <div className='flex flex-col gap-4'>
 
-            {/* INPUT FORMS */}
-            <div className='border-b-2 w-[80%] ml-10 '>
-                <input className='w-full p-3' type="text" placeholder='Username'/>
-            </div>
+                  <input
+                  type="email"
+                  placeholder="Enter your email here"
+                  className="w-full px-6 py-4 bg-[#F1F1F1] rounded-full mt-20 outline-none border-0 font-extralight"
+                  onChange={(e)=>{setEmail(e.target.value)}}
+                />  
 
-            <div className='border-b-2 w-[80%] ml-10 '>
-                <input className='w-full p-3' type="email" placeholder='Email Address'/>
-            </div>
+    
+              <div className="relative w-full">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password here"
+                  className="w-full px-6 py-4 bg-[#F1F1F1] rounded-full outline-none border-0 font-extralight"
+                  onChange={(e)=>{setPassword(e.target.value)}}
+                />
+                <div
+                  onClick={togglePasswordVisibility}
+                  className="absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                >
+                  {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                </div>
+              </div>
 
-            <div className='border-b-2 w-[80%] ml-10 '>
-                <input className='w-full p-3' type="password" placeholder='Password'/>
-            </div>
+              <div className="relative w-full">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  className="w-full px-6 py-4 bg-[#F1F1F1] rounded-full outline-none border-0 font-extralight"
+                  onChange={(e)=>{setConfirmedPassword(e.target.value)}}
+                />
+                <div
+                  onClick={togglePasswordVisibility}
+                  className="absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                >
+                  {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                </div>
+              </div>
 
-            <div className='border-b-2 w-[80%] ml-10 '>
-                <input className='w-full p-3' type="password" placeholder='Confirm Password'/>
-            </div>
-            
 
-            {/* Register button */}
-            <div className='mt-5 w-[80%] ml-10 gap-4 md:gap-0 justify-center flex items-center'>
-                
-            <button className='w-full p-3 rounded-md text-white bg-[#009797] 
-            hover:bg-white hover:text-[#009797] hover:border-[#009797] hover:border-2'>
-            <h1 className='text-lg font-bold'>Register account</h1>
-            </button>
-            
+              {/*SELECT SECTION*/}
+              <Select onValueChange={setRole}>
+              <SelectTrigger className="w-full h-14 rounded-full px-6 bg-[#F1F1F1]  text-md text-gray-500">
+                <SelectValue placeholder="Select your role *" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Role</SelectLabel>
+                  <SelectItem value="User">User</SelectItem>
+                  <SelectItem value="Nutritionist">Nutritionist</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            {/*-----------------SELECT SECTION--------------*/}
 
-            </div>
-  
-  
+
+
+              {/*LOGIN BUTTON*/}
+              <button className='w-full p-4 bg-[#009797] mt-6 text-white text-lg font-semibold rounded-full' onClick={handleSubmit}>
+                Sign Up
+              </button>
+        
+              <h1 className='text-center my-6'>Already have an account? 
+              <Link to="/login" className='text-[#00ACAC]'> Login Here</Link>
+              </h1>
 
         </div>
 
@@ -59,7 +124,11 @@ export default function Register() {
 
     </div>
 
-
-
+    </div>
   )
+
+
+
+
+
 }

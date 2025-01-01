@@ -24,7 +24,7 @@ import { Link } from "react-router-dom";
         <Sheet open={open} onOpenChange={setOpen}>
 
       {/* Flex container for logo, name, and menu button */}
-      <div className="flex items-center justify-between w-full md:hidden border-b-2 p-4">
+      <div className="flex items-center justify-between w-full md:hidden border-b-2 p-6">
         {/* Logo and Company Name */}
         
         <Link className="flex items-center" to="/">
@@ -65,7 +65,7 @@ import { Link } from "react-router-dom";
 
 
 
-        <h1 className="text-2xl text-[#009797] font-bold">Abundance</h1>
+        <h1 className="text-2xl text-[#009797] ml-4 font-bold">Abundance</h1>
 
 
         </Link>
