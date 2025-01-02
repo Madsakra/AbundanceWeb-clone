@@ -15,78 +15,71 @@ import Register from './routes/Public_Routes/Register';
 import ForgetPassword from './routes/Public_Routes/ForgetPassword';
 
 import '@fontsource/poppins';
-import ProtectedRoutes from './utils/ProtectedRoutes';
+import ProtectedRoutes from './routes/ProtectedRoutes';
 import Dashboard from './routes/Authenticated/Dashboard';
 import NutritionistSubmission from './routes/Public_Routes/NutritionistSubmission';
+
+import UserVerification from './routes/Authenticated/UserVerification';
+
+import { AuthProvider } from './contextProvider';
+
 
 
 
 const router = createBrowserRouter([
   {
+
+    
+
     path: "/",
-    element:<Root />,
-    errorElement:<ErrorPage/>,
-    children:[
-
+    element: <Root />,
+    errorElement: <ErrorPage />,
+    children: [
       // PUBLIC ROUTES
-
       {
-        index:true,
-        element:<Home/>
+        index: true,
+        element: <Home />,
       },
-
       {
-        path:'/login',
-        element:<Login/>
+        path: "/login",
+        element: <Login />,
       },
-
       {
-        path:'/register',
-        element:<Register/>
+        path: "/register",
+        element: <Register />,
       },
-
       {
-        path:'/forget-password',
-        element:<ForgetPassword/>
+        path: "/forget-password",
+        element: <ForgetPassword />,
       },
-
       {
-        path:'/nutritionist-submission',
-        element:<NutritionistSubmission/>
+        path: "/nutritionist-submission",
+        element: <NutritionistSubmission />,
       },
 
       // PROTECTED ROUTE WRAPPER
-
       {
-        path:'/',
-        element:<ProtectedRoutes/>,
-        children:[
+        path: "/",
+        element: <ProtectedRoutes />,
+        children: [
           {
-            path:'dashboard',
-            element:<Dashboard/>
-          }
-        ]
+            path: "/dashboard", 
+            element: <Dashboard />,  // This should render if verified
+          },
+          {
+            path: "/userVerification", 
+            element: <UserVerification />,  // This should render if not verified
+          },
+        ],
       },
-
-
-
-    ]
-  
-  
-  
-  
+    ],
   },
 ]);
 
-
-
-
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-   
+    <AuthProvider>
     <RouterProvider router={router}/>
-  
-
+    </AuthProvider>
   </React.StrictMode>,
 )

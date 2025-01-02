@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { useAuth } from "@/contextProvider";
+
+import { Link} from "react-router-dom";
+
 
 
 
@@ -14,6 +17,14 @@ const mainNavItems = [
 
 
 export default function WebNav(){
+    
+    const { user, logout } = useAuth();
+
+
+
+   
+
+
     return (
         <div className="p-5 hidden gap-2 md:flex items-center border-2 ">
             <Link className="ms-2 flex items-center gap-2" to="/">
@@ -75,7 +86,13 @@ export default function WebNav(){
                 </div>
 
                 
-                <div className="flex gap-4">
+  
+                
+                {
+                    user?
+                    <Button className="bg-[#009797] text-white px-7 py-5 shadow-lg" onClick={logout}>Logout</Button>:
+
+                    <div className="flex gap-4">
                     <Link to="/login">
                     <Button variant="link" className="bg-[#009797] text-white px-7 py-5 shadow-lg">Login</Button>                
                     </Link>
@@ -85,6 +102,7 @@ export default function WebNav(){
                     </Link>
                 </div>
 
+                }
 
 
             </div>

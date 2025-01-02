@@ -68,7 +68,7 @@ export default function Home() {
     <div className='flex flex-col '>
     
         <motion.div className='min-h-screen xl:h-[85vh] w-full  
-          md:flex flex-col gap-3 xl:flex-row-reverse xl:justify-evenly
+          md:flex flex-col gap-3 xl:flex-row xl:justify-evenly
          items-center pt-24 xl:pt-0 p-4 mb-20'
 
          initial={{opacity:0, y: 50}}

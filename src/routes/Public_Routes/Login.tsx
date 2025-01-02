@@ -1,8 +1,11 @@
-import { Link } from 'react-router-dom'
+import { Link,  useNavigate } from 'react-router-dom'
 
 import loginSplash from '../../assets/Images/login_splashes/login_splash.jpg'
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+
+import { useAuth } from '@/contextProvider';
+
 
 export default function Login() {
 
@@ -15,10 +18,26 @@ export default function Login() {
     setShowPassword((prev) => !prev);
   };
 
+  
+  let navigate = useNavigate();
+  const {login} = useAuth();
 
-  const handleLogin = ()=>{
-    console.log(email);
-    console.log(password);
+  const handleLogin = async ()=>{
+  
+    const testAccount = {
+      id:"1234",
+      email:email,
+      role:"user",
+      verified:false,
+    };
+
+    if (email && password)
+    {
+      login(testAccount);
+      navigate("/dashboard");
+           
+    }
+   
   }
 
 
