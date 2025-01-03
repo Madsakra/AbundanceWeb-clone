@@ -9,11 +9,14 @@ import { Link} from "react-router-dom";
 
 
 const mainNavItems = [
-
     {name:'Home',ref:'/'},
     {name:'Project Overview',ref:'https://hongjun820.wixsite.com/abundanceproject-1'},
 ];
 
+const authenticatedItems = [
+    {name:'Home',ref:'/'},
+    {name:'Dashboard',ref:'/dashboard'},
+];
 
 
 export default function WebNav(){
@@ -74,6 +77,19 @@ export default function WebNav(){
       
             
             <div className="flex justify-between ms-10  w-[90%]">
+
+                {user?
+                <div>
+                {authenticatedItems.map((item,index)=>(
+                    <Link to={item.ref}>
+                    <Button key={index} variant="link" className="lg:text-lg text-[#009797]">
+                        {item.name}
+                    </Button>                  
+                    </Link>
+  
+                ))}
+                </div>:
+                
                 <div>
                 {mainNavItems.map((item,index)=>(
                     <Link to={item.ref}>
@@ -83,7 +99,12 @@ export default function WebNav(){
                     </Link>
   
                 ))}
-                </div>
+                </div>                
+            
+            
+                }
+
+
 
                 
   

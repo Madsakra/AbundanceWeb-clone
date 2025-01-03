@@ -19,7 +19,7 @@ import ProtectedRoutes from './routes/ProtectedRoutes';
 import Dashboard from './routes/Authenticated/Dashboard';
 import NutritionistSubmission from './routes/Public_Routes/NutritionistSubmission';
 
-import UserVerification from './routes/Authenticated/UserVerification';
+
 
 import { AuthProvider } from './contextProvider';
 
@@ -66,10 +66,7 @@ const router = createBrowserRouter([
             path: "/dashboard", 
             element: <Dashboard />,  // This should render if verified
           },
-          {
-            path: "/userVerification", 
-            element: <UserVerification />,  // This should render if not verified
-          },
+
         ],
       },
     ],
