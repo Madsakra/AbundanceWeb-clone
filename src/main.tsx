@@ -15,13 +15,17 @@ import Register from './routes/Public_Routes/Register';
 import ForgetPassword from './routes/Public_Routes/ForgetPassword';
 
 import '@fontsource/poppins';
-import ProtectedRoutes from './routes/ProtectedRoutes';
 import Dashboard from './routes/Authenticated/Dashboard';
 import NutritionistSubmission from './routes/Public_Routes/NutritionistSubmission';
 
 
 
 import { AuthProvider } from './contextProvider';
+import ProtectedRoute from './routes/RouteWrapper/ProtectedRoutes';
+import ManageClients from './routes/Authenticated/Nutritionist/ManageClients';
+import UserAccounts from './routes/Authenticated/Admin/UserAccounts';
+
+
 
 
 
@@ -59,16 +63,38 @@ const router = createBrowserRouter([
 
       // PROTECTED ROUTE WRAPPER
       {
-        path: "/",
-        element: <ProtectedRoutes />,
+        path: "/general",
+        element: <ProtectedRoute allowedRoles={["free_user","premium_user","admin","nutritionist"]} />,
         children: [
           {
-            path: "/dashboard", 
+            path: "dashboard", 
             element: <Dashboard />,  // This should render if verified
           },
-
         ],
       },
+
+      {
+        path: "/nutri",
+        element: <ProtectedRoute allowedRoles={["nutritionist"]} />,
+        children: [
+          {
+            path: "manageClients", 
+            element: <ManageClients/>,  // This should render if verified
+          },
+        ],
+      },
+     
+      {
+        path: "/admin",
+        element: <ProtectedRoute allowedRoles={["admin"]} />,
+        children: [
+          {
+            path: "userAccounts", 
+            element: <UserAccounts/>,  // This should render if verified
+          },
+        ],
+      },
+
     ],
   },
 ]);
