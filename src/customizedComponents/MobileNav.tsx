@@ -8,7 +8,8 @@ import {
 
  import { Button } from "@/components/ui/button";
  import { Menu as MenuIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contextProvider";
 
 
  const mobileItems = [
@@ -20,6 +21,20 @@ import { Link } from "react-router-dom";
 
  export default function MobileNav(){
     const [open, setOpen] = useState(false);
+
+
+    const { user, logout } = useAuth();
+    let navigate = useNavigate();
+
+   const logOutRedirect = ()=>{
+   
+    logout();
+    navigate("/");
+   }
+
+
+
+
     return(
         <Sheet open={open} onOpenChange={setOpen}>
 
@@ -71,7 +86,7 @@ import { Link } from "react-router-dom";
         </Link>
 
         {/* This button will trigger open the mobile sheet menu */}
-        <SheetTrigger asChild>
+        <SheetTrigger>
           <Button variant="ghost" size="icon" className="md:hidden">
             <MenuIcon className="size-10 text-[#009797]" />
           </Button>
@@ -98,18 +113,28 @@ import { Link } from "react-router-dom";
               </Link>
             ))}
 
-                <div className="flex flex-col w-full gap-2 mt-[10%]">
+                {
+                    user?
+                    <Button className="bg-[#009797] text-white px-7 py-5 shadow-lg" onClick={()=>{
+                      logOutRedirect();
+                      setOpen(false)
+                    }}>Logout</Button>:
+
+                    <div className="flex gap-4">
                     <Link to="/login">
-                    <Button variant="link" 
-                    onClick={()=>setOpen(false)} 
-                    className="bg-[#009797] w-full text-white px-7 py-5 shadow-lg">Login</Button>   
+                    <Button variant="link" className="bg-[#009797] text-white px-7 py-5 shadow-lg" 
+                     onClick={() => setOpen(false)} // Close the menu
+                    >Login</Button>                
                     </Link>
 
                     <Link to="/register">
-                    <Button variant="link" onClick={()=>setOpen(false)} 
-                    className="border-[0.5px] w-full px-7 py-5 text-[#009797] border-[#009797] shadow-lg">Register</Button>                    
+                    <Button variant="link" className="border-[0.5px] px-7 py-5 text-[#009797] border-[#009797] shadow-lg"
+                     onClick={() => setOpen(false)} // Close the menu
+                    >Register</Button>
                     </Link>
-                </div>  
+                </div>
+
+                }
 
           </div>
         </SheetContent>

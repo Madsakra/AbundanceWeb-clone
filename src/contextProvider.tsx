@@ -87,10 +87,13 @@ useEffect(() => {
       }
   };
 
+ 
   const logout = () => {
+
     removeCookie('token'); // Remove the user data from the cookie
     setUser(null);
-    alert("Logged Out Successfully")
+    alert("Logged Out Successfully");
+   
   };
 
   return (

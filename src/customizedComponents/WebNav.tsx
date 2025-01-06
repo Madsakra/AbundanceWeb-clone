@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contextProvider";
 
-import { Link} from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 
 
 
@@ -22,10 +22,13 @@ const authenticatedItems = [
 export default function WebNav(){
     
     const { user, logout } = useAuth();
+    let navigate = useNavigate();
 
-
-
+   const logOutRedirect = ()=>{
    
+    logout();
+    navigate("/");
+   }
 
 
     return (
@@ -111,7 +114,7 @@ export default function WebNav(){
                 
                 {
                     user?
-                    <Button className="bg-[#009797] text-white px-7 py-5 shadow-lg" onClick={logout}>Logout</Button>:
+                    <Button className="bg-[#009797] text-white px-7 py-5 shadow-lg" onClick={logOutRedirect}>Logout</Button>:
 
                     <div className="flex gap-4">
                     <Link to="/login">
