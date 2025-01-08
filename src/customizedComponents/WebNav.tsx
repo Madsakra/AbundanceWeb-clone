@@ -84,21 +84,17 @@ export default function WebNav(){
                 {user?
                 <div>
                 {authenticatedItems.map((item,index)=>(
-                    <Link to={item.ref}>
-                    <Button key={index} variant="link" className="lg:text-lg text-[#009797]">
+                    <Link to={item.ref} key={index}  className="lg:text-lg text-[#009797]">
                         {item.name}
-                    </Button>                  
                     </Link>
   
                 ))}
                 </div>:
                 
-                <div>
+                <div className="content-center">
                 {mainNavItems.map((item,index)=>(
-                    <Link to={item.ref}>
-                    <Button key={index} variant="link" className="lg:text-lg text-[#009797]">
+                    <Link to={item.ref} key={index} className="lg:text-lg text-[#009797] ms-8">
                         {item.name}
-                    </Button>                  
                     </Link>
   
                 ))}
@@ -116,14 +112,17 @@ export default function WebNav(){
                     user?
                     <Button className="bg-[#009797] text-white px-7 py-5 shadow-lg" onClick={logOutRedirect}>Logout</Button>:
 
-                    <div className="flex gap-4">
-                    <Link to="/login">
-                    <Button variant="link" className="bg-[#009797] text-white px-7 py-5 shadow-lg">Login</Button>                
+                    <div className="flex gap-4 ">
+                
+                    <Link to="/register"  className="border-[0.5px] text-[#009797] btn-ghost p-2 px-4 rounded-lg border-[#009797] shadow-lg">
+                    Register
+                    </Link>
+                
+                    <Link to="/login" className="bg-[#009797] text-white  shadow-lg p-2 px-6 rounded-lg btn-ghost">
+                    Login               
                     </Link>
 
-                    <Link to="/register">
-                    <Button variant="link" className="border-[0.5px] px-7 py-5 text-[#009797] border-[#009797] shadow-lg">Register</Button>
-                    </Link>
+                
                 </div>
 
                 }

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { 
     Sheet,
     SheetContent,
+    SheetDescription,
+    SheetTitle,
     SheetTrigger,
 
  } from "@/components/ui/sheet";
@@ -86,13 +88,11 @@ import { useAuth } from "@/contextProvider";
         </Link>
 
         {/* This button will trigger open the mobile sheet menu */}
-        <SheetTrigger>
-          <Button variant="ghost" size="icon" className="md:hidden">
+         <SheetTrigger asChild>
             <MenuIcon className="size-10 text-[#009797]" />
-          </Button>
         </SheetTrigger>
       </div>
-  
+    
         <SheetContent side="right"> 
           <div className="flex flex-col items-start gap-3 mt-[10%] ">
             {mobileItems.map((item, index) => (
@@ -108,10 +108,11 @@ import { useAuth } from "@/contextProvider";
                   setOpen(false);
                 }}
               >
-                {item.name}
+                <SheetTitle>{item.name}</SheetTitle>
+                <SheetDescription></SheetDescription>
               </Button>
               </Link>
-            ))}
+            ))} 
 
                 {
                     user?
@@ -120,7 +121,7 @@ import { useAuth } from "@/contextProvider";
                       setOpen(false)
                     }}>Logout</Button>:
 
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 mt-5 ml-5">
                     <Link to="/login">
                     <Button variant="link" className="bg-[#009797] text-white px-7 py-5 shadow-lg" 
                      onClick={() => setOpen(false)} // Close the menu
@@ -136,8 +137,8 @@ import { useAuth } from "@/contextProvider";
 
                 }
 
-          </div>
-        </SheetContent>
+           </div> 
+        </SheetContent> 
   
       </Sheet>
     )
