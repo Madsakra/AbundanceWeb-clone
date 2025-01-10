@@ -41,7 +41,22 @@ export default function Register() {
 
   const handleSubmit = async ()=>{
 
-    console.log(email, password, confirmedPassword , role);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email.trim() === "" || password.trim() === "" || userName.trim() === "" || role === "") {
+      alert("You have missed out some fields, please check again");
+    }
+    
+    else if (!emailRegex.test(email.trim())) {
+      alert("Please enter a valid email address!");
+    }
+
+
+    if (password !== confirmedPassword)
+    {
+      alert("Your password does not match with the confirmation. Please try again")
+    }
 
     if (role === "Nutritionist") 
       // SAVE THE DATA IN LOCAL HOST FIRST, GO TO THE NUTRI PAGE, COMPILE EVERYTHING AND SEND TO SERVER.
