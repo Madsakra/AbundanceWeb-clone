@@ -11,9 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import axios from "axios";
-import { api_endpoint } from '@/utils';
-import VerificationAlert from '@/customizedComponents/VerificationAlert';
+
+
+import { createUserWithEmailAndPassword,sendEmailVerification } from 'firebase/auth';
+import { auth, db } from '@/firebase-config';
+import { doc, setDoc } from 'firebase/firestore';
 
 
 
@@ -25,13 +27,11 @@ export default function Register() {
   const [confirmedPassword,setConfirmedPassword] = useState("");
   const [role,setRole] = useState("");
 
-  const [verifyStatus,setVerifyStatus] = useState(false);
+  
 
   const [showPassword, setShowPassword] = useState(false);
   let navigate = useNavigate();
 
-  const mainMessage = "Registration Successful";
-  const subMessage = " Welcome to Abudance ! A verification email has been sent to your email account. Please click on the verify link to verify your account and start your journey with us.";
 
 
   const togglePasswordVisibility = () => {
@@ -69,60 +69,41 @@ export default function Register() {
 
       try{
 
-     
-          const params = {
-            username: userName,
-            email: email,
-            password: password,
-            role: role,
-            subscription: "InActive",
+        // create user with email & with password
+        // auto log him in as non verified
+        const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+        // Send email verification
+        await sendEmailVerification(userCredentials.user);
         
-          };  
-          const response = await axios.post(
-            `${api_endpoint}/api/v1/user/register`, // Replace `base_url` with your actual API base URL
-            params,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
+        // COPY HIS CREDENTIALS INTO DOCUMENTS
+        const userID = userCredentials.user.uid
+        // before he create profile, will temporaray use this
+        const docRef =  doc(db, "accounts",userID);
 
-          if (response.status === 201)
-          {
-          
-            // show verification popup 
-            setVerifyStatus(true);
+        await setDoc(docRef, {
+          name:userName,
+          email:email,
+          role: role,
+        });
+        
+        
+  
 
-          }
-          console.log("Registration successful:", response.data);
+        navigate("/general/Dashboard")
+
+
       }
   
       catch(err)
       {
-        console.log("Either the account exist or you are missing some fields")
+        console.log(err)
       }
     }
   }
 
-  const reSendEmail = async ()=>{
-    try {
-      const response = await axios.post(`${api_endpoint}/api/v1/user/verify/email/resend`, {
-        email: email,
-      });
+
+
  
-     alert(response.data.message);
-     
-
-    
-    } catch (error) {
-      console.error("Login failed:");
-    }
-  }
-
-  const handleVerifyBox = ()=>{
-    setVerifyStatus(!verifyStatus)
-  }
 
   return (
     <div className='w-full h-full xl:h-[80vh] 
@@ -219,18 +200,12 @@ export default function Register() {
 
         </div>
 
-      {verifyStatus && 
-             (<VerificationAlert
-              resendEmail={reSendEmail} 
-              handleVerifyBox={handleVerifyBox} 
-              regStatus={verifyStatus}
-              mainMessage={mainMessage}
-              subMessage={subMessage}
-              />
-              
-            )
 
-      }
+
+              
+            
+
+ 
       
 
     </div>

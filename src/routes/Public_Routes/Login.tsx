@@ -1,21 +1,17 @@
 import { Link,  useNavigate } from 'react-router-dom'
 
 import loginSplash from '../../assets/Images/login_splashes/login_splash.jpg'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 
 import { useAuth } from '@/contextProvider';
-import axios from 'axios';
-import { api_endpoint } from '@/utils';
-import VerificationAlert from '@/customizedComponents/VerificationAlert';
+
 
 
 export default function Login() {
 
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
-  const [verifyStatus,setVerifyStatus] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -24,68 +20,32 @@ export default function Login() {
 
   
   let navigate = useNavigate();
-  const {login,user} = useAuth();
+  const {login} = useAuth();
 
-  const mainMessage = "Verification Needed"
-  const subMessage = "We see that you have registered with us but yet to verify your account. Please head over to your email and click on the link for verification. If the link has expired, click the button below to resend the email."
-
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   const handleLogin = async ()=>{
   
-
-    if (email && password)
+    if (!email.trim() || !password.trim())
     {
-      const serverData = await login(email,password);
-      // for testing
-      
-      const serverError = serverData.response.data.error;
-      if (serverError === "Invalid payload")
-      {
-        alert("Please enter the credentials in the correct format")
-      }
-
-      else if (serverError === "Please verify your email")
-      {
-        setVerifyStatus(true);
-      }
-
-      else
-        {
-          alert("Wrong Email or Password")
-  
-        }
-    
-    };
-  }
-
-  useEffect(()=>{
-    if (user)
-    {
-      navigate("/general/dashboard");
-      
+      alert("Please do not leave your login credentials blank!")
     }
 
-  },[user])
+    else if (!(emailRegex.test(email)))
+    {
+      alert("You need to fill in your email properly")
+    }
 
-  const reSendEmail = async ()=>{
-    try {
-      const response = await axios.post(`${api_endpoint}/api/v1/user/verify/email/resend`, {
-        email: email,
-      });
- 
-     alert(response.data.message);
-     
-
-    
-    } catch (error) {
-      console.error("Login failed:");
+    else{
+       await login(email,password);
+       navigate("/general/Dashboard")
     }
   }
 
 
-  const handleVerifyBox = ()=>{
-    setVerifyStatus(!verifyStatus)
-  }
+
+
+
 
   return (
     <div className='w-full h-full xl:h-[80vh] 
@@ -143,16 +103,6 @@ export default function Login() {
               </h1>
 
         </div>
-
-      {verifyStatus && 
-             (<VerificationAlert resendEmail={reSendEmail} 
-              handleVerifyBox={handleVerifyBox} 
-              regStatus={verifyStatus}
-              mainMessage={mainMessage}
-              subMessage={subMessage}
-              
-              />)
-      }
 
     </div>
 

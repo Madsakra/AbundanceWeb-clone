@@ -15,7 +15,7 @@ import reviewAvatar2 from "../../assets/Images/carrie.png";
 import reviewAvatar3 from '../../assets/Images/emma.png';
 import AppReviewCard from '@/customizedComponents/AppReviewCard';
 import ContactInfo from '@/customizedComponents/ContactInfo';
-import { useEffect } from 'react';
+
 
 
 const featuresImages = [

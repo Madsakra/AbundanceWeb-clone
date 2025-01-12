@@ -14,15 +14,14 @@ import { IoMdCheckboxOutline } from "react-icons/io";
 
 type VerificationAlertProps = {
     resendEmail:()=>void;
-    handleVerifyBox:()=>void;
-    regStatus:boolean;
+    logOut:()=>void;
     mainMessage:string;
     subMessage:string
 }
 
-export default function VerificationAlert({resendEmail,handleVerifyBox,regStatus,mainMessage,subMessage}:VerificationAlertProps) {
+export default function VerificationAlert({resendEmail,mainMessage,subMessage,logOut}:VerificationAlertProps) {
   return (
-    <AlertDialog open={regStatus}>
+    <AlertDialog open={true}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-2xl my-2 gap-4 flex flex-row items-center">
@@ -36,9 +35,10 @@ export default function VerificationAlert({resendEmail,handleVerifyBox,regStatus
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-
+          
+        <AlertDialogCancel onClick={logOut}>Log Out</AlertDialogCancel>
         <AlertDialogAction onClick={resendEmail}>Resend Email</AlertDialogAction>
-        <AlertDialogCancel onClick={handleVerifyBox}>Close</AlertDialogCancel>
+   
         
         </AlertDialogFooter>
       </AlertDialogContent>
