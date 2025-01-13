@@ -86,11 +86,11 @@ const router = createBrowserRouter([
      
       {
         path: "/admin",
-        element: <ProtectedRoute/>,
+        element: <ProtectedRoute allowedRoles={["admin"]}/>,
         children: [
           {
-            path: "userAccounts", 
-            element: <UserAccounts/>,  // This should render if verified
+            index: true, 
+            element: <UserAccounts />,  // This should render if verified
           },
         ],
       },

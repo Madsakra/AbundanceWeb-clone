@@ -16,6 +16,7 @@ import {
 import { createUserWithEmailAndPassword,sendEmailVerification } from 'firebase/auth';
 import { auth, db } from '@/firebase-config';
 import { doc, setDoc } from 'firebase/firestore';
+import { useAuth } from '@/contextProvider';
 
 
 
@@ -27,7 +28,7 @@ export default function Register() {
   const [confirmedPassword,setConfirmedPassword] = useState("");
   const [role,setRole] = useState("");
 
-  
+  const {user} = useAuth();  
 
   const [showPassword, setShowPassword] = useState(false);
   let navigate = useNavigate();
@@ -88,8 +89,11 @@ export default function Register() {
         
         
   
+        if (user)
+        {
+          navigate("/general/Dashboard")
 
-        navigate("/general/Dashboard")
+        }
 
 
       }

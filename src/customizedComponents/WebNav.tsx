@@ -10,12 +10,12 @@ import { Link, useNavigate} from "react-router-dom";
 
 const mainNavItems = [
     {name:'Home',ref:'/'},
-    {name:'Project Overview',ref:'https://hongjun820.wixsite.com/abundanceproject-1'},
+    
 ];
 
 const authenticatedItems = [
     {name:'Home',ref:'/'},
-    {name:'Dashboard',ref:'/admin/userAccounts'},
+    {name:'Dashboard',ref:'/admin/'},
 ];
 
 
