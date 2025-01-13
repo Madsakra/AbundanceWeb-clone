@@ -15,7 +15,7 @@ const mainNavItems = [
 
 const authenticatedItems = [
     {name:'Home',ref:'/'},
-    {name:'Dashboard',ref:'/dashboard'},
+    {name:'Dashboard',ref:'/admin/userAccounts'},
 ];
 
 
@@ -79,21 +79,21 @@ export default function WebNav(){
             </Link>
       
             
-            <div className="flex justify-between ms-10  w-[90%]">
+            <div className="flex justify-between ms-10 gap-5 w-[90%]">
 
                 {user?
                 <div>
                 {authenticatedItems.map((item,index)=>(
-                    <Link to={item.ref} key={index}  className="lg:text-lg text-[#009797]">
+                    <Link to={item.ref} key={index}  className="lg:text-lg ml-8 text-[#009797]">
                         {item.name}
                     </Link>
   
                 ))}
                 </div>:
                 
-                <div className="content-center">
+                <div className="content-center flex gap-5">
                 {mainNavItems.map((item,index)=>(
-                    <Link to={item.ref} key={index} className="lg:text-lg text-[#009797] ms-8">
+                    <Link to={item.ref} key={index} className="lg:text-lg text-[#009797] mr-4">
                         {item.name}
                     </Link>
   

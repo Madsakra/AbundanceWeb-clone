@@ -38,7 +38,7 @@ export default function Login() {
 
     else{
        await login(email,password);
-       navigate("/general/Dashboard")
+       navigate("/admin/userAccounts")
     }
   }
 
