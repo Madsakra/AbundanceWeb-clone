@@ -13,7 +13,7 @@ import {
 import { IoMdCheckboxOutline } from "react-icons/io";
 
 type VerificationAlertProps = {
-    resendEmail:()=>void;
+    resendEmail?:()=>void;
     logOut:()=>void;
     mainMessage:string;
     subMessage:string
@@ -37,7 +37,8 @@ export default function VerificationAlert({resendEmail,mainMessage,subMessage,lo
         <AlertDialogFooter>
           
         <AlertDialogCancel onClick={logOut}>Log Out</AlertDialogCancel>
-        <AlertDialogAction onClick={resendEmail}>Resend Email</AlertDialogAction>
+        {resendEmail &&   <AlertDialogAction onClick={resendEmail}>Resend Email</AlertDialogAction>
+      }
    
         
         </AlertDialogFooter>

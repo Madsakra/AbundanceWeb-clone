@@ -9,6 +9,8 @@ type AccountDetails = {
   name:string,
   email:string,
   role:string,
+  image?:string,
+
 }
 
 
@@ -19,7 +21,7 @@ interface AuthContextType {
   logout: () => void;
   setLoading:(load:boolean)=>void
   loading: boolean; // Add loading state
-
+  awaitApproval:boolean;
   accountDetails:AccountDetails | null;
   setAccountDetails: (acc:AccountDetails)=>void;
 }
@@ -31,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true); // Add a loading state
   const [accountDetails,setAccountDetails] = useState<AccountDetails |null>(null)
-
+  const [awaitApproval,setAwaitApproval] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -42,7 +44,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
               const docRef = doc(db, "accounts", user.uid);
               const docSnap = await getDoc(docRef);
-              
+
+              const approvalRef = doc(db, "pending_approval", user.uid);
+              const approvalSnap = await getDoc(approvalRef);
+
+            
               if (docSnap.exists()) {
                 console.log("Document data:", docSnap.data());
                 setAccountDetails(docSnap.data() as AccountDetails);
@@ -50,7 +56,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               
               else {
                 console.log("Account has no role");
-            }
+              }
+
+              if (approvalSnap.exists())
+              {
+                setAwaitApproval(true);
+              }
+              
+
       }
       else{
         setAccountDetails(null)
@@ -77,10 +90,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log(userCredentials.user);
         setUser(userCredentials.user)
         setLoading(false);
+        return userCredentials;
 
    
       } catch (error) {
           alert(error);
+          return false;
       }
   };
 
@@ -98,7 +113,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 
   return (
-    <AuthContext.Provider value={{ user, login, logout ,setLoading
+    <AuthContext.Provider value={{ user, login, logout ,setLoading, awaitApproval
     ,loading , accountDetails, setAccountDetails}}>
       {children}
     </AuthContext.Provider>

@@ -23,7 +23,15 @@ import NutritionistSubmission from './routes/Public_Routes/NutritionistSubmissio
 import { AuthProvider } from './contextProvider';
 import ProtectedRoute from './routes/RouteWrapper/ProtectedRoutes';
 import ManageClients from './routes/Authenticated/Nutritionist/ManageClients';
-import UserAccounts from './routes/Authenticated/Admin/UserAccounts';
+import UserAccounts from './routes/Authenticated/Admin/AccountManagement/UserAccounts';
+import AdminLayout from './routes/Authenticated/Admin/AdminLayout';
+import PendingApproval from './routes/Authenticated/Admin/AccountManagement/PendingApproval';
+import AdminAccounts from './routes/Authenticated/Admin/AccountManagement/AdminAccounts';
+import PredefinedGoals from './routes/Authenticated/Admin/ContentManagement/PredefinedGoals';
+import MembershipPrice from './routes/Authenticated/Admin/ContentManagement/MembershipPrice';
+import WebsiteContent from './routes/Authenticated/Admin/ContentManagement/WebsiteContent';
+import AppReviews from './routes/Authenticated/Admin/ReviewsManagement/AppReviews';
+import NutriReviews from './routes/Authenticated/Admin/ReviewsManagement/NutriReviews';
 
 
 
@@ -32,9 +40,6 @@ import UserAccounts from './routes/Authenticated/Admin/UserAccounts';
 
 const router = createBrowserRouter([
   {
-
-    
-
     path: "/",
     element: <Root />,
     errorElement: <ErrorPage />,
@@ -60,6 +65,8 @@ const router = createBrowserRouter([
         path: "/nutritionist-submission",
         element: <NutritionistSubmission />,
       },
+    ],
+    },
 
       // PROTECTED ROUTE WRAPPER
       {
@@ -67,7 +74,7 @@ const router = createBrowserRouter([
         element: <ProtectedRoute allowedRoles={["free_user","premium_user","admin","nutritionist"]} />,
         children: [
           {
-            path: "dashboard", 
+            index:true, 
             element: <Dashboard />,  // This should render if verified
           },
         ],
@@ -78,7 +85,7 @@ const router = createBrowserRouter([
         element: <ProtectedRoute allowedRoles={["nutritionist"]} />,
         children: [
           {
-            path: "manageClients", 
+            index: true, 
             element: <ManageClients/>,  // This should render if verified
           },
         ],
@@ -86,18 +93,59 @@ const router = createBrowserRouter([
      
       {
         path: "/admin",
-        element: <ProtectedRoute allowedRoles={["admin"]}/>,
+      
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminLayout />
+          </ProtectedRoute>
+        ),
         children: [
           {
-            index: true, 
-            element: <UserAccounts />,  // This should render if verified
+            index: true,
+            element: <UserAccounts />,
           },
+          
+          {
+            path:'pending-approval',
+            element:<PendingApproval/>
+          },
+
+          {
+            path:'admin-acc',
+            element:<AdminAccounts/>
+          },
+
+          {
+            path:'predefined-goals',
+            element:<PredefinedGoals/>
+          },
+
+          {
+            path:'membership-price',
+            element:<MembershipPrice/>
+          },
+
+          {
+            path:'website-content',
+            element:<WebsiteContent/>
+          },
+
+          {
+            path:'predefined-app-reviews',
+            element:<AppReviews/>
+          },
+
+          {
+            path:'predefined-nutri-reviews',
+            element:<NutriReviews/>
+          },
+
+
         ],
       },
-
     ],
-  },
-]);
+  
+);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

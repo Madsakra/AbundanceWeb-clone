@@ -5,6 +5,9 @@ import { useState } from 'react';
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 
 import { useAuth } from '@/contextProvider';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/firebase-config';
+import { UserCredential } from 'firebase/auth';
 
 
 
@@ -37,8 +40,39 @@ export default function Login() {
     }
 
     else{
-       await login(email,password);
-       navigate("/")
+       const loginResult:UserCredential = await login(email,password);
+       if (loginResult)
+       {
+        const docRef = doc(db, "accounts", loginResult.user.uid);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+          console.log("Document data:", docSnap.data());
+          const role = docSnap.data().role
+          if (role === "admin")
+          {
+            navigate('/admin/');
+          }
+
+          else if (role==="nutritionist")
+          {
+            navigate("/nutri/");
+          }
+
+          else{
+            navigate("/general/");
+          }
+
+        } 
+        
+        else {
+          console.log("Account has no role");
+          navigate("/general/");
+      }
+
+       }
+
+
    
     }
   }

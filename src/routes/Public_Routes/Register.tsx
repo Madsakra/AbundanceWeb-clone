@@ -59,10 +59,10 @@ export default function Register() {
       alert("Your password does not match with the confirmation. Please try again")
     }
 
-    if (role === "Nutritionist") 
+    if (role === "nutritionist") 
       // SAVE THE DATA IN LOCAL HOST FIRST, GO TO THE NUTRI PAGE, COMPILE EVERYTHING AND SEND TO SERVER.
     {
-      navigate('/nutritionist-submission')
+      navigate('/nutritionist-submission', { state: { email:email, password:password }})
     }
 
     else{
@@ -91,7 +91,7 @@ export default function Register() {
   
         if (user)
         {
-          navigate("/general/Dashboard")
+          navigate(`/${role}/`)
 
         }
 
@@ -100,7 +100,7 @@ export default function Register() {
   
       catch(err)
       {
-        console.log(err)
+        alert(err);
       }
     }
   }

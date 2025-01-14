@@ -32,7 +32,7 @@ export default function WebNav(){
 
 
     return (
-        <div className="p-5 hidden gap-2 md:flex items-center border-2 ">
+        <div className="p-5 hidden gap-2 md:flex items-center  ">
             <Link className="ms-2 flex items-center gap-2" to="/">
         
             

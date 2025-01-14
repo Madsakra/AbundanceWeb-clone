@@ -1,16 +1,17 @@
 import { useAuth } from '@/contextProvider';
+
 import VerificationAlert from '@/customizedComponents/VerificationAlert';
 import PermissionDenied from '@/PermissionDenied';
 import { ProtectedRouteProps } from '@/vite-env';
 import { sendEmailVerification } from 'firebase/auth';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 
 
 
-const ProtectedRoute = ({allowedRoles}:ProtectedRouteProps) => {
+const ProtectedRoute = ({allowedRoles,children}:ProtectedRouteProps) => {
 
-  const { user, loading, logout,accountDetails} = useAuth(); // Get loading state from context
+  const { user, loading, logout,accountDetails,awaitApproval} = useAuth(); // Get loading state from context
   const mainMessage = "Verification Needed";
   const subMessage = "Please go to your email account and verify your abundance account. Alternatively, you can click on the link below to resend it";
 
@@ -40,30 +41,48 @@ const ProtectedRoute = ({allowedRoles}:ProtectedRouteProps) => {
       return <Navigate to="/login" replace />; 
     }
 
-  else if (!allowedRoles?.includes(accountDetails?.role))
+
+  else if (!user.emailVerified)
   {
-    return <PermissionDenied/>; 
-  }
-  
-  
-  return (
-      <>
-      {!(user.emailVerified) && 
-      
-      (<VerificationAlert
+
+      if (awaitApproval)
+      {
+        return (<VerificationAlert
+          logOut={logout}
+          mainMessage={"Please wait for the verification by our admin"}
+          subMessage={"Our admin will try to get back to you ASAP"}
+          />)
+      }
+
+      else{
+        return (<VerificationAlert
           logOut={logout}
           resendEmail={reSendEmail} 
           mainMessage={mainMessage}
           subMessage={subMessage}
           />)
-        }
-      
-      <Outlet/>
-      
-      
-      </>
 
-    )
+      }
+     
+
+        
+  }
+
+  else if (!allowedRoles?.includes(accountDetails?.role))
+  {
+    return <PermissionDenied/>; 
+  }
+  
+
+  
+  
+  return (
+
+    <>
+    {children}
+    </>
+  
+  )
     
 
     
