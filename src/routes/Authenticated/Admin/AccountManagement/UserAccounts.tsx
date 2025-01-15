@@ -14,12 +14,15 @@ import {
 } from "@/components/ui/table"
 import CustomizedDropdown from "@/customizedComponents/CustomizedDropdown";
 import { httpsCallable } from "firebase/functions";
+import AdminTableHeader from "@/customizedComponents/AdminTableHeader";
+import TableHeaderBar from "@/customizedComponents/TableHeader";
 
 
 
 
 
 
+// DYNAMIC - NEED TO CHANGE
 type ApprovedAccounts = {
   id:string,
   name:string,
@@ -27,6 +30,7 @@ type ApprovedAccounts = {
   email:string,
 };
 
+// DYNAMIC - NEED TO CHANGE
 const headers = [
   "UID","name","email","role"
 
@@ -40,15 +44,14 @@ export default function UserAccounts() {
   const [filteredAccounts, setFilteredAccounts] = useState<ApprovedAccounts[] | null>(null); // Filtered accounts for display
   const [firstVisible, setFirstVisible] = useState<QueryDocumentSnapshot | null>(null);
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot | null>(null);
-  const [checkPassword,setCheckPassword] = useState(false);
-  const [authorized,setAuthorized] = useState(false);
 
-  const pageLimit = 3
+
+  const pageLimit = 5;
 
 
   const fetchAccounts = async (action: "start" | "next" | "prev") => {
+
     setLoading(true);
-  
     try {
 
       let q;
@@ -104,7 +107,16 @@ export default function UserAccounts() {
     setLoading(false);
   };
 
+
+
+
   const resetPassword = async (account:ApprovedAccounts)=>{
+
+    
+    
+
+
+
     sendPasswordResetEmail(auth,account.email)
     .then(() => {
       // Password reset email sent!
@@ -122,26 +134,27 @@ export default function UserAccounts() {
   const deleteAccount = async(account:ApprovedAccounts)=>{
     setLoading(true);
     try{
-      const deleteAccount = httpsCallable(functions,"deleteUser");
+      const deleteAccount = httpsCallable(functions,'addMessage');
       //delete from auth side first
- 
-
-      deleteAccount("Cz2366x9BCQzrvfW2uAplOMjcFt2")
-      .then((result) => {
-          console.log("Result:", result.data); // Access the response 
-      })
-      .catch((error) => {
-          console.error("Error:", error); 
-      });
-      setLoading(false);
+      
+      const data = {
+        uid:account.id
+      }
+      const responseJSON = await deleteAccount(data);
+      const responseProperty = responseJSON.data
+      console.log(responseProperty);
+      await deleteDoc(doc(db, "accounts",account.id));
+      alert("Account Deleted");
+      fetchAccounts("start");
     }
+  
 
     catch(err)
     {
       console.log(err)
       alert(err);
     }
-
+ 
   }
 
 
@@ -157,14 +170,6 @@ export default function UserAccounts() {
     }
 
   ]
-
-
-
-
-
-
-
- 
 
 
 
@@ -201,20 +206,21 @@ export default function UserAccounts() {
       :
 
         <div className="flex flex-col p-10 gap-7">
-         
+     
            {/* Screen Top */}
-         <h1 className=" font-medium text-lg text-[#656363]">Account Management - Accounts (Approved)</h1>
-         
+          <AdminTableHeader
+          header="Approved accounts"
+          />         
           {/*TABLE*/}
           <div className="w-[80vw] h-auto border-2 p-8 rounded-xl">
             
             {/*TABLE HEADER*/}
             <div className="flex flex-row justify-between">
               {/*Header section*/}
-              <div className="flex flex-col gap-1">
-              <h2 className="text-4xl">Accounts</h2>
-              <h3>Manage your user accounts</h3>
-              </div>
+              <TableHeaderBar
+              mainText="Accounts"
+              subText="Manage your approved accounts"
+              />
 
               {/*SEARCH BAR*/}
               <label className="input input-bordered flex items-center gap-2">

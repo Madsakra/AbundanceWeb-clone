@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const { initializeApp } = require('firebase-admin/app')
 
+const {onCall} = require("firebase-functions/v2/https");
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
@@ -17,13 +18,18 @@ exports.viewAccounts = functions.https.onCall(async ()=>{
     return myData;
 })
 
+
+
+
 exports.createAccount = functions.https.onCall(async(data:any,context:any)=>{
 
   try{
    
+        const {email,password} = data;
+
           const user = await users.createUser({
-            email:data.email,
-            password:data.password
+            email:email,
+            password:password
           })
           // Return USER ID
           const userID = user.uid;
@@ -37,16 +43,43 @@ exports.createAccount = functions.https.onCall(async(data:any,context:any)=>{
 })
 
 
-exports.deleteUser = functions.https.onCall(async (data:any, context:any) => {
-  
+exports.deleteUser = functions.https.onCall(async (data:any, context: any) => {
   try {
-    // return the promise from here
-    console.log(data.userID);
-    await users.deleteUser(data.userID);
+    // Access uid directly from the data object
+ 
+    console.log({data});
+    await users.deleteUser(data.uid);
 
-    return {data: "User deleted"}   
+    return { data: "User deleted" };
   } catch (error) {
     console.log("error deleting user", error);
-    return {error}
+    return { error };
   }
 });
+
+
+exports.addMessage = onCall(async (request:any)=>{
+ 
+  try{
+
+    const myId = request.auth.uid;
+
+
+    
+    await users.deleteUser(request.data.uid);
+    return { 
+      data: "User deleted",
+      by:myId,
+    };
+
+  }
+
+  catch(err)
+  {
+    console.log("error")
+    return{err}
+  }
+
+
+
+})
