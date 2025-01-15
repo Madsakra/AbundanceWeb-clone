@@ -1,26 +1,24 @@
 import { auth, db, functions } from "@/firebase-config"
-import { sendPasswordResetEmail, User } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore";
-import { httpsCallable } from "firebase/functions"
+import { sendPasswordResetEmail} from "firebase/auth";
+import { collection, deleteDoc, doc, endBefore, getDocs, limit, query, QueryDocumentSnapshot, startAfter } from "firebase/firestore";
 import { useEffect, useState } from "react"
 
 import {
   Table,
   TableBody,
-
   TableCell,
   TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import CustomizedDropdown from "@/customizedComponents/CustomizedDropdown";
+import { httpsCallable } from "firebase/functions";
 
 
 
 
-type ViewAccountsResponse = {
-  users: User[];
-};
+
 
 type ApprovedAccounts = {
   id:string,
@@ -40,58 +38,138 @@ export default function UserAccounts() {
   const [approvedAccounts,setApprovedAccounts] = useState<ApprovedAccounts []|null>(null);
   const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const [filteredAccounts, setFilteredAccounts] = useState<ApprovedAccounts[] | null>(null); // Filtered accounts for display
+  const [firstVisible, setFirstVisible] = useState<QueryDocumentSnapshot | null>(null);
+  const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot | null>(null);
+  const [checkPassword,setCheckPassword] = useState(false);
+  const [authorized,setAuthorized] = useState(false);
+
+  const pageLimit = 3
 
 
-  const resetPassword = async ()=>{
-    sendPasswordResetEmail(auth, "madflix23@gmail.com")
+  const fetchAccounts = async (action: "start" | "next" | "prev") => {
+    setLoading(true);
+  
+    try {
+
+      let q;
+      const accountsRef = collection(db, "accounts");
+  
+      if (action === "start") {
+        // Initial fetch
+        q = query(accountsRef, limit(pageLimit));
+      } 
+      
+      else if (action === "next" && lastVisible) {
+        // Fetch next page
+        q = query(accountsRef, startAfter(lastVisible), limit(pageLimit));
+      } 
+      
+      else if (action === "prev" && firstVisible) {
+        // Fetch previous page
+        q = query(accountsRef, endBefore(firstVisible), limit(pageLimit));
+      } 
+      
+      else {
+        console.warn("Invalid action or missing cursors.");
+        setLoading(false);
+        return;
+      }
+  
+      const querySnapshot = await getDocs(q);
+      const temp: ApprovedAccounts[] = [];
+  
+      if (!querySnapshot.empty) {
+        // Update first and last document references for pagination
+        setFirstVisible(querySnapshot.docs[0]);
+        setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+  
+        querySnapshot.forEach((doc) => {
+          const data = {
+            id: doc.id,
+            ...doc.data(),
+          } as ApprovedAccounts;
+          temp.push(data);
+        });
+  
+        // Update state with fetched data
+        setApprovedAccounts(temp);
+        setFilteredAccounts(temp);
+      } else {
+        console.warn("No documents found.");
+      }
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+    }
+  
+    setLoading(false);
+  };
+
+  const resetPassword = async (account:ApprovedAccounts)=>{
+    sendPasswordResetEmail(auth,account.email)
     .then(() => {
       // Password reset email sent!
+      alert("Password Reset Email sent")
       // ..
     })
     .catch((error) => {
       const errorMessage = error.message;
-      console.log(errorMessage);
+      alert(errorMessage);
       // ..
     })
   }
 
 
-  const viewApprovedAccounts = async () =>{
-
-    const viewAccounts = httpsCallable<{}, ViewAccountsResponse>(functions, 'viewAccounts');
-    const result = await viewAccounts({});
+  const deleteAccount = async(account:ApprovedAccounts)=>{
+    setLoading(true);
+    try{
+      const deleteAccount = httpsCallable(functions,"deleteUser");
+      //delete from auth side first
  
-    
-        // Fetch all accounts from Firestore
-        const querySnapshot = await getDocs(collection(db, "accounts"));
-       
-        // Assuming `approvedAccounts` is an array of user objects with an `id` field
-        const filteredAccounts = querySnapshot.docs.filter((doc) =>
-          result.data.users.some((user) => user.uid === doc.id)
-        );
 
-          // Map `doc.data()` for each filtered document and set it to state
-          const filteredData = filteredAccounts.map((doc) => {
-            const data = doc.data();
-            return {
-              id: doc.id,
-              name: data.name, // Ensure Firestore has this field
-              role: data.role, // Ensure Firestore has this field
-              email: data.email, // Ensure Firestore has this field
-            } as ApprovedAccounts;
-          });
+      deleteAccount("Cz2366x9BCQzrvfW2uAplOMjcFt2")
+      .then((result) => {
+          console.log("Result:", result.data); // Access the response 
+      })
+      .catch((error) => {
+          console.error("Error:", error); 
+      });
+      setLoading(false);
+    }
 
-          console.log(filteredData);
-
-          setApprovedAccounts(filteredData);
-          setFilteredAccounts(filteredData); // Initially, display all accounts
-          setLoading(false);
+    catch(err)
+    {
+      console.log(err)
+      alert(err);
+    }
 
   }
 
 
+  const dropDowns = [
+
+    { 
+      actionName:"Reset Password",
+      action:resetPassword
+    },
+    {
+      actionName:"Delete Account",
+      action:deleteAccount
+    }
+
+  ]
+
+
+
+
+
+
+
+ 
+
+
+
   useEffect(()=>{
-    viewApprovedAccounts();
+   fetchAccounts("start")
   },[])
 
   
@@ -187,9 +265,10 @@ export default function UserAccounts() {
                     <TableCell>{accounts.role}</TableCell>
                     <TableCell className="flex justify-end">
                       
-                      <button className="bg-[#00ACAC] btn-ghost px-4 py-3 rounded text-white font-bold"
-                      onClick={resetPassword}
-                      >View More</button>
+                      <CustomizedDropdown 
+                      subjectData={accounts}
+                      dropDowns={dropDowns}
+                      />
                       
                       </TableCell>
                   </TableRow>
@@ -201,25 +280,16 @@ export default function UserAccounts() {
                 <TableCell colSpan={headers.length} className="pt-8">Showing 1 - {approvedAccounts?.length} Accounts</TableCell>
                 <TableCell className="text-right pt-8">
                   <div> 
-                    <button className="mx-6">Prev</button>
-                    <button>Next</button>
+                  <button onClick={() => fetchAccounts("prev")} className="mx-6" disabled={!firstVisible}>Prev</button>
+                    <button onClick={()=>fetchAccounts("next")}  disabled={!lastVisible} >Next</button>
                   </div>
                 </TableCell>
               </TableRow>
             </TableFooter>
             </Table>
           </div>
-
-
-
-
-
         </div>
-    
     }
-    
-
-
 
     </>
   )

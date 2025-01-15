@@ -37,17 +37,16 @@ exports.createAccount = functions.https.onCall(async(data:any,context:any)=>{
 })
 
 
-exports.deleteAccount = functions.https.onCall(async(data:any,context:any)=>{
+exports.deleteUser = functions.https.onCall(async (data:any, context:any) => {
+  
+  try {
+    // return the promise from here
+    console.log(data.userID);
+    await users.deleteUser(data.userID);
 
-  try{
-   
-      const result = await users.deleteUser(data.uid);
-      return result;
-
+    return {data: "User deleted"}   
+  } catch (error) {
+    console.log("error deleting user", error);
+    return {error}
   }
-
-  catch(error)
-  {
-    console.log(error);
-  }
-})
+});
