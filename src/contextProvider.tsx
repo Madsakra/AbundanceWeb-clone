@@ -48,20 +48,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               const approvalRef = doc(db, "pending_approval", user.uid);
               const approvalSnap = await getDoc(approvalRef);
 
-            
+
+              const nutriRef = doc(db, "nutritionists", user.uid);
+              const nutriSnap = await getDoc(nutriRef);
+
+              const adminsRef = doc(db, "admins", user.uid);
+              const adminsSnap = await getDoc(adminsRef);
+
+              // check if the user is normal user
               if (docSnap.exists()) {
                 console.log("Document data:", docSnap.data());
                 setAccountDetails(docSnap.data() as AccountDetails);
+            
               } 
-              
-              else {
-                console.log("Account has no role");
-              }
 
+
+              // check if user is nutritionist
+             if (nutriSnap.exists()) {
+                console.log("Document data:", nutriSnap.data());
+                setAccountDetails(nutriSnap.data() as AccountDetails);
+            
+              } 
+
+
+              if (adminsSnap.exists())
+              {
+                console.log("Document data:", adminsSnap.data());
+                setAccountDetails(adminsSnap.data() as AccountDetails);
+              
+              }
+              
+   
+
+
+
+              // check if the user is nutritionist (await approval)
               if (approvalSnap.exists())
               {
                 setAwaitApproval(true);
               }
+
+
+              
+            
               
 
       }

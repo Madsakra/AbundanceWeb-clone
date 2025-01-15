@@ -35,3 +35,19 @@ exports.createAccount = functions.https.onCall(async(data:any,context:any)=>{
     console.log(error);
   }
 })
+
+
+exports.deleteAccount = functions.https.onCall(async(data:any,context:any)=>{
+
+  try{
+   
+      const result = await users.deleteUser(data.uid);
+      return result;
+
+  }
+
+  catch(error)
+  {
+    console.log(error);
+  }
+})
