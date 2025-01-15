@@ -1,13 +1,13 @@
-import { db, functions } from "@/firebase-config"
-import { User } from "firebase/auth";
+import { auth, db, functions } from "@/firebase-config"
+import { sendPasswordResetEmail, User } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions"
 import { useEffect, useState } from "react"
-import { useLocation } from "react-router-dom";
+
 import {
   Table,
   TableBody,
-  TableCaption,
+
   TableCell,
   TableFooter,
   TableHead,
@@ -38,10 +38,22 @@ export default function UserAccounts() {
 
   const [loading,setLoading] = useState(true);
   const [approvedAccounts,setApprovedAccounts] = useState<ApprovedAccounts []|null>(null);
-  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const [filteredAccounts, setFilteredAccounts] = useState<ApprovedAccounts[] | null>(null); // Filtered accounts for display
 
+
+  const resetPassword = async ()=>{
+    sendPasswordResetEmail(auth, "madflix23@gmail.com")
+    .then(() => {
+      // Password reset email sent!
+      // ..
+    })
+    .catch((error) => {
+      const errorMessage = error.message;
+      console.log(errorMessage);
+      // ..
+    })
+  }
 
 
   const viewApprovedAccounts = async () =>{
@@ -75,7 +87,6 @@ export default function UserAccounts() {
           setFilteredAccounts(filteredData); // Initially, display all accounts
           setLoading(false);
 
-          
   }
 
 
@@ -104,7 +115,7 @@ export default function UserAccounts() {
    
 
       {loading? 
-      <div className="className='flex h-screen w-screen justify-center items-center">
+      <div className="flex h-screen w-screen justify-center items-center">
           <span className="loading loading-infinity loading-lg"></span>
       </div>
 
@@ -151,19 +162,19 @@ export default function UserAccounts() {
                   </svg>
                 </button>
               </label>
+
+
+              
             </div>
            
 
 
             {/*ACTUAL TABLE*/}
             <Table className="my-10">
-              
               <TableHeader>
                 <TableRow>
- 
                   {headers.map((head)=>(
                    <TableHead>{head}</TableHead>
-
                   ))}
                 </TableRow>
               </TableHeader>
@@ -176,7 +187,9 @@ export default function UserAccounts() {
                     <TableCell>{accounts.role}</TableCell>
                     <TableCell className="flex justify-end">
                       
-                      <button className="bg-[#00ACAC] btn-ghost px-4 py-3 rounded text-white font-bold ">View More</button>
+                      <button className="bg-[#00ACAC] btn-ghost px-4 py-3 rounded text-white font-bold"
+                      onClick={resetPassword}
+                      >View More</button>
                       
                       </TableCell>
                   </TableRow>
@@ -193,13 +206,8 @@ export default function UserAccounts() {
                   </div>
                 </TableCell>
               </TableRow>
-              
             </TableFooter>
-
-    
             </Table>
-
-
           </div>
 
 

@@ -41,20 +41,20 @@ const ProtectedRoute = ({allowedRoles,children}:ProtectedRouteProps) => {
       return <Navigate to="/login" replace />; 
     }
 
-
-  else if (!user.emailVerified)
-  {
-
-      if (awaitApproval)
+  if (awaitApproval)
       {
         return (<VerificationAlert
           logOut={logout}
           mainMessage={"Please wait for the verification by our admin"}
           subMessage={"Our admin will try to get back to you ASAP"}
           />)
-      }
+  }
+  if (!user.emailVerified && !awaitApproval)
+  {
 
-      else{
+
+
+    
         return (<VerificationAlert
           logOut={logout}
           resendEmail={reSendEmail} 
@@ -62,7 +62,7 @@ const ProtectedRoute = ({allowedRoles,children}:ProtectedRouteProps) => {
           subMessage={subMessage}
           />)
 
-      }
+      
      
 
         

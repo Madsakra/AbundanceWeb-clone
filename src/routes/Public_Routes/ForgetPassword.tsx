@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router";
 import forgetPassSplash from '../../assets/Images/login_splashes/forgetPassword_splash.jpg'
 import { useState } from 'react';
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "@/firebase-config";
 
 
 
@@ -9,13 +11,23 @@ export default function ForgetPassword() {
 
   let navigate = useNavigate();
 
-
-
-  const handleSubmit = ()=>{
-    console.log(email);
-    navigate('/login')
+  const resetPassword = async ()=>{
+    sendPasswordResetEmail(auth, email)
+    .then(() => {
+      // Password reset email sent!
+      // ..
+      alert("Password Reset");
+      navigate('/login')
+    })
+    .catch((error) => {
+      const errorMessage = error.message;
+      console.log(errorMessage);
+      // ..
+    })
   }
 
+
+  
 
 
   return (
@@ -50,7 +62,7 @@ export default function ForgetPassword() {
 
               {/*Reset BUTTON*/}
               <button className='w-full p-4 bg-[#009797] mt-6 text-white text-lg font-semibold rounded-full'
-              onClick={handleSubmit}
+              onClick={resetPassword}
               >
                 Reset Password
               </button>
