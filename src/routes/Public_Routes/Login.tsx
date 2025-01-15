@@ -43,32 +43,53 @@ export default function Login() {
        const loginResult:UserCredential = await login(email,password);
        if (loginResult)
        {
-        const docRef = doc(db, "accounts", loginResult.user.uid);
-        const docSnap = await getDoc(docRef);
+  
         
-        if (docSnap.exists()) {
-          console.log("Document data:", docSnap.data());
-          const role = docSnap.data().role
-          if (role === "admin")
-          {
-            navigate('/admin/');
-          }
+              const docRef = doc(db, "accounts", loginResult.user.uid);
+              const docSnap = await getDoc(docRef);
 
-          else if (role==="nutritionist")
-          {
-            navigate("/nutri/");
-          }
+              const approvalRef = doc(db, "pending_approval", loginResult.user.uid);
+              const approvalSnap = await getDoc(approvalRef);
 
-          else{
-            navigate("/general/");
-          }
 
-        } 
-        
-        else {
-          console.log("Account has no role");
-          navigate("/general/");
-      }
+              const nutriRef = doc(db, "nutritionists", loginResult.user.uid);
+              const nutriSnap = await getDoc(nutriRef);
+
+              const adminsRef = doc(db, "admins", loginResult.user.uid);
+              const adminsSnap = await getDoc(adminsRef);
+
+              // check if the user is normal user
+              if (docSnap.exists()) {
+                console.log("Document data:", docSnap.data());
+                navigate("/general/")
+            
+              } 
+
+
+              // check if user is nutritionist
+             if (nutriSnap.exists()) {
+                console.log("Document data:", nutriSnap.data());
+                navigate('/nutri/')
+            
+              } 
+
+
+              if (adminsSnap.exists())
+              {
+                console.log("Document data:", adminsSnap.data());
+                navigate('/admin/')
+              
+              }
+              
+
+              // check if the user is nutritionist (await approval)
+              if (approvalSnap.exists())
+              {
+                navigate('/general/')
+              }
+
+
+
 
        }
 
