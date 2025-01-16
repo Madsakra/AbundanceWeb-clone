@@ -32,8 +32,11 @@ const ProtectedRoute = ({allowedRoles,children}:ProtectedRouteProps) => {
 
  
   if (loading) {
-    // Optionally, show a loading spinner or placeholder while waiting
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-screen w-screen justify-center items-center">
+      <span className="loading loading-infinity loading-lg"></span>
+      </div>
+    )
   }
 
 

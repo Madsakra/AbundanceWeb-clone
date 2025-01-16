@@ -18,7 +18,7 @@ import AdminTableHeader from "@/customizedComponents/AdminTableHeader";
 import TableHeaderBar from "@/customizedComponents/TableHeader";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import MembershipForm from "@/adminComponents/MembershipForm";
-import RemoveMembershipTier from "@/adminComponents/RemoveMembershipTier";
+import RemoveItem from "@/adminComponents/RemoveMembershipTier";
 
 
 
@@ -149,7 +149,7 @@ return (
 
           {
             (removeTierPopup && selectedTier) && 
-            <RemoveMembershipTier
+            <RemoveItem
             removeTierPopup={removeTierPopup}
             setRemoveTierPopup={setRemoveTierPopup}
             selectedTier={selectedTier}

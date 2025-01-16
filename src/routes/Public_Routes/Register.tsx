@@ -105,6 +105,7 @@ export default function Register() {
       return (
         <div className="flex h-screen w-screen justify-center items-center">
         <span className="loading loading-infinity loading-lg"></span>
+        <h1>Loading...Please Hang on</h1>
         </div>
       )
     }

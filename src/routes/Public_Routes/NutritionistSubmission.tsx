@@ -29,6 +29,10 @@ export default function NutritionistSubmission() {
 
       else{
       setLoading(true);
+
+
+      try{
+
       // register the nutritionist
       const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
       const uid = userCredentials.user.uid;
@@ -68,6 +72,14 @@ export default function NutritionistSubmission() {
       auth.signOut();
       navigate("/"); // Redirect to home or login page
       alert("Please give our admins some time to verify your particulars.")
+      }
+
+      catch(err)
+      {
+        alert(err)
+        setLoading(false);
+        navigate("/")
+      }
       
       }
     }
