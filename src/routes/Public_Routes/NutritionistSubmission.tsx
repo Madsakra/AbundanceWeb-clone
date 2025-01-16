@@ -62,14 +62,12 @@ export default function NutritionistSubmission() {
         submittedAt: new Date().toISOString(),
       });
 
-      // Inform the user
-      alert(
-        "Your account will be verified by our admin ASAP. Once verified, a confirmation email will be sent!"
-      );
+      navigate("/"); // Redirect to home or login page
       setLoading(false);
       // Sign out the user
       auth.signOut();
-      navigate("/"); // Redirect to home or login page
+      alert("Please give our admins some time to verify your particulars.")
+      
       }
     }
   
