@@ -60,7 +60,7 @@ export default function Register() {
     if (role === "nutritionist") 
       // SAVE THE DATA IN LOCAL HOST FIRST, GO TO THE NUTRI PAGE, COMPILE EVERYTHING AND SEND TO SERVER.
     {
-      navigate('/nutritionist-submission', { state: { email:email, password:password }})
+      navigate('/nutritionist-submission', { state: { name:userName ,email:email, password:password }})
     }
 
     else{

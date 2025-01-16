@@ -11,7 +11,7 @@ export default function NutritionistSubmission() {
     const [selectedCert, setSelectedCert] = useState<File | null>(null);
     const [selectedResume,setSelectedResume] = useState<File | null>(null);
     const location = useLocation();
-    const { email,password } = location.state as { email: string; password: string };
+    const { email,password,name } = location.state as { email: string; password: string;name:string };
     const [loading,setLoading] = useState(false)
 
 
@@ -54,6 +54,7 @@ export default function NutritionistSubmission() {
       const pendingApprovalRef = doc(collection(db, "pending_approval"), uid);
 
       await setDoc(pendingApprovalRef, {
+        name,
         email,
         certificationURL: certURL,
         resumeURL: resumeURL,
@@ -62,10 +63,10 @@ export default function NutritionistSubmission() {
         submittedAt: new Date().toISOString(),
       });
 
-      navigate("/"); // Redirect to home or login page
       setLoading(false);
       // Sign out the user
       auth.signOut();
+      navigate("/"); // Redirect to home or login page
       alert("Please give our admins some time to verify your particulars.")
       
       }
