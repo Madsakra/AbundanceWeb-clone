@@ -1,8 +1,6 @@
-import { auth, db, functions } from "@/firebase-config"
-import { sendPasswordResetEmail} from "firebase/auth";
-import { collection, deleteDoc, doc, endBefore, getDocs, limit, query, QueryDocumentSnapshot, startAfter } from "firebase/firestore";
+import { db } from "@/firebase-config"
+import { collection, endBefore, getDocs, limit, query, QueryDocumentSnapshot, startAfter } from "firebase/firestore";
 import { useEffect, useState } from "react"
-
 import {
   Table,
   TableBody,
@@ -12,23 +10,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+
 import CustomizedDropdown from "@/customizedComponents/CustomizedDropdown";
-import { httpsCallable } from "firebase/functions";
 import AdminTableHeader from "@/customizedComponents/AdminTableHeader";
 import TableHeaderBar from "@/customizedComponents/TableHeader";
+import { ApprovedAccounts } from "@/vite-env";
+import { deleteAccountAuth, resetPassword } from "@/utils";
 
 
 
 
 
 
-// DYNAMIC - NEED TO CHANGE
-type ApprovedAccounts = {
-  id:string,
-  name:string,
-  role:string,
-  email:string,
-};
+
 
 // DYNAMIC - NEED TO CHANGE
 const headers = [
@@ -110,52 +104,19 @@ export default function UserAccounts() {
 
 
 
-  const resetPassword = async (account:ApprovedAccounts)=>{
-
-    
-    
-
-
-
-    sendPasswordResetEmail(auth,account.email)
-    .then(() => {
-      // Password reset email sent!
-      alert("Password Reset Email sent")
-      // ..
-    })
-    .catch((error) => {
-      const errorMessage = error.message;
-      alert(errorMessage);
-      // ..
-    })
+  const deleteAccount = async (approvedAccount:ApprovedAccounts)=>{
+    setLoading(true);
+    const deleted = await deleteAccountAuth(approvedAccount,"accounts");
+    if (deleted)
+    {
+      fetchAccounts("start");
+    };
+   
   }
 
 
-  const deleteAccount = async(account:ApprovedAccounts)=>{
-    setLoading(true);
-    try{
-      const deleteAccount = httpsCallable(functions,'addMessage');
-      //delete from auth side first
-      
-      const data = {
-        uid:account.id
-      }
-      const responseJSON = await deleteAccount(data);
-      const responseProperty = responseJSON.data
-      console.log(responseProperty);
-      await deleteDoc(doc(db, "accounts",account.id));
-      alert("Account Deleted");
-      fetchAccounts("start");
-    }
   
 
-    catch(err)
-    {
-      console.log(err)
-      alert(err);
-    }
- 
-  }
 
 
   const dropDowns = [
@@ -208,9 +169,17 @@ export default function UserAccounts() {
         <div className="flex flex-col p-10 gap-7">
      
            {/* Screen Top */}
+        
           <AdminTableHeader
           header="Approved accounts"
-          />         
+          />
+
+
+ 
+
+
+
+
           {/*TABLE*/}
           <div className="w-[80vw] h-auto border-2 p-8 rounded-xl">
             

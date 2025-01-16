@@ -10,6 +10,8 @@ type AccountDetails = {
   email:string,
   role:string,
   image?:string,
+  certificationURL?:string,
+  resumeURL?:string,
 
 }
 

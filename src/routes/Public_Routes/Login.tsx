@@ -23,7 +23,7 @@ export default function Login() {
 
   
   let navigate = useNavigate();
-  const {login} = useAuth();
+  const {login,setLoading,loading} = useAuth();
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -40,6 +40,7 @@ export default function Login() {
     }
 
     else{
+      setLoading(true);
        const loginResult:UserCredential = await login(email,password);
        if (loginResult)
        {
@@ -57,9 +58,10 @@ export default function Login() {
 
               const adminsRef = doc(db, "admins", loginResult.user.uid);
               const adminsSnap = await getDoc(adminsRef);
-
+              setLoading(false);
               // check if the user is normal user
               if (docSnap.exists()) {
+
                 console.log("Document data:", docSnap.data());
                 navigate("/general/")
             
@@ -98,8 +100,14 @@ export default function Login() {
     }
   }
 
-
-
+  if (loading)
+  {
+    return (
+      <div className="flex h-screen w-screen justify-center items-center">
+      <span className="loading loading-infinity loading-lg"></span>
+      </div>
+    )
+  }
 
 
 
@@ -107,6 +115,8 @@ export default function Login() {
     <div className='w-full h-full xl:h-[80vh] 
      flex flex-col lg:flex-row mt-14 
      items-center justify-evenly my-10'>
+
+    
 
       <img src={loginSplash} className='w-96 h-96 '></img>
 

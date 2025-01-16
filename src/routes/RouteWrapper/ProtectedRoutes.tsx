@@ -49,18 +49,20 @@ const ProtectedRoute = ({allowedRoles,children}:ProtectedRouteProps) => {
           subMessage={"Our admin will try to get back to you ASAP"}
           />)
   }
-  if (!user.emailVerified && !awaitApproval)
+  if (!user.emailVerified && !awaitApproval )
   {
 
-
-
-    
+      if ((accountDetails?.role === "free_user" || accountDetails?.role === "premium_user"))
+      {
         return (<VerificationAlert
           logOut={logout}
           resendEmail={reSendEmail} 
           mainMessage={mainMessage}
           subMessage={subMessage}
           />)
+      }
+    
+
 
       
      

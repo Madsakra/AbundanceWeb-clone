@@ -13,3 +13,12 @@ export interface UserType {
     email: string;
     authToken?: string;
   }
+
+
+
+export type ApprovedAccounts = {
+    id:string,
+    name:string,
+    role:string,
+    email:string,
+}

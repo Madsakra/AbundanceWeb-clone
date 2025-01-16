@@ -16,6 +16,7 @@ import {
 import { createUserWithEmailAndPassword,sendEmailVerification } from 'firebase/auth';
 import { auth, db } from '@/firebase-config';
 import { doc, setDoc } from 'firebase/firestore';
+import { useAuth } from '@/contextProvider';
 
 
 export default function Register() {
@@ -29,6 +30,7 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   let navigate = useNavigate();
 
+  const {setLoading,loading} = useAuth();
 
 
   const togglePasswordVisibility = () => {
@@ -65,7 +67,7 @@ export default function Register() {
 
 
       try{
-
+        setLoading(true);
         // create user with email & with password
         // auto log him in as non verified
         const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
@@ -83,7 +85,8 @@ export default function Register() {
           role: role,
         });
         
-        
+        alert("Account created")
+        setLoading(false);
         navigate('/general/')
         
 
@@ -97,7 +100,15 @@ export default function Register() {
     }
   }
 
-
+  if (loading)
+    {
+      return (
+        <div className="flex h-screen w-screen justify-center items-center">
+        <span className="loading loading-infinity loading-lg"></span>
+        </div>
+      )
+    }
+  
 
  
 

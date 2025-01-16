@@ -20,52 +20,44 @@ exports.viewAccounts = functions.https.onCall(async ()=>{
 
 
 
-
-exports.createAccount = functions.https.onCall(async(data:any,context:any)=>{
+exports.addAccount = onCall(async (request:any)=>{
 
   try{
-   
-        const {email,password} = data;
 
-          const user = await users.createUser({
-            email:email,
-            password:password
-          })
-          // Return USER ID
-          const userID = user.uid;
-          return userID;
+    const email = request.data.email;
+    const password = request.data.password;
+
+    const user = await users.createUser({
+      email:email,
+      password:password
+    })
+
+    const userID = user.uid;
+    if(userID)
+    {
+      return{ id:userID }
+    }
+    else{
+      return null;
+    }
+
   }
 
-  catch(error)
+  catch(err)
   {
-    console.log(error);
+    console.log(err);
+    return{err}
   }
+
+
 })
 
 
-exports.deleteUser = functions.https.onCall(async (data:any, context: any) => {
-  try {
-    // Access uid directly from the data object
- 
-    console.log({data});
-    await users.deleteUser(data.uid);
-
-    return { data: "User deleted" };
-  } catch (error) {
-    console.log("error deleting user", error);
-    return { error };
-  }
-});
-
-
-exports.addMessage = onCall(async (request:any)=>{
+exports.deleteAccount = onCall(async (request:any)=>{
  
   try{
 
     const myId = request.auth.uid;
-
-
-    
     await users.deleteUser(request.data.uid);
     return { 
       data: "User deleted",
