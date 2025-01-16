@@ -17,12 +17,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
 
 
 type CustomizedDropdownProps = {
     // pass in any subject data
     subjectData:any,
+    disableDropdown?:boolean,
     dropDowns:{
         actionName:string,
         action:(params:any)=>any
@@ -36,7 +37,7 @@ type CustomizedDropdownProps = {
 
 
 
-export default function CustomizedDropdown({subjectData,dropDowns}:CustomizedDropdownProps) {
+export default function CustomizedDropdown({subjectData,dropDowns,disableDropdown}:CustomizedDropdownProps) {
   
   
   const [popUp,setPopup] = useState(false);
@@ -45,12 +46,15 @@ export default function CustomizedDropdown({subjectData,dropDowns}:CustomizedDro
   return (
     <>
     <DropdownMenu>
-    <DropdownMenuTrigger className="border-2 btn btn-ghost px-6 py-1 bg-[#00ACAC] text-white">Open</DropdownMenuTrigger>
+    <DropdownMenuTrigger className="border-2 btn btn-ghost px-6 py-1">
+    <HiOutlineDotsHorizontal size={28}/>
+
+    </DropdownMenuTrigger>
     <DropdownMenuContent>
       <DropdownMenuLabel>Actions</DropdownMenuLabel>
       <DropdownMenuSeparator />
    
-        {dropDowns.map((drop)=>
+        {! disableDropdown && dropDowns.map((drop)=>
               <DropdownMenuItem
               onClick={()=>{
                 setFocusedAction(drop);
@@ -59,24 +63,42 @@ export default function CustomizedDropdown({subjectData,dropDowns}:CustomizedDro
                 {drop.actionName}
                 </DropdownMenuItem>
         )}
+
+        {
+          disableDropdown && dropDowns.map((drop)=>
+            <DropdownMenuItem
+          onClick={()=>{
+            drop.action(subjectData);
+            
+          }}>
+            {drop.actionName}
+            </DropdownMenuItem>
+          )
+        }
       
     </DropdownMenuContent>
   </DropdownMenu>    
-    
-        <AlertDialog open={popUp} onOpenChange={setPopup}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-destructive">{focusedAction?.actionName}</AlertDialogTitle>
-            <AlertDialogDescription className="">
-              Note that this action is not irreversible!
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={()=>focusedAction?.action(subjectData)}>Continue</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        {
+          !disableDropdown &&
+
+          <AlertDialog open={popUp} onOpenChange={setPopup}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-destructive">{focusedAction?.actionName}</AlertDialogTitle>
+              <AlertDialogDescription className="">
+                Note that this action is not irreversible!
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={()=>focusedAction?.action(subjectData)}>Continue</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+
+        }
+
 
 
 

@@ -68,3 +68,5 @@ export const deleteAccountAuth = async(account:ApprovedAccounts,collectionName:s
     return true;
     
   }
+
+  
