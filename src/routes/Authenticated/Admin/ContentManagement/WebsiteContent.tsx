@@ -17,11 +17,17 @@ import CustomizedDropdown from "@/customizedComponents/CustomizedDropdown";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import WebsiteContentForm from "@/adminComponents/WebsiteContentForm";
 import RemoveWebsiteLink from "@/adminComponents/RemoveWebsiteLink";
-
+import { FaRegPenToSquare } from "react-icons/fa6";
+import EditAddress from "@/adminComponents/EditAddress";
+import EditWebsiteVideo from "@/adminComponents/EditWebsiteVideo";
 
 export type CompanyContactDetails = {
   address:string,
-  opening_hours:string, 
+  openingTime:string,
+  closingTime:string,
+  embeddedLink:string,
+  phone:string, 
+
 };
 
 export type WebsiteLinks = { 
@@ -30,10 +36,7 @@ export type WebsiteLinks = {
   link:string;
 }; 
 
-export type VideoLinks = {
-  name:string,
-  url:string
-}
+
 
 
 const headers = [
@@ -52,11 +55,15 @@ export default function WebsiteContent() {
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot | null>(null);
   
   const [companyAddress,setCompanyAddress] = useState<CompanyContactDetails | null>(null);
-  const [appVideoLinks,setAppVideoLinks] = useState<VideoLinks[] | null>(null);
+  const [appVideoLinks,setAppVideoLinks] = useState<WebsiteLinks[] | null>(null);
 
   const [openForm,setOpenForm] = useState(false);
   const [selectedLink,setSelectedLink] = useState<WebsiteLinks | undefined>(undefined)
   const [removalPopup,setRemovalPopup] = useState<boolean>();
+  const [editAddress,setEditAddress] = useState(false);
+
+  const [selectedVid,setSelectedVid] = useState<WebsiteLinks|null>(null);
+  const [editVidLink,setEditVidLink] = useState(false);
 
   const pageLimit = 5;
   
@@ -121,8 +128,9 @@ export default function WebsiteContent() {
     const companyAdRef= doc(db, "company_info", "contact_details");
     const docSnap = await getDoc(companyAdRef);
 
-    const videoRef= doc(db, "company_info", "app_video");
-    const vidSnap = await getDoc(videoRef);
+ 
+    const vidSnap = await getDocs(collection(db, "video_links"));
+    
 
     if (docSnap.exists()) {
       setCompanyAddress(docSnap.data() as CompanyContactDetails)
@@ -130,9 +138,18 @@ export default function WebsiteContent() {
       console.log("No such document!");
     }
 
-    if (vidSnap.exists())
+    if (vidSnap)
     {
-      setAppVideoLinks(vidSnap.data().videos as VideoLinks[])
+      let temp:WebsiteLinks[] = [];
+      vidSnap.forEach((doc) => {
+        const data = {
+          id: doc.id,
+          ...doc.data(),
+        } as WebsiteLinks;
+        temp.push(data);
+      });
+
+      setAppVideoLinks(temp);
     }
 
     else{
@@ -160,7 +177,10 @@ export default function WebsiteContent() {
     setOpenForm(true); 
   }
 
-
+  const handleVideoLink = async (selectedVid:WebsiteLinks)=>{
+    setSelectedVid(selectedVid);
+    setEditVidLink(true);
+  }
 
 
   const dropDowns = [
@@ -177,6 +197,12 @@ export default function WebsiteContent() {
   ]
 
 
+  const videoLinksDropdown = [
+    {
+      actionName:"Edit Video Link",
+      action:handleVideoLink
+    }
+  ]
 
   useEffect(()=>{
     fetchData("start")
@@ -223,55 +249,131 @@ export default function WebsiteContent() {
             />
           }
 
+          {
+            editAddress &&
+            <EditAddress
+            companyAddress={companyAddress}
+            fetchData={fetchData}
+            editAddress={editAddress}
+            setEditAddress={setEditAddress}
+            />
+
+          }
+
+          {
+            editVidLink &&
+            <EditWebsiteVideo
+            editVidLink={editVidLink}
+            setEditVidLink={setEditVidLink}
+            fetchData={fetchData}
+            video={selectedVid}
+            />
+          }
+
         <div className="flex flex-col h-full w-full">
           <AdminTableHeader
                   header="Content Management > Website Content"
                   />  
           {/*ADDRESS BOX*/}  
           <div className="border-2 p-10 my-4 rounded-2xl">
+            <div className="flex flex-row justify-between">
             <h1 className="underline">Company's Contact Details</h1>
+            <button onClick={()=>setEditAddress(true)}>
+              <FaRegPenToSquare size={25}/>
+            </button>
+
+            </div>
             {/*Location*/}
-            <div className="flex gap-5 items-center my-5">
-            <CiLocationOn size={30}/>
-            <h2>{companyAddress?.address}</h2>
+            <div className="flex-col gap-5 my-5">
+              <div className="flex gap-5 items-center">
+              <CiLocationOn size={30}/>
+              <h2>{companyAddress?.address}</h2>
+              </div>
+
+            <div className="flex flex-col my-8">
+            <h1>Embedded Address:</h1>
+            <h3>{companyAddress?.embeddedLink}</h3>
+
+            </div>
             </div>
             
             {/*Opening Hours*/}
             <div className="flex gap-5 items-center my-5">
             <CiClock2 size={30} />
-            <h2>{companyAddress?.opening_hours}</h2>
+            <h2>{companyAddress?.openingTime} - {companyAddress?.closingTime}</h2>
             </div>
+
+            <div>
+              <h3>Phone Number:  {companyAddress?.phone}</h3>
+            </div>
+
           </div>
 
 
-          {/*Video Link*/}  
+          {/* EDIT Video Link*/}  
           <div className="border-2 p-10 my-4 rounded-2xl">
-            <h1 className="underline mb-4">App Video Link</h1>
-            
-            {appVideoLinks?.map((appVid,index)=>(
-            <div className="grid grid-cols-1 md:grid-cols-2 my-6" key={index}>
-            <h1 className="font-bold">{appVid.name}</h1>
-            <a className="text-sm max-w-5" 
-            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley">
-            {appVid.url}
-            </a>
-            </div>
-            ))}
 
 
+          <div className="flex flex-row justify-between">
+            <TableHeaderBar
+            mainText="Website Video Links"
+              subText="Manage your video (links) to display them on the home page"
+              />
+              {/* <button
+              onClick={addLink} 
+              className="btn btn-ghost px-7 bg-[#00ACAC] text-white">
+              <IoIosAddCircleOutline size={25} />
+                Add Link
+                </button> */}
+             </div>
+        
+             <Table className="my-10">
+               <TableHeader>
+                 <TableRow>    
+                    <TableHead>Video Name</TableHead>
+                    <TableHead>Video Link</TableHead>
+                 </TableRow>
+               </TableHeader>
+               <TableBody>
+                 {appVideoLinks?.map((data,index) => (
+                   <TableRow key={index}>
+                     <TableCell className="w-40">{data.name}</TableCell>
+                     <TableCell className="w-40">
+                      <a href={data.link}>
+                      {data.link}
+                      </a>
+                    
+                      </TableCell>
+ 
+                     <TableCell className="flex justify-end mx-4">
+                  
+                       <CustomizedDropdown 
+                       subjectData={data}
+                       dropDowns={videoLinksDropdown}
+                       disableDropdown={true}
+                       />
+                       
+                       </TableCell>
+                   </TableRow>
+                 ))}
+               </TableBody>
+ 
+               <TableFooter className="bg-white">
+             </TableFooter>
+             </Table>
           </div>
         </div>
-
+        {/* END OF EDIT Video Link*/}  
 
 
         {/*END OF LEFT SIDE*/}  
      
-      {/*Actual Table*/}
+      {/*RIGHT SIDE */}
       <div className="flex border-2 p-8 flex-col rounded-xl w-auto h-auto">
         <div className="flex flex-row justify-between">
             <TableHeaderBar
-            mainText="Membership Tier"
-              subText="Manage your membership tiers"
+            mainText="Social Media Links"
+              subText="Manage your socail media links to reach more audience"
               />
               <button
               onClick={addLink} 
@@ -283,8 +385,7 @@ export default function WebsiteContent() {
 
 
 
-            {/*ACTUAL TABLE*/}
-             {/*ACTUAL TABLE*/}
+         
              <Table className="my-10">
                <TableHeader>
                  <TableRow>
@@ -305,7 +406,7 @@ export default function WebsiteContent() {
                     
                       </TableCell>
  
-                     <TableCell className="flex justify-end">
+                     <TableCell className="flex justify-end mx-4">
                   
                        <CustomizedDropdown 
                        subjectData={data}
@@ -320,10 +421,10 @@ export default function WebsiteContent() {
  
                <TableFooter className="bg-white">
                <TableRow>
-                 <TableCell colSpan={headers.length+1} className="pt-8">Showing 1 - {baseData?.length}  Links</TableCell>
+                 <TableCell colSpan={headers.length} className="pt-8">Showing 1 - {baseData?.length}  Links</TableCell>
                  <TableCell className="text-right pt-8">
                    <div> 
-                   <button onClick={() => fetchData("prev")} className="mx-6" disabled={!firstVisible}>Prev</button>
+                   <button onClick={() => fetchData("prev")} className="mx-3" disabled={!firstVisible}>Prev</button>
                      <button onClick={()=>fetchData("next")}  disabled={!lastVisible} >Next</button>
                    </div>
                  </TableCell>
