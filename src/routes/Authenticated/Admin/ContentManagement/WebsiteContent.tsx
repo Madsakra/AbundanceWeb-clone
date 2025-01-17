@@ -20,6 +20,7 @@ import RemoveWebsiteLink from "@/adminComponents/RemoveWebsiteLink";
 import { FaRegPenToSquare } from "react-icons/fa6";
 import EditAddress from "@/adminComponents/EditAddress";
 import EditWebsiteVideo from "@/adminComponents/EditWebsiteVideo";
+import { Link } from "react-router-dom";
 
 export type CompanyContactDetails = {
   address:string,
@@ -431,13 +432,18 @@ export default function WebsiteContent() {
                </TableRow>
              </TableFooter>
              </Table>
- 
-
-
-
       </div> 
+      <div className=" w-full md:col-span-2 flex justify-end">
+                 <Link  to='/admin/app-features' className="btn btn-ghost">
+                 <h1 className="text-2xl">Next Page </h1> 
+                 </Link>
+              
+        </div>
+
       </div>
-  }
+
+}
+
 
   </>
   )

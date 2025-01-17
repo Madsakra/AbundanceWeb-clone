@@ -32,6 +32,7 @@ import MembershipPrice from './routes/Authenticated/Admin/ContentManagement/Memb
 import WebsiteContent from './routes/Authenticated/Admin/ContentManagement/WebsiteContent';
 import AppReviews from './routes/Authenticated/Admin/ReviewsManagement/AppReviews';
 import NutriReviews from './routes/Authenticated/Admin/ReviewsManagement/NutriReviews';
+import Appfeatures from './routes/Authenticated/Admin/ContentManagement/Appfeatures';
 
 
 
@@ -128,6 +129,11 @@ const router = createBrowserRouter([
           {
             path:'website-content',
             element:<WebsiteContent/>
+          },
+
+          {
+            path:'app-features',
+            element:<Appfeatures/>
           },
 
           {

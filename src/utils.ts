@@ -69,4 +69,4 @@ export const deleteAccountAuth = async(account:ApprovedAccounts,collectionName:s
     
   }
 
-  
+  export const pageLimit = 6;
