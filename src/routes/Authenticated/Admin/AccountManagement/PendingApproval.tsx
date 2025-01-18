@@ -25,7 +25,6 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar as ShadcnCalendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 
 type PendingAccounts = {
@@ -51,6 +50,8 @@ export default function PendingUserAccounts() {
   const pageLimit = 3;
 
   const fetchAccounts = async (action: "start" | "next" | "prev") => {
+    // to be used later
+    setAccountDueDate(null);
     setLoading(true);
 
     try {
@@ -285,12 +286,16 @@ export default function PendingUserAccounts() {
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <ShadcnCalendar
+
+               {/*show date selector*/}
+               {/* <ShadcnCalendar
                   mode="single"
                   selected={accountDueDate}
                   onSelect={setAccountDueDate}
                   initialFocus
-                />
+                /> */}
+
+
               </PopoverContent>
             </Popover>
           </div>

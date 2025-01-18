@@ -1,7 +1,6 @@
 import AdminTableHeader from "@/customizedComponents/AdminTableHeader";
 import TableHeaderBar from "@/customizedComponents/TableHeader";
 import { useEffect, useState } from "react"
-import { CiClock2, CiLocationOn } from "react-icons/ci";
 import {
   Table,
   TableBody,
@@ -11,15 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { collection, doc, endBefore, getDoc, getDocs, limit, query, QueryDocumentSnapshot, startAfter } from "firebase/firestore";
+import { collection, endBefore,  getDocs, limit, query, QueryDocumentSnapshot, startAfter } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import CustomizedDropdown from "@/customizedComponents/CustomizedDropdown";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import WebsiteContentForm from "@/adminComponents/WebsiteContentForm";
-import RemoveWebsiteLink from "@/adminComponents/RemoveWebsiteLink";
-import { FaRegPenToSquare } from "react-icons/fa6";
-import EditAddress from "@/adminComponents/EditAddress";
-import EditWebsiteVideo from "@/adminComponents/EditWebsiteVideo";
+
 import { Link } from "react-router-dom";
 
 import { pageLimit } from "@/utils";

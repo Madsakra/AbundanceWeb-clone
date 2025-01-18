@@ -15,7 +15,7 @@ import CustomizedDropdown from "@/customizedComponents/CustomizedDropdown";
 import AdminTableHeader from "@/customizedComponents/AdminTableHeader";
 import TableHeaderBar from "@/customizedComponents/TableHeader";
 import { ApprovedAccounts } from "@/vite-env";
-import { deleteAccountAuth, resetPassword } from "@/utils";
+import { deleteAccountAuth, pageLimit, resetPassword } from "@/utils";
 
 
 
@@ -40,7 +40,7 @@ export default function UserAccounts() {
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot | null>(null);
 
 
-  const pageLimit = 5;
+
 
 
   const fetchAccounts = async (action: "start" | "next" | "prev") => {
