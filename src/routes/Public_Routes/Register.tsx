@@ -26,7 +26,7 @@ export default function Register() {
   const [password,setPassword] = useState("");
   const [confirmedPassword,setConfirmedPassword] = useState("");
   const [role,setRole] = useState("");
-
+  const [error,setError]= useState(false);
   const [showPassword, setShowPassword] = useState(false);
   let navigate = useNavigate();
 
@@ -45,25 +45,29 @@ export default function Register() {
 
     if (email.trim() === "" || password.trim() === "" || userName.trim() === "" || role === "") {
       alert("You have missed out some fields, please check again");
+      setError(true);
     }
     
-    else if (!emailRegex.test(email.trim())) {
+    if (!emailRegex.test(email.trim())) {
       alert("Please enter a valid email address!");
+      setError(true);
     }
 
 
     if (password !== confirmedPassword)
     {
-      alert("Your password does not match with the confirmation. Please try again")
+      alert("Your password does not match with the confirmation. Please try again");
+      setError(true);
     }
 
     if (role === "nutritionist") 
       // SAVE THE DATA IN LOCAL HOST FIRST, GO TO THE NUTRI PAGE, COMPILE EVERYTHING AND SEND TO SERVER.
     {
       navigate('/nutritionist-submission', { state: { name:userName ,email:email, password:password }})
+      
     }
 
-    else{
+    if (!error){
 
 
       try{

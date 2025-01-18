@@ -27,12 +27,13 @@ import UserAccounts from './routes/Authenticated/Admin/AccountManagement/UserAcc
 import AdminLayout from './routes/Authenticated/Admin/AdminLayout';
 import PendingApproval from './routes/Authenticated/Admin/AccountManagement/PendingApproval';
 import AdminAccounts from './routes/Authenticated/Admin/AccountManagement/AdminAccounts';
-import PredefinedGoals from './routes/Authenticated/Admin/ContentManagement/PredefinedGoals';
+import PredefinedGoalsCategories from './routes/Authenticated/Admin/ContentManagement/PredefinedGoalsCat';
 import MembershipPrice from './routes/Authenticated/Admin/ContentManagement/MembershipPrice';
 import WebsiteContent from './routes/Authenticated/Admin/ContentManagement/WebsiteContent';
 import AppReviews from './routes/Authenticated/Admin/ReviewsManagement/AppReviews';
 import NutriReviews from './routes/Authenticated/Admin/ReviewsManagement/NutriReviews';
 import Appfeatures from './routes/Authenticated/Admin/ContentManagement/Appfeatures';
+import PredefinedGoals from './routes/Authenticated/Admin/ContentManagement/PredefinedGoals';
 
 
 
@@ -114,6 +115,11 @@ const router = createBrowserRouter([
           {
             path:'admin-acc',
             element:<AdminAccounts/>
+          },
+
+          {
+            path:'predefined-goals-category',
+            element:<PredefinedGoalsCategories/>
           },
 
           {

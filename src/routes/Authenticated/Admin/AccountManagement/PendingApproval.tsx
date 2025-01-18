@@ -28,6 +28,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format } from "date-fns";
 import {CalendarDate, parseDate} from "@internationalized/date";
 import {Calendar} from "@heroui/calendar";
+import { pageLimit } from "@/utils";
 
 type PendingAccounts = {
   id: string;
@@ -50,7 +51,7 @@ export default function PendingUserAccounts() {
 
   const [selectedAccount, setSelectedAccount] = useState<PendingAccounts | null>(null);
 
-  const pageLimit = 3;
+
 
   const fetchAccounts = async (action: "start" | "next" | "prev") => {
     // to be used later

@@ -1,106 +1,99 @@
 
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
-  import { collection, endBefore,   getDocs,  limit, query, QueryDocumentSnapshot, startAfter } from "firebase/firestore";
-  import { db } from "@/firebase-config";
-  import CustomizedDropdown from "@/customizedComponents/CustomizedDropdown";
-  import { IoIosAddCircleOutline } from "react-icons/io";
-  
-  import { Link } from "react-router-dom";
-  import { useEffect, useState } from "react";
-  import AdminTableHeader from "@/customizedComponents/AdminTableHeader";
-  import TableHeaderBar from "@/customizedComponents/TableHeader";
-  import { pageLimit } from "@/utils";
-import PredefinedGoalsForm from "@/adminComponents/PredefinedGoalsForm";
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { collection, endBefore,   getDocs,  limit, query, QueryDocumentSnapshot, startAfter } from "firebase/firestore";
+import { db } from "@/firebase-config";
+import CustomizedDropdown from "@/customizedComponents/CustomizedDropdown";
+import { IoIosAddCircleOutline } from "react-icons/io";
+
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import AdminTableHeader from "@/customizedComponents/AdminTableHeader";
+import TableHeaderBar from "@/customizedComponents/TableHeader";
+import { pageLimit } from "@/utils";
+import GoalsCatForm from "@/adminComponents/GoalsCatForm";
+import RemoveGoalsCat from "@/adminComponents/RemoveGoalsCat";
 
 
+export type PredefinedGoalsCat = { 
+  id:string,
+  units:string [],
+};
 
 
+export default function PredefinedGoalsCategories() {
 
 
-  export type PredefinedGoalsType = { 
-    id:string,
-    categoryID:string,
-    min:number,
-    max:number,
-    unit:string,
-  };
-  
+  const [loading,setLoading] = useState(false);
 
+  const headers = [
+    "Category ID","Measurement Unit",
+  ]
 
-
-export default function PredefinedGoals() {
-
-
-    const [loading,setLoading] = useState(false);
-
-    const headers = [
-      "Goal ID","Category ID","Minimum Value","Max Value","Measurement Unit",
-    ]
-
-  const [baseData,setBaseData] = useState<PredefinedGoalsType[]|null>(null);
-  const [filteredData, setFilteredData] = useState<PredefinedGoalsType[] | null>(null); // Filtered accounts for display
+  const [baseData,setBaseData] = useState<PredefinedGoalsCat[]|null>(null);
+  const [filteredData, setFilteredData] = useState<PredefinedGoalsCat[] | null>(null); // Filtered accounts for display
   const [firstVisible, setFirstVisible] = useState<QueryDocumentSnapshot | null>(null);
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot | null>(null);
-  const [selectedData,setSelectedData] = useState<PredefinedGoalsType | null>(null)
+  const [selectedData,setSelectedData] = useState<PredefinedGoalsCat | null>(null)
   const [openForm,setOpenForm] = useState(false);
   const [removalPopup,setRemovalPopup] = useState<boolean>();
 
   const fetchData = async (action: "start" | "next" | "prev") => {
-    setOpenForm(false);
+
     setLoading(true);
-    
     try {
+
       let q;
       const accountsRef = collection(db, "predefined_goals_categories");
   
       if (action === "start") {
+        // Initial fetch
         q = query(accountsRef, limit(pageLimit));
-      } else if (action === "next" && lastVisible) {
+      } 
+      
+      else if (action === "next" && lastVisible) {
+        // Fetch next page
         q = query(accountsRef, startAfter(lastVisible), limit(pageLimit));
-      } else if (action === "prev" && firstVisible) {
+      } 
+      
+      else if (action === "prev" && firstVisible) {
+        // Fetch previous page
         q = query(accountsRef, endBefore(firstVisible), limit(pageLimit));
-      } else {
+      } 
+      
+      else {
         console.warn("Invalid action or missing cursors.");
         setLoading(false);
         return;
       }
   
       const querySnapshot = await getDocs(q);
-      const temp: PredefinedGoalsType[] = [];
+      const temp: PredefinedGoalsCat[] = [];
   
       if (!querySnapshot.empty) {
         // Update first and last document references for pagination
         setFirstVisible(querySnapshot.docs[0]);
         setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
   
-        // Fetch subcollection data with a limit
-        const subcollectionPromises = querySnapshot.docs.map(async (doc) => {
-          const goalsSubcollection = collection(doc.ref, "predefined_goals");
-          const subcollectionQuery = query(goalsSubcollection, limit(pageLimit)); // Add subcollection limit here
-          const subcollectionSnapshot = await getDocs(subcollectionQuery);
-          
-          subcollectionSnapshot.forEach((subdoc) => {
-            temp.push({
-              id: subdoc.id,
-              ...subdoc.data(),
-            } as PredefinedGoalsType);
-          });
+        querySnapshot.forEach((doc) => {
+          const data = {
+            id: doc.id,
+            ...doc.data(),
+          } as PredefinedGoalsCat;
+          temp.push(data);
         });
-  
-        // Wait for all subcollection queries to complete
-        await Promise.all(subcollectionPromises);
   
         // Update state with fetched data
         setBaseData(temp);
         setFilteredData(temp);
+
       } else {
         console.warn("No documents found.");
       }
@@ -112,7 +105,7 @@ export default function PredefinedGoals() {
 
 
 
-  const editData= async (selected:PredefinedGoalsType)=>{
+  const editData= async (selected:PredefinedGoalsCat)=>{
     setSelectedData(selected)
     setOpenForm(true)
   }
@@ -123,13 +116,16 @@ export default function PredefinedGoals() {
   }
 
 
-  const deleteData = async (selected:PredefinedGoalsType)=>{
+  const deleteData = async (selected:PredefinedGoalsCat)=>{
     setSelectedData(selected)
     setRemovalPopup(true);
   }
 
 
+
+
   const dropDowns = [
+
     { 
       actionName:"Edit Category",
       action:editData
@@ -138,7 +134,9 @@ export default function PredefinedGoals() {
       actionName:"Delete Category",
       action:deleteData
     }
+
   ]
+
 
 
   useEffect(()=>{
@@ -146,7 +144,11 @@ export default function PredefinedGoals() {
    },[]);
 
 
-return(
+
+
+
+
+  return (
     <>
    
 
@@ -164,23 +166,7 @@ return(
       <div className="flex flex-col p-10 gap-7 items-center ">
         {/*GRID LEFT SIDE*/}
 
-       {openForm &&
-         <PredefinedGoalsForm
-         openForm={openForm}
-         setOpenForm={setOpenForm}
-         fetchData={fetchData}
-         SelectedData={selectedData}
-         />
-         }
    
-         {/* {(removalPopup && selectedData) && 
-         <RemoveGoalsCat
-         removalPopup={removalPopup}
-         setRemovalPopup={setRemovalPopup}
-         selectedData={selectedData}
-         fetchData={fetchData}
-         />
-         } */}
 
         <div className="flex flex-col h-full w-full">
           <AdminTableHeader
@@ -195,18 +181,36 @@ return(
       {/*RIGHT SIDE */}
       <div className="flex border-2 p-8 flex-col rounded-xl w-full xl:w-[80vw] h-auto">
 
+      {openForm &&
+      <GoalsCatForm
+      openForm={openForm}
+      setOpenForm={setOpenForm}
+      fetchData={fetchData}
+      SelectedData={selectedData}
+      setLoading={setLoading}
+      />
+      }
+
+      {(removalPopup && selectedData) && 
+      <RemoveGoalsCat
+      removalPopup={removalPopup}
+      setRemovalPopup={setRemovalPopup}
+      selectedData={selectedData}
+      fetchData={fetchData}
+      />
+      }
 
 
         <div className="flex flex-row justify-between">
             <TableHeaderBar
-            mainText="Predefined Goals"
-              subText="Manage your predefined goals"
+            mainText="Predefined Goals Category"
+              subText="Manage your predefined goals category"
               />
               <button
               onClick={addData} 
               className="btn btn-ghost px-4 bg-[#00ACAC] text-white">
               <IoIosAddCircleOutline size={25} />
-                Add Predefined Goals
+                Add Category
                 </button>
         </div>
 
@@ -224,11 +228,18 @@ return(
 
                     
                      <TableCell className="font-medium pe-10">{data.id}</TableCell>
-                     <TableCell>{data.categoryID}</TableCell>
-                    <TableCell>{data.min}</TableCell>
-                    <TableCell>{data.max}</TableCell>
-                    <TableCell>{data.unit}</TableCell>
+          
+                     <TableCell>
+             
+                      {data.units.map((item)=>( 
+                       
+                       <h2 className="mt-2">{item}</h2>
 
+                      ))}
+                      </TableCell>
+ 
+
+ 
                      <TableCell className="flex justify-end mx-4">
                   
                        <CustomizedDropdown 
@@ -257,9 +268,9 @@ return(
 
          
       </div> 
-      <div className=" w-full md:col-span-2 flex">
-                 <Link  to='/admin/predefined-goals-category' className="btn btn-ghost">
-                 <h1 className="text-2xl">Previous Page </h1> 
+      <div className=" w-full md:col-span-2 flex justify-end">
+                 <Link  to='/admin/predefined-goals' className="btn btn-ghost">
+                 <h1 className="text-2xl">Next Page </h1> 
                  </Link>
               
         </div>
@@ -271,5 +282,6 @@ return(
 
   </>
   )
+
 
 }

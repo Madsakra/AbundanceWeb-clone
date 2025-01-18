@@ -135,6 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await signOut(auth);
     setUser(null);
     setAccountDetails(null);
+    setAwaitApproval(false)
     alert("Logged Out Successfully");
   };
 

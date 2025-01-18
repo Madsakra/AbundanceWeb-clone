@@ -40,7 +40,7 @@ const contentManagement = [
 
   {
     title:"Predefined Goals",
-    url:"/admin/predefined-goals",
+    url:"/admin/predefined-goals-category",
     icon:Goal
   },
   

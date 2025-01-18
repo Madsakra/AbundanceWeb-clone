@@ -12,7 +12,7 @@ import { useEffect, useState } from "react"
 
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase-config";
-import { PredefinedGoalsCat } from "@/routes/Authenticated/Admin/ContentManagement/PredefinedGoals";
+import { PredefinedGoalsCat } from "@/routes/Authenticated/Admin/ContentManagement/PredefinedGoalsCat";
 
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 
