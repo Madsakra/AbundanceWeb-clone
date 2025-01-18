@@ -26,6 +26,8 @@ import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
+import {CalendarDate, parseDate} from "@internationalized/date";
+import {Calendar} from "@heroui/calendar";
 
 type PendingAccounts = {
   id: string;
@@ -44,7 +46,8 @@ export default function PendingUserAccounts() {
   const [firstVisible, setFirstVisible] = useState<QueryDocumentSnapshot | null>(null);
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot | null>(null);
   const [popupForm, setPopupForm] = useState(false);
-  const [accountDueDate, setAccountDueDate] = useState<Date | null>(null);
+  const [accountDueDate, setAccountDueDate] = useState<CalendarDate|null>(null);
+
   const [selectedAccount, setSelectedAccount] = useState<PendingAccounts | null>(null);
 
   const pageLimit = 3;
@@ -126,6 +129,7 @@ export default function PendingUserAccounts() {
       alert("Please provide all required information.");
       return;
     }
+    console.log(accountDueDate.toString());
 
     try {
       const nutritionistDoc = doc(db, "nutritionists", selectedAccount.id);
@@ -133,7 +137,7 @@ export default function PendingUserAccounts() {
         name: selectedAccount.name,
         certificationURL: selectedAccount.certificationURL,
         resumeURL: selectedAccount.resumeURL,
-        dueDate: format(accountDueDate, "yyyy-MM-dd"),
+        dueDate: accountDueDate.toString()
       });
       alert(`Account ${selectedAccount.name} approved and moved to nutritionists.`);
       setPopupForm(false);
@@ -282,7 +286,7 @@ export default function PendingUserAccounts() {
                   className={`w-[240px] justify-start text-left font-normal ${!accountDueDate ? "text-muted-foreground" : ""}`}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {accountDueDate ? format(accountDueDate, "PPP") : "Pick a date"}
+                  {accountDueDate ? accountDueDate.toString(): "Pick a date"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -294,6 +298,12 @@ export default function PendingUserAccounts() {
                   onSelect={setAccountDueDate}
                   initialFocus
                 /> */}
+                    <div className="flex gap-x-4">
+                    <Calendar aria-label="Date (Controlled)" 
+                    value={accountDueDate}
+                    onChange={setAccountDueDate}
+                    />
+                  </div>
 
 
               </PopoverContent>
