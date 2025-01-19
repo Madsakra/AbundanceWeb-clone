@@ -106,6 +106,7 @@ export default function Register() {
         {
           alert(err);
           setLoading(false);
+          return false;
         }
       }
       else{
