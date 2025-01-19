@@ -1,6 +1,6 @@
 import { db } from "@/firebase-config"
 
-import { collection, endBefore, getDocs, limit, query, QueryDocumentSnapshot, startAfter } from "firebase/firestore";
+import { collection, endBefore, getDocs, limit, query, QueryDocumentSnapshot, startAfter, where } from "firebase/firestore";
 import { useEffect, useState } from "react"
 
 import {
@@ -17,7 +17,7 @@ import CustomizedDropdown from "@/customizedComponents/CustomizedDropdown";
 import AdminTableHeader from "@/customizedComponents/AdminTableHeader";
 import TableHeaderBar from "@/customizedComponents/TableHeader";
 import { ApprovedAccounts } from "@/vite-env";
-import { deleteAccountAuth, resetPassword } from "@/utils";
+import { deleteAccountAuth, pageLimit, resetPassword } from "@/utils";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import AdminAccountCreation from "@/customizedComponents/AdminAccountCreation";
 
@@ -40,7 +40,7 @@ export default function AdminAccounts() {
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot | null>(null);
   const [popupForm,setPopupForm] = useState(false);
 
-  const pageLimit = 5;
+ 
 
   const fetchAccounts = async (action: "start" | "next" | "prev") => {
 
@@ -48,21 +48,21 @@ export default function AdminAccounts() {
     try {
 
       let q;
-      const accountsRef = collection(db, "admins");
+      const accountsRef = collection(db, "accounts");
   
       if (action === "start") {
         // Initial fetch
-        q = query(accountsRef, limit(pageLimit));
+        q = query(accountsRef, where("role", "==", "admin"), limit(pageLimit));
       } 
       
       else if (action === "next" && lastVisible) {
         // Fetch next page
-        q = query(accountsRef, startAfter(lastVisible), limit(pageLimit));
+        q = query(accountsRef, where("role", "==", "admin"), startAfter(lastVisible), limit(pageLimit));
       } 
       
       else if (action === "prev" && firstVisible) {
         // Fetch previous page
-        q = query(accountsRef, endBefore(firstVisible), limit(pageLimit));
+        q = query(accountsRef, where("role", "==", "admin"), endBefore(firstVisible), limit(pageLimit));
       } 
       
       else {
