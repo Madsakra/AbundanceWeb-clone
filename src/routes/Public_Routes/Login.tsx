@@ -4,7 +4,7 @@ import loginSplash from '../../assets/Images/login_splashes/login_splash.jpg'
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 
-import { useAuth } from '@/contextProvider';
+import { AccountDetails, useAuth } from '@/contextProvider';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase-config';
 import { UserCredential } from 'firebase/auth';
@@ -23,7 +23,7 @@ export default function Login() {
 
   
   let navigate = useNavigate();
-  const {login,setLoading,loading} = useAuth();
+  const {login,setLoading,loading,logout} = useAuth();
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -45,60 +45,58 @@ export default function Login() {
        if (loginResult)
        {
   
-        
-              const docRef = doc(db, "accounts", loginResult.user.uid);
-              const docSnap = await getDoc(docRef);
+          try{
+            const docRef = doc(db, "accounts", loginResult.user.uid);
+            const docSnap = await getDoc(docRef);
+            // check if the user is normal user
+            if (docSnap.exists()) {
 
-              const approvalRef = doc(db, "pending_approval", loginResult.user.uid);
-              const approvalSnap = await getDoc(approvalRef);
-
-
-              const nutriRef = doc(db, "nutritionists", loginResult.user.uid);
-              const nutriSnap = await getDoc(nutriRef);
-
-              const adminsRef = doc(db, "admins", loginResult.user.uid);
-              const adminsSnap = await getDoc(adminsRef);
-              setLoading(false);
-              // check if the user is normal user
-              if (docSnap.exists()) {
-
-                console.log("Document data:", docSnap.data());
-                navigate("/general/")
-            
-              } 
-
-
-              // check if user is nutritionist
-             if (nutriSnap.exists()) {
-                console.log("Document data:", nutriSnap.data());
-                navigate('/nutri/')
-            
-              } 
-
-
-              if (adminsSnap.exists())
+              const accountDetails = docSnap.data() as AccountDetails
+              
+              if (accountDetails.role === "user")
               {
-                console.log("Document data:", adminsSnap.data());
+                navigate('/general/');
+              }
+
+              else if (accountDetails.role === "nutritionist")
+              {
+                // user is a nutritionist, check if he has practicing info, or else log out
+                const subcollectionRef = doc(db,"accounts",loginResult.user.uid,"approval_info","practicing_info")
+                const subcollectionSnap = await getDoc(subcollectionRef);
+              
+                // if practicing info exists
+                if (subcollectionSnap.exists())
+                {
+                  navigate('/nutri/');
+                }
+                // if no logout 
+                else
+                {
+                  alert("Please wait for admin's approval before logging in. We will send an email to notify you ASAP.");
+                  logout();
+                }
+              }
+
+              else if (accountDetails.role === "admin")
+              {
                 navigate('/admin/')
-              
-              }
-              
-
-              // check if the user is nutritionist (await approval)
-              if (approvalSnap.exists())
-              {
-                navigate('/general/')
               }
 
+              else{
+                logout();
+                alert("Unauthorised Login");
+              }
+            } 
+            setLoading(false);
+          }
 
-
-
-       }
-
-
-   
-    }
+          catch(err)
+          {
+            alert(err);
+            logout();
+          }
   }
+}}
 
   if (loading)
   {

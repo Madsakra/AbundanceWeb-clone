@@ -11,7 +11,7 @@ import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({allowedRoles,children}:ProtectedRouteProps) => {
 
-  const { user, loading, logout,accountDetails,awaitApproval} = useAuth(); // Get loading state from context
+  const { user, loading, logout,accountDetails} = useAuth(); // Get loading state from context
   const mainMessage = "Verification Needed";
   const subMessage = "Please go to your email account and verify your abundance account. Alternatively, you can click on the link below to resend it";
 
@@ -44,36 +44,25 @@ const ProtectedRoute = ({allowedRoles,children}:ProtectedRouteProps) => {
       return <Navigate to="/login" replace />; 
     }
 
-  if (awaitApproval)
-      {
-        return (<VerificationAlert
-          logOut={logout}
-          mainMessage={"Please wait for the verification by our admin"}
-          subMessage={"Our admin will try to get back to you ASAP"}
-          />)
-  }
-  if (!user.emailVerified && !awaitApproval )
+
+  if (!user.emailVerified && (accountDetails?.role === "user") )
   {
 
-      if ((accountDetails?.role === "free_user" || accountDetails?.role === "premium_user"))
-      {
+
         return (<VerificationAlert
           logOut={logout}
           resendEmail={reSendEmail} 
           mainMessage={mainMessage}
           subMessage={subMessage}
           />)
-      }
+  }
     
 
 
       
-     
 
-        
-  }
 
-  else if (!allowedRoles?.includes(accountDetails?.role))
+   if (!allowedRoles?.includes(accountDetails?.role))
   {
     return <PermissionDenied/>; 
   }

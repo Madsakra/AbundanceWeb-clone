@@ -80,14 +80,6 @@ export function AdminSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-
-
-
-
-
-
-
-
       <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -100,10 +92,6 @@ export function AdminSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
- 
-
-
-
         <SidebarGroup>
           <SidebarGroupLabel>Account Management</SidebarGroupLabel>
           <SidebarGroupContent>

@@ -1,5 +1,5 @@
 import { db } from "@/firebase-config";
-import { collection, getDocs, limit, query, QueryDocumentSnapshot, startAfter, endBefore, doc, setDoc } from "firebase/firestore";
+import { collection, getDocs, limit, query, QueryDocumentSnapshot, startAfter, endBefore, doc, setDoc, deleteDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 import {
@@ -25,8 +25,8 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format } from "date-fns";
-import {CalendarDate, parseDate} from "@internationalized/date";
+
+import {CalendarDate} from "@internationalized/date";
 import {Calendar} from "@heroui/calendar";
 import { pageLimit } from "@/utils";
 
@@ -133,14 +133,18 @@ export default function PendingUserAccounts() {
     console.log(accountDueDate.toString());
 
     try {
-      const nutritionistDoc = doc(db, "nutritionists", selectedAccount.id);
+      const nutritionistDoc = doc(db, "accounts", selectedAccount.id,"approval_info","practicing_info");
       await setDoc(nutritionistDoc, {
-        name: selectedAccount.name,
         certificationURL: selectedAccount.certificationURL,
         resumeURL: selectedAccount.resumeURL,
         dueDate: accountDueDate.toString()
       });
       alert(`Account ${selectedAccount.name} approved and moved to nutritionists.`);
+
+      // delete pending_approval info, not in use
+      await deleteDoc(doc(db, "pending_approval", selectedAccount.id));
+
+      
       setPopupForm(false);
       fetchAccounts("start");
     } catch (error) {

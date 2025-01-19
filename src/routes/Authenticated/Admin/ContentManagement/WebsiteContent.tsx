@@ -21,6 +21,7 @@ import { FaRegPenToSquare } from "react-icons/fa6";
 import EditAddress from "@/adminComponents/EditAddress";
 import EditWebsiteVideo from "@/adminComponents/EditWebsiteVideo";
 import { Link } from "react-router-dom";
+import { CiPhone } from "react-icons/ci";
 
 export type CompanyContactDetails = {
   address:string,
@@ -293,7 +294,7 @@ export default function WebsiteContent() {
 
             <div className="flex flex-col my-8">
             <h1>Embedded Address:</h1>
-            <h3>{companyAddress?.embeddedLink}</h3>
+            <h3 className="truncate">{companyAddress?.embeddedLink}</h3>
 
             </div>
             </div>
@@ -304,8 +305,9 @@ export default function WebsiteContent() {
             <h2>{companyAddress?.openingTime} - {companyAddress?.closingTime}</h2>
             </div>
 
-            <div>
-              <h3>Phone Number:  {companyAddress?.phone}</h3>
+            <div className="flex gap-4 items-center mt-10">
+              <CiPhone size={30}/>
+              <h3>{companyAddress?.phone}</h3>
             </div>
 
           </div>

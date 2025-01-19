@@ -5,7 +5,7 @@ import { doc, getDoc } from 'firebase/firestore';
 
 
 
-type AccountDetails = {
+export type AccountDetails = {
   name:string,
   email:string,
   role:string,
@@ -23,7 +23,6 @@ interface AuthContextType {
   logout: () => void;
   setLoading:(load:boolean)=>void
   loading: boolean; // Add loading state
-  awaitApproval:boolean;
   accountDetails:AccountDetails | null;
   setAccountDetails: (acc:AccountDetails)=>void;
 }
@@ -35,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true); // Add a loading state
   const [accountDetails,setAccountDetails] = useState<AccountDetails |null>(null)
-  const [awaitApproval,setAwaitApproval] = useState(false);
+  
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -46,60 +45,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
               const docRef = doc(db, "accounts", user.uid);
               const docSnap = await getDoc(docRef);
-
-              const approvalRef = doc(db, "pending_approval", user.uid);
-              const approvalSnap = await getDoc(approvalRef);
-
-
-              const nutriRef = doc(db, "nutritionists", user.uid);
-              const nutriSnap = await getDoc(nutriRef);
-
-              const adminsRef = doc(db, "admins", user.uid);
-              const adminsSnap = await getDoc(adminsRef);
-
               // check if the user is normal user
               if (docSnap.exists()) {
                 console.log("Document data:", docSnap.data());
                 setAccountDetails(docSnap.data() as AccountDetails);
             
-              } 
-
-
-              // check if user is nutritionist
-             if (nutriSnap.exists()) {
-                console.log("Document data:", nutriSnap.data());
-                setAccountDetails(nutriSnap.data() as AccountDetails);
-            
-              } 
-
-
-              if (adminsSnap.exists())
-              {
-                console.log("Document data:", adminsSnap.data());
-                setAccountDetails(adminsSnap.data() as AccountDetails);
-              
               }
-              
-   
-
-
-
-              // check if the user is nutritionist (await approval)
-              if (approvalSnap.exists())
-              {
-                setAwaitApproval(true);
-              }
-
-
-              
-            
-              
-
       }
-      else{
-        setAccountDetails(null)
-      }
-
+      
       setLoading(false);
     });
 
@@ -135,8 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await signOut(auth);
     setUser(null);
     setAccountDetails(null);
-    setAwaitApproval(false)
-    alert("Logged Out Successfully");
+    alert("Logout successful")
   };
 
 
@@ -145,7 +97,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 
   return (
-    <AuthContext.Provider value={{ user, login, logout ,setLoading, awaitApproval
+    <AuthContext.Provider value={{ user, login, logout ,setLoading
     ,loading , accountDetails, setAccountDetails}}>
       {children}
     </AuthContext.Provider>

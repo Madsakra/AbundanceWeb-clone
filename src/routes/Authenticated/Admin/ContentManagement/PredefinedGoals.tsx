@@ -19,6 +19,7 @@ import {
   import TableHeaderBar from "@/customizedComponents/TableHeader";
   import { pageLimit } from "@/utils";
 import PredefinedGoalsForm from "@/adminComponents/PredefinedGoalsForm";
+import RemovePredefinedGoals from "@/adminComponents/RemovePredefinedGoals";
 
 
 
@@ -173,14 +174,16 @@ return(
          />
          }
    
-         {/* {(removalPopup && selectedData) && 
-         <RemoveGoalsCat
-         removalPopup={removalPopup}
-         setRemovalPopup={setRemovalPopup}
-         selectedData={selectedData}
-         fetchData={fetchData}
-         />
-         } */}
+
+         {
+          (removalPopup && selectedData) &&
+          <RemovePredefinedGoals
+          removalPopup={removalPopup}
+          setRemovalPopup={setRemovalPopup}
+          selectedData={selectedData}
+          fetchData={fetchData}
+          />
+         }
 
         <div className="flex flex-col h-full w-full">
           <AdminTableHeader

@@ -15,7 +15,7 @@ import Register from './routes/Public_Routes/Register';
 import ForgetPassword from './routes/Public_Routes/ForgetPassword';
 
 import '@fontsource/poppins';
-import Dashboard from './routes/Authenticated/Dashboard';
+import Dashboard from './routes/Authenticated/User/Dashboard';
 import NutritionistSubmission from './routes/Public_Routes/NutritionistSubmission';
 
 
@@ -34,6 +34,10 @@ import AppReviews from './routes/Authenticated/Admin/ReviewsManagement/AppReview
 import NutriReviews from './routes/Authenticated/Admin/ReviewsManagement/NutriReviews';
 import Appfeatures from './routes/Authenticated/Admin/ContentManagement/Appfeatures';
 import PredefinedGoals from './routes/Authenticated/Admin/ContentManagement/PredefinedGoals';
+import UserLayout from './routes/Authenticated/User/UserLayout';
+import NutritionistLayout from './routes/Authenticated/Nutritionist/NutritionistLayout';
+import ViewArticles from './routes/Authenticated/Nutritionist/ViewArticles';
+import Profile from './routes/Authenticated/Nutritionist/Profile';
 
 
 
@@ -73,7 +77,10 @@ const router = createBrowserRouter([
       // PROTECTED ROUTE WRAPPER
       {
         path: "/general",
-        element: <ProtectedRoute allowedRoles={["free_user","premium_user","admin","nutritionist"]} />,
+        element: (<ProtectedRoute allowedRoles={["user"]}>
+                    <UserLayout/>
+                  </ProtectedRoute>
+                ),
         children: [
           {
             index:true, 
@@ -84,12 +91,26 @@ const router = createBrowserRouter([
 
       {
         path: "/nutri",
-        element: <ProtectedRoute allowedRoles={["nutritionist"]} />,
+        element: (
+        <ProtectedRoute allowedRoles={["nutritionist"]}>
+          <NutritionistLayout/>
+        </ProtectedRoute>
+        ),
         children: [
           {
             index: true, 
             element: <ManageClients/>,  // This should render if verified
           },
+
+          {
+            path:'view-articles',
+            element:<ViewArticles/>
+          },
+
+          {
+            path:'profile',
+            element:<Profile/>
+          }
         ],
       },
      

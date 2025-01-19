@@ -30,7 +30,7 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   let navigate = useNavigate();
 
-  const {setLoading,loading} = useAuth();
+  const {setLoading,loading,setAccountDetails} = useAuth();
 
 
   const togglePasswordVisibility = () => {
@@ -67,40 +67,52 @@ export default function Register() {
       
     }
 
-    if (!error){
+    else {
 
-
-      try{
-        setLoading(true);
-        // create user with email & with password
-        // auto log him in as non verified
-        const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-        // Send email verification
-        await sendEmailVerification(userCredentials.user);
-        
-        // COPY HIS CREDENTIALS INTO DOCUMENTS
-        const userID = userCredentials.user.uid
-        // before he create profile, will temporaray use this
-        const docRef =  doc(db, "accounts",userID);
-
-        await setDoc(docRef, {
-          name:userName,
-          email:email,
-          role: role,
-        });
-        
-        alert("Account created")
-        setLoading(false);
-        navigate('/general/')
-        
-
-
-      }
-  
-      catch(err)
+      if (!error)
       {
-        alert(err);
+        try{
+          setLoading(true);
+          // create user with email & with password
+          // auto log him in as non verified
+          const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+          // Send email verification
+          await sendEmailVerification(userCredentials.user);
+          
+          // COPY HIS CREDENTIALS INTO DOCUMENTS
+          const userID = userCredentials.user.uid
+          // before he create profile, will temporaray use this
+          const docRef =  doc(db, "accounts",userID);
+  
+          await setDoc(docRef, {
+            name:userName,
+            email:email,
+            role: role,
+          });
+          
+          alert("Account created")
+          setLoading(false);
+          navigate('/general/')
+          setAccountDetails({
+            name:userName,
+            email:email,
+            role:role
+          })
+          
+  
+        }
+    
+        catch(err)
+        {
+          alert(err);
+          setLoading(false);
+        }
       }
+      else{
+        alert("You might want to check your form again")
+      }
+
+
     }
   }
 
@@ -192,7 +204,7 @@ export default function Register() {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Role</SelectLabel>
-                  <SelectItem value="free_user">Free User</SelectItem>
+                  <SelectItem value="user">Free User</SelectItem>
                   <SelectItem value="nutritionist">Nutritionist</SelectItem>
                 </SelectGroup>
               </SelectContent>

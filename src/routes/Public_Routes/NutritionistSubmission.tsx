@@ -11,7 +11,7 @@ export default function NutritionistSubmission() {
     const [selectedCert, setSelectedCert] = useState<File | null>(null);
     const [selectedResume,setSelectedResume] = useState<File | null>(null);
     const location = useLocation();
-    const { email,password,name } = location.state as { email: string; password: string;name:string };
+    const { email,password, name } = location.state as { email: string; password: string;name:string };
     const [loading,setLoading] = useState(false)
 
 
@@ -39,9 +39,6 @@ export default function NutritionistSubmission() {
       // add his cert and resume to the storage, by apending their id
       const storage = getStorage();
 
-        
-       
-
       // 2. Upload files to Firebase Storage
       const certRef = ref(storage, `certifications/${uid}`);
       const resumeRef = ref(storage, `resumes/${uid}`);
@@ -54,17 +51,24 @@ export default function NutritionistSubmission() {
       await uploadBytes(resumeRef, selectedResume);
       const resumeURL = await getDownloadURL(resumeRef);
 
-      // 3. Save to Firestore
+      // 3. Save to Firestore 
+      // save pending approval info to pending approval table first
       const pendingApprovalRef = doc(collection(db, "pending_approval"), uid);
 
       await setDoc(pendingApprovalRef, {
-        name,
-        email,
+        name:name,
         certificationURL: certURL,
         resumeURL: resumeURL,
-        role:"nutritionist",
-        awaitApproval: true,
         submittedAt: new Date().toISOString(),
+      });
+
+      // save account info to accounts table
+      const docRef =  doc(db, "accounts",uid);
+
+      await setDoc(docRef, {
+        name: name,
+        email:email,
+        role:"nutritionist",
       });
 
       setLoading(false);
@@ -99,10 +103,6 @@ export default function NutritionistSubmission() {
        flex flex-col lg:flex-row mt-14 
        items-center justify-evenly my-10'>
   
-
-    
-
-
         <img src={nutriVerify} className='w-96 h-96 '></img>
   
           {/* INPUT FORM */}
@@ -119,7 +119,6 @@ export default function NutritionistSubmission() {
                     You have selected your role as a nutritionist. Please Upload the relevant documents for verification.
                     </h2>
   
-                  
                     <FileSubmission 
                     submissionTitle="Certification"
                     selectedFile={selectedCert}
@@ -134,8 +133,6 @@ export default function NutritionistSubmission() {
                     />
                     
 
-  
-  
                 {/*Submit BUTTON*/}
                 <button className='w-full p-4 bg-[#009797] mt-6 text-white text-lg font-semibold rounded-full'
                 onClick={handleSubmit}
