@@ -1,21 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { CalendarDate } from "@heroui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
-import { CalendarIcon } from "lucide-react";
 import { useState } from "react"
-import {Calendar} from "@heroui/calendar";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useAuth } from "@/contextProvider";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import {  useNavigate } from "react-router-dom";
+import { Dayjs } from "dayjs";
 
 export default function ProfileCreation() {
 
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [displayedTitle,setDisplayedTitle] = useState("");
-    const [dob, setDOB] = useState<CalendarDate|null>(null);
+    const [dob, setDOB] = useState<Dayjs|null>(null);
     const {user,setLoading} = useAuth();
 
     let navigate = useNavigate();
@@ -53,8 +52,9 @@ export default function ProfileCreation() {
                     const storage = getStorage();   
                     // 2. Upload files to Firebase Storage
                     const profileAvatarRef = ref(storage, `profileAvatar/${user.uid}`);
-               
-              
+                  
+ 
+                   
                     // Upload certification
                     await uploadBytes(profileAvatarRef, imageFile);
                     const avatar = await getDownloadURL(profileAvatarRef);
@@ -141,28 +141,9 @@ export default function ProfileCreation() {
             {/* DOB SELECTOR */}
         <div className="flex flex-col gap-4 mt-4 ">
         <label htmlFor="" className="font-bold">Date of Birth</label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={`w-full justify-start text-left font-normal ${!dob ? "text-muted-foreground" : ""}`}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {dob ? dob.toString(): "Pick a date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-
-               {/*show date selector*/}
- 
-                    <div className="flex gap-x-4 bg-white border-2 shadow-lg rounded-lg p-4">
-                    <Calendar aria-label="Date (Show Month and Year Picker)" 
-                    value={dob}
-                    onChange={setDOB}
-                    />
-                  </div>
-              </PopoverContent>
-            </Popover>                  
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker value={dob} onChange={setDOB} disableFuture/>
+                      </LocalizationProvider>           
           </div>
 
           <button 

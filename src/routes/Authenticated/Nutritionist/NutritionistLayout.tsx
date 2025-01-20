@@ -11,7 +11,7 @@ import ProfileCreation from './ProfileCreation';
 export default function NutritionistLayout() {
 
   const {user,setLoading,loading} = useAuth();
-  const [profileExist,setProfileExists] = useState(false);
+  const [profileExist,setProfileExists] = useState(true);
 
   const checkProfile = async ()=>{
 
@@ -23,9 +23,9 @@ export default function NutritionistLayout() {
         const subcollectionSnap = await getDoc(profileCollectionRef);
                     
         // if practicing info exists
-        if (subcollectionSnap.exists())
+        if (!subcollectionSnap.exists())
         {
-            setProfileExists(true);
+            setProfileExists(false);
         }
         console.log(subcollectionSnap);
       }

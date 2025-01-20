@@ -46,7 +46,7 @@ export default function CustomizedDropdown({subjectData,dropDowns,disableDropdow
   return (
     <>
     <DropdownMenu>
-    <DropdownMenuTrigger className="border-2 btn btn-ghost px-6 py-1">
+    <DropdownMenuTrigger className="border-2 btn btn-ghost px-6 py-1 ">
     <HiOutlineDotsHorizontal size={28}/>
 
     </DropdownMenuTrigger>
