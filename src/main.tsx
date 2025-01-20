@@ -44,6 +44,7 @@ import Profile from './routes/Authenticated/Nutritionist/Profile';
 
 
 
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -182,8 +183,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
+
     <AuthProvider>
     <RouterProvider router={router}/>
     </AuthProvider>
+
   </React.StrictMode>,
 )

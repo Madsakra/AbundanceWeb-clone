@@ -297,12 +297,7 @@ export default function PendingUserAccounts() {
               <PopoverContent className="w-auto p-0" align="start">
 
                {/*show date selector*/}
-               {/* <ShadcnCalendar
-                  mode="single"
-                  selected={accountDueDate}
-                  onSelect={setAccountDueDate}
-                  initialFocus
-                /> */}
+ 
                     <div className="flex gap-x-4">
                     <Calendar aria-label="Date (Controlled)" 
                     value={accountDueDate}

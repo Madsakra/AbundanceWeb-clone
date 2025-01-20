@@ -92,6 +92,7 @@ export default function Login() {
 
           catch(err)
           {
+            setLoading(false);
             alert(err);
             logout();
           }
