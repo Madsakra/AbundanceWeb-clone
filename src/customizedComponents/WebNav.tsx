@@ -13,15 +13,11 @@ const mainNavItems = [
     
 ];
 
-const authenticatedItems = [
-    {name:'Home',ref:'/'},
-    {name:'Dashboard',ref:'/admin/'},
-];
 
 
 export default function WebNav(){
     
-    const { user, logout } = useAuth();
+    const { user, logout,accountDetails } = useAuth();
     let navigate = useNavigate();
 
    const logOutRedirect = ()=>{
@@ -83,12 +79,22 @@ export default function WebNav(){
 
                 {user?
                 <div>
-                {authenticatedItems.map((item,index)=>(
+                {mainNavItems.map((item,index)=>(
                     <Link to={item.ref} key={index}  className="lg:text-lg ml-8 text-[#009797]">
                         {item.name}
                     </Link>
-  
                 ))}
+
+                {
+                    accountDetails?.role === "admin"?
+                    <Link to="/admin"   className="lg:text-lg ml-8 text-[#009797]">
+                    Dashboard
+                    </Link>:
+                    <Link to="/nutri"   className="lg:text-lg ml-8 text-[#009797]">
+                    Dashboard
+                    </Link>
+                }
+                
                 </div>:
                 
                 <div className="content-center flex gap-5">

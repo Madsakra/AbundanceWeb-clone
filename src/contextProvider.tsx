@@ -3,7 +3,12 @@ import { onAuthStateChanged,signInWithEmailAndPassword,signOut,User } from 'fire
 import { auth, db} from '@/firebase-config';
 import { doc, getDoc } from 'firebase/firestore';
 
-
+type ProfileType = {
+  avatar:string,
+  dob:string,
+  title:string,
+  gender:string,
+}
 
 export type AccountDetails = {
   name:string,
@@ -12,6 +17,7 @@ export type AccountDetails = {
   image?:string,
   certificationURL?:string,
   resumeURL?:string,
+
 
 }
 
@@ -25,6 +31,7 @@ interface AuthContextType {
   loading: boolean; // Add loading state
   accountDetails:AccountDetails | null;
   setAccountDetails: (acc:AccountDetails)=>void;
+  profile:ProfileType | null;
 }
 
 // Create the AuthContext
@@ -34,7 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true); // Add a loading state
   const [accountDetails,setAccountDetails] = useState<AccountDetails |null>(null)
-  
+  const [profile,setProfile] = useState<ProfileType | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -49,7 +56,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               if (docSnap.exists()) {
                 console.log("Document data:", docSnap.data());
                 setAccountDetails(docSnap.data() as AccountDetails);
-            
+              }
+
+              const profileRef = doc(db,"accounts",user.uid,"profile","profile_info");
+              const profileSnap = await getDoc(profileRef);
+              if (profileSnap.exists())
+              {
+                console.log(profileSnap.data());
+                setProfile(profileSnap.data() as ProfileType);
               }
       }
       
@@ -97,7 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 
   return (
-    <AuthContext.Provider value={{ user, login, logout ,setLoading
+    <AuthContext.Provider value={{ user, login, logout ,setLoading, profile
     ,loading , accountDetails, setAccountDetails}}>
       {children}
     </AuthContext.Provider>

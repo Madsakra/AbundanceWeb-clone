@@ -15,8 +15,10 @@ export default function ProfileCreation() {
     const [preview, setPreview] = useState<string | null>(null);
     const [displayedTitle,setDisplayedTitle] = useState("");
     const [dob, setDOB] = useState<Dayjs|null>(null);
-    const {user,setLoading} = useAuth();
+    const [gender,setGender] = useState<string>("");
+    
 
+    const {user,setLoading} = useAuth();
     let navigate = useNavigate();
 
 
@@ -37,7 +39,7 @@ export default function ProfileCreation() {
     setLoading(true);
 
     // check if documents are present
-    if (!imageFile || !displayedTitle || !dob)
+    if (!imageFile || !displayedTitle || !dob || !gender)
     {
         alert("Please do not miss out the fields in the profile creation form!");
         setLoading(false);
@@ -68,9 +70,10 @@ export default function ProfileCreation() {
 
                     const profileInfoData = {
                             // Your profile information here
-                            avatar:avatar,
+                            avatar,
                             title:displayedTitle,
-                            dob: dob.toString(),
+                            dob: dob.format("YYYY-MM-DD"),
+                            gender
                             // ... other profile fields
                         }; 
                     // Add the profile_info document to the subcollection
@@ -125,7 +128,7 @@ export default function ProfileCreation() {
 
         {/*RIGHT CONTAINER */}
         
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-4 w-full mt-10">
 
         <div className="flex flex-col">
         <label htmlFor="" className="font-bold">Displayed Name</label>
@@ -146,6 +149,21 @@ export default function ProfileCreation() {
                       </LocalizationProvider>           
           </div>
 
+            {/* GENDER */}
+          <div className="flex flex-col gap-4 mt-4 ">
+        <label htmlFor="" className="font-bold">Gender</label>
+        <select className="select select-bordered w-full max-w-xs"
+        onChange={(e)=>setGender(e.target.value)}
+        >
+            <option disabled selected>Select your gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="others">Others</option>
+          </select>     
+        </div>
+
+
+
           <button 
           className="btn btn-ghost bg-[#00ACAC] mt-8
            text-white font-bold"
@@ -154,7 +172,8 @@ export default function ProfileCreation() {
 
         </div>
 
-
+          
+          
 
 
         </div>

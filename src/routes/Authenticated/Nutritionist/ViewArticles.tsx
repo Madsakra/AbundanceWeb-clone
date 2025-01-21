@@ -186,7 +186,7 @@ export default function ViewArticles() {
       <div className="flex lg:flex-row justify-between items-center mb-8">
       <h1 className="text-lg">View Articles</h1>
       <button className="btn btn-ghost bg-[#00ACAC] text-white py-2 px-7" onClick={addData}>
-        <IoIosAddCircleOutline size={24} />Add Review</button>
+        <IoIosAddCircleOutline size={24} />Add Article</button>
       </div>
 
 

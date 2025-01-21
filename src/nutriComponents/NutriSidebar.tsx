@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contextProvider";
 
 
@@ -43,7 +43,7 @@ const appFunctionality = [
 export function NutriSidebar() {
   let navigate = useNavigate();
 
-  const {logout,accountDetails} = useAuth();
+  const {logout,accountDetails,profile} = useAuth();
 
   return (
     <Sidebar>
@@ -65,14 +65,15 @@ export function NutriSidebar() {
 
 
         <SidebarGroup>
-        <SidebarGroupLabel>Account Details</SidebarGroupLabel>
+        <SidebarGroupLabel className="mb-5">Account Details</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
                 <SidebarMenuItem>
-                    <div className="flex flex-col gap-4 p-4">
-                        <h2>Email: <span className="font-bold">{accountDetails?.email}</span></h2>
-                        <h3>UserName: <span className="font-bold flex"> {accountDetails?.name}</span> </h3>
-                    </div>
+                    <Link to="/nutri/profile" className="flex flex-col gap-8  p-4 items-center">
+                        <img src={profile?.avatar} alt="avatar" className="w-16 h-16 rounded-full" />
+                        <h2 className="flex flex-col gap-1 w-full">Title: <span className="font-bold">{profile?.title}</span></h2>
+                        <h3  className="flex flex-col w-full">Email: <span className="font-bold"> {accountDetails?.email}</span> </h3>
+                    </Link>
                                    
                
                 </SidebarMenuItem>
