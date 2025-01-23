@@ -32,6 +32,7 @@ interface AuthContextType {
   accountDetails:AccountDetails | null;
   setAccountDetails: (acc:AccountDetails)=>void;
   profile:ProfileType | null;
+  fetchProfile:()=>void;
 }
 
 // Create the AuthContext
@@ -74,6 +75,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
   
 
+  const fetchProfile = async ()=>{
+    
+    if (user)
+    {
+      const profileRef = doc(db,"accounts",user.uid,"profile","profile_info");
+      const profileSnap = await getDoc(profileRef);
+      if (profileSnap.exists())
+      {
+        console.log(profileSnap.data());
+        setProfile(profileSnap.data() as ProfileType);
+      }
+    }
+
+  }
 
 
   const login = async (email:string,password:string) => {
@@ -111,7 +126,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 
   return (
-    <AuthContext.Provider value={{ user, login, logout ,setLoading, profile
+    <AuthContext.Provider value={{ user, login, logout ,setLoading, profile, fetchProfile
     ,loading , accountDetails, setAccountDetails}}>
       {children}
     </AuthContext.Provider>
