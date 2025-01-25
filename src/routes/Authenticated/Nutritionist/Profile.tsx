@@ -1,5 +1,5 @@
 import { useAuth } from "@/contextProvider";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BsCake2Fill } from "react-icons/bs";
 import { MdEmail } from "react-icons/md";
 import { FaTransgenderAlt } from "react-icons/fa";
@@ -7,13 +7,62 @@ import { FaRegEdit } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import EditProfileForm from "@/nutriComponents/EditProfileForm";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase-config";
 
 export default function Profile() {
  
   const [loading,setLoading] = useState(false);
   const [editProfile,setEditProfile] = useState(false);
   const {profile,user} = useAuth();  
- 
+  const [resumeURL, setResumeURL] = useState(null); // State for Resume URL
+  const [certificationURL, setCertificationURL] = useState(null); // State for Certificate URL
+
+
+
+  // Fetch resumeURL and certificateURL from Firestore
+  useEffect(() => {
+    if (user && user.uid) {
+      const fetchPracticingInfo = async () => {
+        try {
+          const docRef = doc(db, "accounts", user.uid, "approval_info", "practicing_info");
+          const docSnap = await getDoc(docRef);
+          
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setResumeURL(data?.resumeURL || null);
+            setCertificationURL(data?.certificationURL || null);
+          } else {
+            console.log("No practicing info found");
+          }
+        } catch (error) {
+          console.error("Error fetching practicing info: ", error);
+        } finally {
+          setLoading(false); // Done loading
+        }
+      };
+      
+      fetchPracticingInfo();
+    }
+  }, [user]);
+
+  // Function to open the document URLs
+  const openPDF = (url: string) => {
+    if (!url) {
+      alert("No document available.");
+      return;
+    }
+    window.open(url, "_blank");
+  };
+
+
+
+
+
+
+
+
+
   return (
     <>
    
@@ -76,15 +125,21 @@ export default function Profile() {
         <div className="flex flex-col w-96 border-2 h-96 rounded-xl p-16 shadow-2xl ">
           <h1 className="text-[#6B7FD6] text-xl font-semibold mb-10">Practicing Information</h1>
           
-          <div className="flex gap-4 items-center mb-8">
-          <IoDocumentTextOutline size={25} />
-          <h1 className="text-lg">Resume</h1>
-          </div>
+              {/* Resume Button */}
+              <div className="flex gap-4 items-center mb-8">
+                <IoDocumentTextOutline size={25} />
+                <button onClick={() => resumeURL && openPDF(resumeURL)}>
+                 Resume
+                 </button>
+              </div>
 
-          <div className="flex gap-4 items-center mb-8">
-          <IoDocumentTextOutline size={25} />
-          <h1 className="text-lg">Certification</h1>
-          </div>
+              {/* Certificate Button */}
+              <div className="flex gap-4 items-center mb-8">
+                <IoDocumentTextOutline size={25} />
+                <button onClick={() => certificationURL && openPDF(certificationURL)}>
+                  Certificate
+                  </button>
+              </div>
 
           <h1 className="text-lg text-[#5F5F5F] mt-10">Expiry Date: 12/12/25 </h1>
         </div>

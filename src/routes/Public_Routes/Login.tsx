@@ -87,7 +87,7 @@ export default function Login() {
                 alert("Unauthorised Login");
               }
             } 
-            setLoading(false);
+         
           }
 
           catch(err)
@@ -97,7 +97,9 @@ export default function Login() {
             logout();
           }
   }
-}}
+
+ 
+} setLoading(false);}
 
   if (loading)
   {

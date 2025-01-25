@@ -59,7 +59,7 @@ export default function FileSubmission({submissionTitle,selectedFile,setSelected
                      
                         <input
                         type="file"
-                        accept=".doc,.docx,.pdf"
+                        accept=".pdf"
                         onChange={handleFileChange}
                         className='mt-4 file-input'
                         />

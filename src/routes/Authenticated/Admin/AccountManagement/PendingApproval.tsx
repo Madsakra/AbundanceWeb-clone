@@ -1,4 +1,4 @@
-import { db } from "@/firebase-config";
+import { db, storage } from "@/firebase-config";
 import { collection, getDocs, limit, query, QueryDocumentSnapshot, startAfter, endBefore, doc, setDoc, deleteDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
@@ -25,19 +25,16 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-
+import emailjs from '@emailjs/browser';
 import {CalendarDate} from "@internationalized/date";
 import {Calendar} from "@heroui/calendar";
-import { pageLimit } from "@/utils";
+import { deleteAccountAuth, pageLimit } from "@/utils";
+import { PendingAccounts } from "@/vite-env";
+import { deleteObject, ref } from "firebase/storage";
 
-type PendingAccounts = {
-  id: string;
-  name: string;
-  certificationURL: string;
-  resumeURL: string;
-};
 
-const headers = ["UID", "Name", "Certification", "Resume"];
+
+const headers = ["UID","Name", "Email", "Certification", "Resume"];
 
 export default function PendingUserAccounts() {
   const [loading, setLoading] = useState(true);
@@ -103,6 +100,8 @@ export default function PendingUserAccounts() {
 
   useEffect(() => {
     fetchAccounts("start");
+
+
   }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,7 +138,7 @@ export default function PendingUserAccounts() {
         resumeURL: selectedAccount.resumeURL,
         dueDate: accountDueDate.toString()
       });
-      alert(`Account ${selectedAccount.name} approved and moved to nutritionists.`);
+      alert(`Account ${selectedAccount.email} approved and moved to nutritionists.`);
 
       // delete pending_approval info, not in use
       await deleteDoc(doc(db, "pending_approval", selectedAccount.id));
@@ -152,6 +151,89 @@ export default function PendingUserAccounts() {
     }
   };
 
+
+
+
+  const rejectAccount = async (account:PendingAccounts)=>{
+
+    setLoading(true);
+  
+
+      try{
+     
+        const storagePath = `certifications/${account.id}`; 
+        const firestorePath = `resumes/${account.id}}`; 
+        
+        const storageRef = ref(storage, storagePath);
+        const firestoreDocRef = doc(db, firestorePath);
+        
+        // Delete from Storage
+        deleteObject(storageRef)
+          .then(() => {
+            console.log("File deleted from Storage successfully");
+        
+            // Delete from Firestore
+            deleteDoc(firestoreDocRef)
+              .then(() => {
+                console.log("Document deleted from Firestore successfully");
+              })
+              .catch((error) => {
+                console.error("Error deleting document from Firestore:", error);
+              });
+          })
+          .catch((error) => {
+            console.error("Error deleting file from Storage:", error);
+          });
+
+
+
+        const deleted = await deleteAccountAuth(account,"pending_approval");
+        if (deleted)
+        {
+          
+          // send email for verification
+          const formData = {
+            subject:"Abundance (notice of rejection)",
+            name:account.name,
+            reply_to:account.email,
+            mainHeader:"Notice of rejection",
+            message:"Thank you for signing up for our service. However, we are sorry to inform you that your account application has been rejected for safety purposes. Still, We would like to thank you for your interest in joining us as a nutritionist. Please note that for data safety, your account and data that we accquired in the registration process will therefore be removed."
+          }
+          
+          // PUT THIS IN ENV VARIABLE LTR
+          emailjs
+            .send(import.meta.env.VITE_EMAILJS_SERVICE_ID, import.meta.env.VITE_EMAILJS_TEMPLATE_ID, formData, {
+              publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+            })
+            .then(
+              () => {
+                console.log('SUCCESS!');
+              },
+              (error) => {
+                console.log('FAILED...', error.text);
+              },
+            );
+          alert("Account Rejected and email of notice sent.")
+          
+          fetchAccounts("start");
+
+        }
+
+
+
+
+
+      }
+      catch(err)
+      {
+        alert(err);
+      }
+
+    setLoading(false);
+  }
+
+
+
   const dropDownOptions = (account: PendingAccounts) => [
     {
       actionName: "Approve",
@@ -162,7 +244,10 @@ export default function PendingUserAccounts() {
     },
     {
       actionName: "Reject",
-      action: () => alert(`Account ${account.name} rejected.`),
+      action: () => {
+        rejectAccount(account);
+      }
+      
     },
   ];
 
@@ -220,7 +305,9 @@ export default function PendingUserAccounts() {
                 {filteredAccounts?.map((account) => (
                   <TableRow key={account.id}>
                     <TableCell className="font-medium">{account.id}</TableCell>
+                    <TableCell>{account.email}</TableCell>
                     <TableCell>{account.name}</TableCell>
+
                     <TableCell>
                       <button
                         onClick={() => openPDF(account.certificationURL)}

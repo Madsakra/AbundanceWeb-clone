@@ -21,4 +21,13 @@ export type ApprovedAccounts = {
     name:string,
     role:string,
     email:string,
-}
+};
+
+
+export type PendingAccounts = {
+    id: string;
+    name:string,
+    email: string;
+    certificationURL: string;
+    resumeURL: string;
+  };

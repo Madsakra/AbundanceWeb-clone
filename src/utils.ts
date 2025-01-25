@@ -1,8 +1,9 @@
 import { sendPasswordResetEmail } from "firebase/auth";
-import { ApprovedAccounts } from "./vite-env";
+import { ApprovedAccounts, PendingAccounts } from "./vite-env";
 import { auth, db, functions } from "./firebase-config";
 import { httpsCallable } from "firebase/functions";
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
+
 
 
 
@@ -22,7 +23,7 @@ export const resetPassword = async (account:ApprovedAccounts)=>{
   }
 
 
-export const deleteAccountAuth = async(account:ApprovedAccounts,collectionName:string)=>{
+export const deleteAccountAuth = async(account:ApprovedAccounts | PendingAccounts,collectionName:string)=>{
    
     try{
       const deleteAccount = httpsCallable(functions,'deleteAccount');
