@@ -1,3 +1,4 @@
+import { WebsiteLinks } from "@/routes/Authenticated/Admin/ContentManagement/WebsiteContent"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -8,23 +9,20 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
-import { db } from "@/firebase-config";
-import { ReviewType } from "@/routes/Authenticated/Admin/ReviewsManagement/AppReviews";
 import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "@/firebase-config";
 
 
-type RemoveReviewsProps = {
-    removalPopup:boolean,
-    setRemovalPopup:(open:boolean)=>void,
-    selectedData:ReviewType,
+
+type RemoveVidProps = {
+    removeVid:boolean,
+    setRemoveVid:(open:boolean)=>void,
+    selectedData:WebsiteLinks,
     fetchData:(time:"start")=>void,
-    collectionName:string,
+    
 }
 
-
-
-export default function RemoveReviews({removalPopup,setRemovalPopup,selectedData,fetchData,collectionName}:RemoveReviewsProps) {
-
+export default function RemoveVid({removeVid,setRemoveVid,selectedData,fetchData}:RemoveVidProps) {
     const handleRemoveTier = async () => { 
         if (!selectedData) 
             { 
@@ -32,11 +30,11 @@ export default function RemoveReviews({removalPopup,setRemovalPopup,selectedData
                 return
             }; 
         try { 
-          const docRef = doc(db, collectionName, selectedData.id); 
+          const docRef = doc(db, "video_links", selectedData.id); 
           await deleteDoc(docRef); 
           alert("Review removed successfully"); 
           fetchData("start") // Refresh the table data 
-            setRemovalPopup(false);
+          setRemoveVid(false);
 
 
         } catch (error) { 
@@ -48,7 +46,7 @@ export default function RemoveReviews({removalPopup,setRemovalPopup,selectedData
 
 
   return (
-    <AlertDialog open={removalPopup} onOpenChange={setRemovalPopup}>
+    <AlertDialog open={removeVid} onOpenChange={setRemoveVid}>
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle className="text-destructive">Remove Review? </AlertDialogTitle>

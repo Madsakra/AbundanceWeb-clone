@@ -13,43 +13,42 @@ import {
 import { useEffect, useState } from "react"
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase-config";
-import { ReviewType } from "@/routes/Authenticated/Admin/ReviewsManagement/AppReviews";
+import { MET_Task_Type } from "@/routes/Authenticated/Admin/ContentManagement/MetTask";
 
 
 type ReviewsFormProps = {
-    collectionName:string,
     openForm:boolean,
     setOpenForm:(open:boolean)=>void,
-    selectedReview?:ReviewType,
+    selectedData?:MET_Task_Type,
     fetchData:(time:"start")=>void;
     variation:string,
 }
 
 
-export default function ReviewsForm({collectionName,openForm,setOpenForm,selectedReview,fetchData,variation}:ReviewsFormProps) {
+export default function MET_TaskForm({openForm,setOpenForm,selectedData,fetchData}:ReviewsFormProps) {
  
     const [reviewName,setReviewName] = useState("");
     const [value,setValue] = useState<number>()
  
     const handleAddOrEditTier = async () => { 
         try { 
-          if (selectedReview?.id) { 
+          if (selectedData?.id) { 
             // Edit Tier 
-            const docRef = doc(db,collectionName,selectedReview.id); 
+            const docRef = doc(db,"MET_tasks",selectedData.id); 
             await updateDoc(docRef, { 
               name: reviewName, 
               value: value, 
             }); 
-            alert("Review edited successfully"); 
+            alert("MET_Task edited successfully"); 
             
           } else { 
             // Add Tier 
-            const collectionRef = collection(db, collectionName); 
+            const collectionRef = collection(db,"MET_tasks"); 
             await addDoc(collectionRef, { 
                 name: reviewName, 
                 value: value, 
             }); 
-            alert("Review added successfully"); 
+            alert("MET_Task added successfully"); 
           } 
           
          fetchData("start");
@@ -62,10 +61,10 @@ export default function ReviewsForm({collectionName,openForm,setOpenForm,selecte
 
 
       useEffect(()=>{
-        if (selectedReview)
+        if (selectedData)
         {
-            setReviewName(selectedReview.name);
-            setValue(selectedReview.value)
+            setReviewName(selectedData.name);
+            setValue(selectedData.value)
         }
 
       },[])
@@ -75,9 +74,9 @@ export default function ReviewsForm({collectionName,openForm,setOpenForm,selecte
         <AlertDialog onOpenChange={setOpenForm} open={openForm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{selectedReview? <h2>Edit Review - {variation}</h2>:<h1>Add Review - {variation}</h1>}</AlertDialogTitle>
+            <AlertDialogTitle>{selectedData? <h2>Edit MET_tasks</h2>:<h1>Add MET_tasks</h1>}</AlertDialogTitle>
             <AlertDialogDescription>
-            {selectedReview? <h2>Edit Review for {variation}</h2> :<h1>Add Review for {variation}</h1>} 
+            {selectedData? <h2>Edit MET_tasks for your users to log their calories output</h2> :<h1>Add MET_tasks for your users to log their calories output</h1>} 
             
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -100,7 +99,7 @@ export default function ReviewsForm({collectionName,openForm,setOpenForm,selecte
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleAddOrEditTier}>
-            {selectedReview? <h2>Edit Review - {variation}</h2>:<h1>Add Review - {variation}</h1>}
+            {selectedData? <h2>Edit MET_Task</h2>:<h1>Add MET_Task</h1>}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

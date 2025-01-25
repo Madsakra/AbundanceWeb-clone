@@ -34,7 +34,7 @@ import { deleteObject, ref } from "firebase/storage";
 
 
 
-const headers = ["UID","Name", "Email", "Certification", "Resume"];
+const headers = ["UID","Email", "Name", "Certification", "Resume"];
 
 export default function PendingUserAccounts() {
   const [loading, setLoading] = useState(true);
@@ -51,6 +51,7 @@ export default function PendingUserAccounts() {
 
 
   const fetchAccounts = async (action: "start" | "next" | "prev") => {
+    
     // to be used later
     setAccountDueDate(null);
     setLoading(true);
@@ -59,6 +60,8 @@ export default function PendingUserAccounts() {
       let q;
       const accountsRef = collection(db, "pending_approval");
 
+      setPendingAccounts(null);
+      setFilteredAccounts(null);
       if (action === "start") {
         q = query(accountsRef, limit(pageLimit));
       } else if (action === "next" && lastVisible) {
@@ -132,19 +135,50 @@ export default function PendingUserAccounts() {
     console.log(accountDueDate.toString());
 
     try {
+      setLoading(true);
+      const accountDoc = doc(db,"accounts",selectedAccount.id);
+      await setDoc(accountDoc,{
+        name:selectedAccount.name,
+        email:selectedAccount.email,
+        role:"nutritionist"
+      })
+
       const nutritionistDoc = doc(db, "accounts", selectedAccount.id,"approval_info","practicing_info");
       await setDoc(nutritionistDoc, {
         certificationURL: selectedAccount.certificationURL,
         resumeURL: selectedAccount.resumeURL,
         dueDate: accountDueDate.toString()
       });
-      alert(`Account ${selectedAccount.email} approved and moved to nutritionists.`);
+
+
+          // send email for verification
+          const formData = {
+            subject:"Abundance (Notice of Acceptance)",
+            name:selectedAccount.name,
+            toEmail:selectedAccount.email,
+            mainHeader:"Notice of Acceptance",
+            message:"Thank you for signing up for our service. We are glad to inform you that you can start using our web application and offer your expertise. Visit https://abundance-3f9ab.web.app/login to login now!"
+          }
+          
+          emailjs
+            .send(import.meta.env.VITE_EMAILJS_SERVICE_ID, import.meta.env.VITE_EMAILJS_TEMPLATE_ID, formData, {
+              publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+            })
+            .then(
+              () => {
+                console.log('SUCCESS!');
+              },
+              (error) => {
+                console.log('FAILED...', error.text);
+              },
+            );
+
+
 
       // delete pending_approval info, not in use
       await deleteDoc(doc(db, "pending_approval", selectedAccount.id));
-
-      
       setPopupForm(false);
+      alert(`Account ${selectedAccount.email} approved and moved to nutritionists.`);
       fetchAccounts("start");
     } catch (error) {
       console.error("Error approving account:", error);
@@ -195,12 +229,11 @@ export default function PendingUserAccounts() {
           const formData = {
             subject:"Abundance (notice of rejection)",
             name:account.name,
-            reply_to:account.email,
+            toEmail:account.email,
             mainHeader:"Notice of rejection",
             message:"Thank you for signing up for our service. However, we are sorry to inform you that your account application has been rejected for safety purposes. Still, We would like to thank you for your interest in joining us as a nutritionist. Please note that for data safety, your account and data that we accquired in the registration process will therefore be removed."
           }
           
-          // PUT THIS IN ENV VARIABLE LTR
           emailjs
             .send(import.meta.env.VITE_EMAILJS_SERVICE_ID, import.meta.env.VITE_EMAILJS_TEMPLATE_ID, formData, {
               publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,

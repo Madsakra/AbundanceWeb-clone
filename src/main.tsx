@@ -38,6 +38,7 @@ import UserLayout from './routes/Authenticated/User/UserLayout';
 import NutritionistLayout from './routes/Authenticated/Nutritionist/NutritionistLayout';
 import ViewArticles from './routes/Authenticated/Nutritionist/ViewArticles';
 import Profile from './routes/Authenticated/Nutritionist/Profile';
+import MetTask from './routes/Authenticated/Admin/ContentManagement/MetTask';
 
 
 
@@ -173,6 +174,10 @@ const router = createBrowserRouter([
             path:'predefined-nutri-reviews',
             element:<NutriReviews/>
           },
+          {
+            path:'met-task',
+            element:<MetTask/>
+          }
 
 
         ],

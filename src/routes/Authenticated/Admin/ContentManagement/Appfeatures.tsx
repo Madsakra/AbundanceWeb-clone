@@ -287,7 +287,7 @@ export default function Appfeatures() {
 
               <TableFooter className="bg-white">
               <TableRow>
-                <TableCell colSpan={headers.length} className="pt-8">Showing 1 - {baseData?.length} Membership Tiers</TableCell>
+                <TableCell colSpan={headers.length} className="pt-8">Showing 1 - {baseData?.length} App Features</TableCell>
                 <TableCell className="text-right pt-8">
        
                    <div> 

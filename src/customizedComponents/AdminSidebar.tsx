@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contextProvider";
-
+import { FaRunning } from "react-icons/fa";
 
 // Account items
 const accountManagement = [
@@ -54,6 +54,12 @@ const contentManagement = [
     title:"Website Content",
     url:"/admin/website-content",
     icon:LinkIcon
+  },
+
+  {
+    title:"Predefined MET Tasks",
+    url:"/admin/met-task",
+    icon:FaRunning
   }
 ];
 

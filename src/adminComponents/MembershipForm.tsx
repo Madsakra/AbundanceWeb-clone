@@ -19,7 +19,6 @@ import { db } from "@/firebase-config";
 type MembershipFormProps = {
     openForm:boolean,
     setOpenForm:(open:boolean)=>void,
-    mutation:string,
     membershipTier?:MembersipTier,
     fetchData:()=>void;
     setLoading:(load:boolean)=>void
@@ -31,7 +30,7 @@ interface Currency {
     symbol?: string;
   }
 
-export default function MembershipForm({openForm,setOpenForm,mutation,membershipTier,fetchData}:MembershipFormProps) {
+export default function MembershipForm({openForm,setOpenForm,membershipTier,fetchData}:MembershipFormProps) {
  
     // FETCH CURRENCY FROM REST COUNTRIES API
 const [currencies, setCurrencies] = useState<Currency[]>([]);
@@ -131,9 +130,9 @@ const [selectedCurrency, setSelectedCurrency] = useState<string>('');
     <AlertDialog onOpenChange={setOpenForm} open={openForm}>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>{mutation==="add"? <h1>Add Membership</h1>: <h2>Edit Membership</h2>}</AlertDialogTitle>
+        <AlertDialogTitle>{!membershipTier?  <h1>Add Membership</h1>: <h2>Edit Membership</h2>}</AlertDialogTitle>
         <AlertDialogDescription>
-        {mutation==="add"? <h1>Add Membership Tier for your users to view</h1>: <h2>Edit Membership Tier for your users to view</h2> } 
+        {!membershipTier? <h1>Add Membership Tier for your users to view</h1>: <h2>Edit Membership Tier for your users to view</h2> } 
         
         </AlertDialogDescription>
       </AlertDialogHeader>
@@ -187,7 +186,11 @@ const [selectedCurrency, setSelectedCurrency] = useState<string>('');
 
       <AlertDialogFooter>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction onClick={handleAddOrEditTier}>{mutation} Membership</AlertDialogAction>
+        {!membershipTier? 
+        <AlertDialogAction onClick={handleAddOrEditTier}>Add Membership Tier</AlertDialogAction>:
+        <AlertDialogAction onClick={handleAddOrEditTier}>Edit Membership Tier</AlertDialogAction>
+          
+        }
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

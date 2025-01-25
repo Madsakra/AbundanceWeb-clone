@@ -19,6 +19,7 @@ import TableHeaderBar from "@/customizedComponents/TableHeader";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import ReviewsForm from "@/adminComponents/ReviewsForm";
 import RemoveReviews from "@/adminComponents/RemoveReviews";
+import { pageLimit } from "@/utils";
 
 
 export const reviewHeaders = [
@@ -48,7 +49,7 @@ export default function AppReviews() {
 
 
   
-  const pageLimit = 5;
+
 
 
   const fetchData = async (action: "start" | "next" | "prev") => {
@@ -126,11 +127,11 @@ export default function AppReviews() {
 
   const dropDowns = [
     { 
-      actionName:"Edit Link",
+      actionName:"Edit Review",
       action:editReview
     },
     {
-      actionName:"Delete Link",
+      actionName:"Delete Review",
       action:deleteReview
     }
   ]
@@ -199,11 +200,11 @@ return (
            {/* Screen Top */}
            <div className="flex flex-col md:flex-row justify-between">
           <AdminTableHeader
-          header="Membership Tier"
+          header="Predefined Review (App)"
           />    
           <button className="btn btn-ghost bg-[#00ACAC] text-white py-2 px-7" onClick={addReview}>
           <IoIosAddCircleOutline size={24} />
-            Add Review
+            Add Predefined Review
             </button>
           </div>
 
@@ -214,8 +215,8 @@ return (
             <div className="flex flex-row justify-between">
               {/*Header section*/}
               <TableHeaderBar
-              mainText="Membership Tier"
-              subText="Manage your membership tiers"
+              mainText="Predefined Review (App)"
+              subText="Manage your Predefined Review (App) for users to select"
               />
 
               {/*SEARCH BAR*/}
@@ -279,7 +280,7 @@ return (
 
               <TableFooter className="bg-white">
               <TableRow>
-                <TableCell colSpan={reviewHeaders.length} className="pt-8">Showing 1 - {reviews?.length} Membership Tiers</TableCell>
+                <TableCell colSpan={reviewHeaders.length} className="pt-8">Showing 1 - {reviews?.length} Predefined Review (App)</TableCell>
                 <TableCell className="text-right pt-8">
        
                    <div> 

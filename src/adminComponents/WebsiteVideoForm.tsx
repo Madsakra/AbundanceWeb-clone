@@ -9,26 +9,29 @@ import {
     AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
 import {  useState } from "react"
-import {  doc, updateDoc } from "firebase/firestore";
+import {  addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import { WebsiteLinks } from "@/routes/Authenticated/Admin/ContentManagement/WebsiteContent";
 
 type EditVideoProps = {
-    video: WebsiteLinks | null;
+    video?: WebsiteLinks | null;
     fetchData:(action:"start")=>void;
-    editVidLink:boolean;
-    setEditVidLink:(edit:boolean)=>void;
+    vidLinkForm:boolean;
+    setVidLinkForm:(edit:boolean)=>void;
 }
 
 
 
 
-export default function EditWebsiteVideo({video,fetchData,editVidLink,setEditVidLink}:EditVideoProps) {
+export default function WebsiteVideoForm({video,fetchData,vidLinkForm,setVidLinkForm}:EditVideoProps) {
  
  
     const [vidName,setVidName] = useState(video?.name);
     const [vidLink,setVidLink] = useState(video?.link);
  
+  
+
+
 
     const handleSave = async ()=>{
 
@@ -41,7 +44,6 @@ export default function EditWebsiteVideo({video,fetchData,editVidLink,setEditVid
         else if (video)
         {
             try{
-
                 const docRef = doc(db, "video_links",video.id); 
                 await updateDoc(docRef,{
                     name:vidName,
@@ -57,7 +59,35 @@ export default function EditWebsiteVideo({video,fetchData,editVidLink,setEditVid
                 alert("Error updating"+err);
             }
 
-        }   
+        }
+        
+        else if (!video)
+        {
+          try{
+            
+
+            console.log(vidName);
+            console.log(vidLink)
+            
+          await addDoc(collection(db, "video_links"), {
+              name:vidName,
+              link:vidLink
+            });
+
+
+
+
+            alert("Video Link Added !")
+            fetchData("start");
+        }
+
+        catch(err)
+        {
+            alert("Error updating"+err);
+        }
+        }
+
+
         else {
           alert("Please enter your data correctly.");
         }
@@ -67,13 +97,20 @@ export default function EditWebsiteVideo({video,fetchData,editVidLink,setEditVid
 
  
     return (
-        <AlertDialog onOpenChange={setEditVidLink} open={editVidLink}>
+        <AlertDialog onOpenChange={setVidLinkForm} open={vidLinkForm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Edit Video Link</AlertDialogTitle>
-            <AlertDialogDescription>
-                Edit your {vidName} link   
-            </AlertDialogDescription>
+            {video?
+            <AlertDialogTitle>Edit Video Link</AlertDialogTitle>:
+            <AlertDialogTitle>Add Video Link</AlertDialogTitle>
+            }
+
+            {
+              video?
+              <AlertDialogDescription>Edit your {vidName} link</AlertDialogDescription>:
+              <AlertDialogDescription>Add your new video link</AlertDialogDescription>              
+            }
+
           </AlertDialogHeader>
     
             <div className="flex flex-col">
@@ -95,7 +132,12 @@ export default function EditWebsiteVideo({video,fetchData,editVidLink,setEditVid
     
           <AlertDialogFooter className="mt-5">
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleSave}>Edit Address</AlertDialogAction>
+            {
+              video?
+              <AlertDialogAction onClick={handleSave}>Edit Video</AlertDialogAction>
+              :
+              <AlertDialogAction onClick={handleSave}>Add Video</AlertDialogAction>
+            }
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

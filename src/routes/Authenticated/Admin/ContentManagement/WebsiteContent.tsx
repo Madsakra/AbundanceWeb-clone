@@ -1,7 +1,7 @@
 import AdminTableHeader from "@/customizedComponents/AdminTableHeader";
 import TableHeaderBar from "@/customizedComponents/TableHeader";
 import { useEffect, useState } from "react"
-import { CiClock2, CiLocationOn } from "react-icons/ci";
+import { CiLocationOn } from "react-icons/ci";
 import {
   Table,
   TableBody,
@@ -19,9 +19,12 @@ import WebsiteContentForm from "@/adminComponents/WebsiteContentForm";
 import RemoveWebsiteLink from "@/adminComponents/RemoveWebsiteLink";
 import { FaRegPenToSquare } from "react-icons/fa6";
 import EditAddress from "@/adminComponents/EditAddress";
-import EditWebsiteVideo from "@/adminComponents/EditWebsiteVideo";
+
 import { Link } from "react-router-dom";
 import { CiPhone } from "react-icons/ci";
+import WebsiteVideoForm from "@/adminComponents/WebsiteVideoForm";
+import RemoveVid from "@/adminComponents/RemoveVid";
+import { pageLimit } from "@/utils";
 
 export type CompanyContactDetails = {
   address:string,
@@ -63,11 +66,15 @@ export default function WebsiteContent() {
   const [selectedLink,setSelectedLink] = useState<WebsiteLinks | undefined>(undefined)
   const [removalPopup,setRemovalPopup] = useState<boolean>();
   const [editAddress,setEditAddress] = useState(false);
+  
+  
+
 
   const [selectedVid,setSelectedVid] = useState<WebsiteLinks|null>(null);
-  const [editVidLink,setEditVidLink] = useState(false);
+  const [vidLinkForm,setVidLinkForm] = useState(false);
+  const [removeVid,setRemoveVid] = useState(false);
 
-  const pageLimit = 5;
+
   
   
 
@@ -164,6 +171,9 @@ export default function WebsiteContent() {
     setLoading(false);
   };
 
+
+  
+
   const editLink = async (selectedLink:WebsiteLinks)=>{
     setSelectedLink(selectedLink);
     setOpenForm(true)
@@ -179,11 +189,21 @@ export default function WebsiteContent() {
     setOpenForm(true); 
   }
 
-  const handleVideoLink = async (selectedVid:WebsiteLinks)=>{
-    setSelectedVid(selectedVid);
-    setEditVidLink(true);
-  }
 
+  const addVideoLink = async ()=>{
+    setSelectedVid(null);
+    setVidLinkForm(true);
+  };
+
+  const editVideoLink = async (selectedVid:WebsiteLinks)=>{
+    setSelectedVid(selectedVid);
+    setVidLinkForm(true);
+  };
+
+  const removeVideoLink = async (selectedVid:WebsiteLinks)=>{
+    setSelectedVid(selectedVid);
+    setRemoveVid(true);
+  }
 
   const dropDowns = [
 
@@ -202,8 +222,13 @@ export default function WebsiteContent() {
   const videoLinksDropdown = [
     {
       actionName:"Edit Video Link",
-      action:handleVideoLink
+      action:editVideoLink
+    },
+    {
+      actionName:"Remove Video Link",
+      action:removeVideoLink
     }
+
   ]
 
   useEffect(()=>{
@@ -262,13 +287,25 @@ export default function WebsiteContent() {
 
           }
 
+
+
           {
-            editVidLink &&
-            <EditWebsiteVideo
-            editVidLink={editVidLink}
-            setEditVidLink={setEditVidLink}
+            vidLinkForm && 
+            <WebsiteVideoForm
+              vidLinkForm={vidLinkForm}
+              setVidLinkForm={setVidLinkForm}
+              fetchData={fetchData}
+              video={selectedVid}
+            />
+          }
+
+          {
+            (selectedVid && removeVid) && 
+            <RemoveVid
+            removeVid={removeVid}
+            setRemoveVid={setRemoveVid}
             fetchData={fetchData}
-            video={selectedVid}
+            selectedData={selectedVid}
             />
           }
 
@@ -299,11 +336,7 @@ export default function WebsiteContent() {
             </div>
             </div>
             
-            {/*Opening Hours*/}
-            <div className="flex gap-5 items-center my-5">
-            <CiClock2 size={30} />
-            <h2>{companyAddress?.openingTime} - {companyAddress?.closingTime}</h2>
-            </div>
+            {/*Phone*/}
 
             <div className="flex gap-4 items-center mt-10">
               <CiPhone size={30}/>
@@ -320,14 +353,14 @@ export default function WebsiteContent() {
           <div className="flex flex-row justify-between">
             <TableHeaderBar
             mainText="Website Video Links"
-              subText="Manage your video (links) to display them on the home page"
+              subText="Manage your video(s) displayed on home screen"
               />
-              {/* <button
-              onClick={addLink} 
+              <button
+              onClick={addVideoLink} 
               className="btn btn-ghost px-7 bg-[#00ACAC] text-white">
               <IoIosAddCircleOutline size={25} />
                 Add Link
-                </button> */}
+                </button>
              </div>
         
              <Table className="my-10">

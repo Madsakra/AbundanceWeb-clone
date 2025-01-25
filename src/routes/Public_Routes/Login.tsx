@@ -47,7 +47,15 @@ export default function Login() {
   
           try{
             const docRef = doc(db, "accounts", loginResult.user.uid);
+            const pendingRef = doc(db, "pending_approval", loginResult.user.uid);
+
             const docSnap = await getDoc(docRef);
+            const pendingSnap = await getDoc(pendingRef)
+            if (pendingSnap.exists())
+            {
+              alert("Please wait for admin's approval before logging in. We will send an email to notify you ASAP.");
+              logout();
+            }
             // check if the user is normal user
             if (docSnap.exists()) {
 

@@ -261,9 +261,11 @@ export default function PredefinedGoalsForm({openForm,setOpenForm,SelectedData,f
 
       <AlertDialogFooter className="mt-10">
         <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <button
-        className="bg-black btn text-white"
-        onClick={handleAddOrEditData}>Add Predefined Goal</button>
+        {
+          SelectedData?
+          <button className="bg-black btn text-white" onClick={handleAddOrEditData}>Edit Predefined Goal</button>:
+          <button className="bg-black btn text-white" onClick={handleAddOrEditData}>Add Predefined Goal</button>
+        }
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

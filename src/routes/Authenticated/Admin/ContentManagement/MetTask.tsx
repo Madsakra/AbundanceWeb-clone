@@ -17,37 +17,40 @@ import CustomizedDropdown from "@/customizedComponents/CustomizedDropdown";
 import AdminTableHeader from "@/customizedComponents/AdminTableHeader";
 import TableHeaderBar from "@/customizedComponents/TableHeader";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import ReviewsForm from "@/adminComponents/ReviewsForm";
-import RemoveReviews from "@/adminComponents/RemoveReviews";
 import { pageLimit } from "@/utils";
+import MET_TaskForm from "@/adminComponents/MET_TaskForm";
+import RemoveMET from "@/adminComponents/RemoveMET";
+
 
 
 export const reviewHeaders = [
-  "Review ID","Review Title","Value"
-]
-
-export type ReviewType = {
-  id:string,
-  name:string,
-  value:number
-}
+    "ID","Task Name","Value"
+  ]
 
 
-export default function NutriReviews() {
+export type MET_Task_Type = {
+    id:string,
+    name:string,
+    value:number
+  }
+
+
+
+
+export default function MetTask() {
+
 
   const [loading,setLoading] = useState(true);
-  const [reviews,setReviews] = useState<ReviewType[]|null>(null);
+  const [baseData,setBaseData] = useState<MET_Task_Type[]|null>(null);
   const [searchQuery, setSearchQuery] = useState(""); // Search query state
-  const [filteredReviews, setFilteredReviews] = useState<ReviewType[] | null>(null); // Filtered accounts for display
+  const [filteredData, setFilteredData] = useState<MET_Task_Type[] | null>(null); // Filtered accounts for display
   const [firstVisible, setFirstVisible] = useState<QueryDocumentSnapshot | null>(null);
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot | null>(null);
 
 
   const [openForm,setOpenForm] = useState(false);
-  const [selectedReview,setSelectedReview] = useState<ReviewType | undefined>(undefined)
+  const [selectedData,setSelectedData] = useState<MET_Task_Type | undefined>(undefined)
   const [removalPopup,setRemovalPopup] = useState<boolean>();
-
-
 
   const fetchData = async (action: "start" | "next" | "prev") => {
 
@@ -55,7 +58,7 @@ export default function NutriReviews() {
     try {
 
       let q;
-      const accountsRef = collection(db, "nutritionist_reviews");
+      const accountsRef = collection(db, "MET_tasks");
   
       if (action === "start") {
         // Initial fetch
@@ -79,7 +82,7 @@ export default function NutriReviews() {
       }
   
       const querySnapshot = await getDocs(q);
-      const temp: ReviewType[] = [];
+      const temp: MET_Task_Type[] = [];
   
       if (!querySnapshot.empty) {
         // Update first and last document references for pagination
@@ -90,13 +93,13 @@ export default function NutriReviews() {
           const data = {
             id: doc.id,
             ...doc.data(),
-          } as ReviewType;
+          } as MET_Task_Type;
           temp.push(data);
         });
   
         // Update state with fetched data
-        setReviews(temp);
-        setFilteredReviews(temp);
+        setBaseData(temp);
+        setFilteredData(temp);
       } else {
         console.warn("No documents found.");
       }
@@ -107,31 +110,31 @@ export default function NutriReviews() {
     setLoading(false);
   };
 
-  const editReview = async (selectedLink:ReviewType)=>{
-    setSelectedReview(selectedLink);
+  const editTask = async (selected:MET_Task_Type)=>{
+    setSelectedData(selected);
     setOpenForm(true)
   }
 
-  const deleteReview = async (selectedLink:ReviewType)=>{
-    setSelectedReview(selectedLink);
+  const deleteTask = async (selected:MET_Task_Type)=>{
+    setSelectedData(selected);
     setRemovalPopup(true);
   }
 
-  const addReview= async ()=>{
-    setSelectedReview(undefined);
+  const addTask= async ()=>{
+    setSelectedData(undefined);
     setOpenForm(true); 
-  }
+  };
 
   const dropDowns = [
     { 
-      actionName:"Edit Review",
-      action:editReview
+      actionName:"Edit Task",
+      action:editTask
     },
     {
-      actionName:"Delete Review",
-      action:deleteReview
+      actionName:"Delete Link",
+      action:deleteTask
     }
-  ]
+  ];
 
 
   // Handle search input changes
@@ -140,11 +143,11 @@ export default function NutriReviews() {
     setSearchQuery(query);
 
     // Filter accounts based on the search query
-    if (reviews) {
-      const filtered = reviews.filter((rev) =>
+    if (baseData) {
+      const filtered = baseData.filter((rev) =>
         rev.id.toLowerCase().startsWith(query.toLowerCase())
       );
-      setFilteredReviews(filtered);
+      setFilteredData(filtered);
     }
   };
 
@@ -153,8 +156,8 @@ export default function NutriReviews() {
     fetchData("start")
    },[]);
 
-return (
- 
+
+  return (
     <>
    
 
@@ -169,39 +172,33 @@ return (
         <div className="flex flex-col p-10 gap-7">
           
           {openForm &&
-          <ReviewsForm
-          collectionName="nutritionist_reviews"
+          <MET_TaskForm
           openForm={openForm}
           setOpenForm={setOpenForm}
-          selectedReview={selectedReview}
+          selectedData={selectedData}
           fetchData={fetchData}
-          variation="Nutritionist"
-          
-          
+          variation="App"
           />
-          
           }
 
-         {
-            (removalPopup && selectedReview) && 
-              <RemoveReviews
+        {
+            (removalPopup && selectedData) && 
+              <RemoveMET
               removalPopup={removalPopup}
               setRemovalPopup={setRemovalPopup}
-              selectedData={selectedReview}
+              selectedData={selectedData}
               fetchData={fetchData}
-              collectionName="nutritionist_reviews"
               />
-
-          } 
+          }
  
            {/* Screen Top */}
            <div className="flex flex-col md:flex-row justify-between">
           <AdminTableHeader
-          header="Predefined Reviews (Nutritionist)"
+          header="Predefined MET_TASK"
           />    
-          <button className="btn btn-ghost bg-[#00ACAC] text-white py-2 px-7" onClick={addReview}>
+          <button className="btn btn-ghost bg-[#00ACAC] text-white py-2 px-7" onClick={addTask}>
           <IoIosAddCircleOutline size={24} />
-            Add Review
+            Add MET Task
             </button>
           </div>
 
@@ -212,8 +209,8 @@ return (
             <div className="flex flex-row justify-between">
               {/*Header section*/}
               <TableHeaderBar
-              mainText="Predefined Reviews (Nutritionist)"
-              subText="Manage Predefined reviews for your users to review their nutritionist"
+              mainText="Predefined MET_TASK"
+              subText="Manage your Predefined MET_TASK so that your users can upload calories output"
               />
 
               {/*SEARCH BAR*/}
@@ -257,7 +254,7 @@ return (
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredReviews?.map((rev) => (
+                {filteredData?.map((rev) => (
                   <TableRow key={rev.id}>
                     <TableCell className="font-medium">{rev.id}</TableCell>
                     <TableCell>{rev.name}</TableCell>
@@ -277,7 +274,7 @@ return (
 
               <TableFooter className="bg-white">
               <TableRow>
-                <TableCell colSpan={reviewHeaders.length} className="pt-8">Showing 1 - {reviews?.length} Predefined Reviews (Nutritionist)</TableCell>
+                <TableCell colSpan={reviewHeaders.length} className="pt-8">Showing 1 - {baseData?.length} Predefined Review (App)</TableCell>
                 <TableCell className="text-right pt-8">
        
                    <div> 
@@ -294,10 +291,6 @@ return (
     }
 
     </>
+
   )
-
-
-
-
-
 }

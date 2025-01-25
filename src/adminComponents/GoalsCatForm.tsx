@@ -28,7 +28,7 @@ type GoalsCatForm = {
 export default function GoalsCatForm({openForm,setOpenForm,SelectedData,fetchData,setLoading}:GoalsCatForm) {
 
     const [disableName,setDisableName] = useState(false);
-    const [categoryName,setCategoryName] = useState<string>("")
+    const [categoryName,setCategoryName] = useState<string|undefined>(SelectedData?.id)
     const [inputUnit, setInputUnit] = useState("");
 
 
@@ -36,16 +36,7 @@ export default function GoalsCatForm({openForm,setOpenForm,SelectedData,fetchDat
    
 
 
-    // VALIDATION FUNCTION NOT WORKING
-    // function isValidUnit(): boolean {
-    //     try {
-    //       // Try to create a unit object
-    //       const newUnit = unit(inputUnit);
-    //       return true; // If no error is thrown, the unit is valid
-    //     } catch (error) {
-    //       return false; // If an error is thrown, the unit is invalid
-    //     }
-    //   }
+
 
     const removeUnit = (unitToRemove:string)=>{
         setUnitContainer(prevUnits => {
@@ -59,6 +50,13 @@ export default function GoalsCatForm({openForm,setOpenForm,SelectedData,fetchDat
 
 
     const addUnit = () => {
+
+      if (inputUnit.trim()==="")
+      {
+        alert("Please do not enter blank units!");
+        return;
+      }
+
         try {
             {
                 setUnitContainer(prevUnits => {
@@ -97,8 +95,8 @@ export default function GoalsCatForm({openForm,setOpenForm,SelectedData,fetchDat
             
           } else { 
             // Add Tier 
-       
-            await setDoc(doc(db,"predefined_goals_categories",categoryName),{ 
+            
+            await setDoc(doc(db,"predefined_goals_categories",categoryName!),{ 
                 units:unitContainer
             }); 
 
@@ -182,9 +180,9 @@ export default function GoalsCatForm({openForm,setOpenForm,SelectedData,fetchDat
                 onChange={(e)=>setInputUnit(e.target.value)}
                 />
 
-                <button onClick={addUnit}
-                className="btn btn-md"
-                >Add unit</button>
+                <button onClick={addUnit} className="btn btn-md">Add unit</button>
+                
+
                 </div>
     
             </div>
@@ -193,7 +191,12 @@ export default function GoalsCatForm({openForm,setOpenForm,SelectedData,fetchDat
     
           <AlertDialogFooter className="mt-10">
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleAddOrEditTier}>Validate unit</AlertDialogAction>
+            {
+              SelectedData?
+              <AlertDialogAction onClick={handleAddOrEditTier}>Edit Category</AlertDialogAction>:
+              <AlertDialogAction onClick={handleAddOrEditTier}>Add Category</AlertDialogAction>
+            }
+            
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

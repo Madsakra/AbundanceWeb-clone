@@ -13,17 +13,16 @@ import { ReviewType } from "@/routes/Authenticated/Admin/ReviewsManagement/AppRe
 import { deleteDoc, doc } from "firebase/firestore";
 
 
-type RemoveReviewsProps = {
+type RemoveMETProps = {
     removalPopup:boolean,
     setRemovalPopup:(open:boolean)=>void,
     selectedData:ReviewType,
     fetchData:(time:"start")=>void,
-    collectionName:string,
 }
 
 
 
-export default function RemoveReviews({removalPopup,setRemovalPopup,selectedData,fetchData,collectionName}:RemoveReviewsProps) {
+export default function RemoveMET({removalPopup,setRemovalPopup,selectedData,fetchData}:RemoveMETProps) {
 
     const handleRemoveTier = async () => { 
         if (!selectedData) 
@@ -32,7 +31,7 @@ export default function RemoveReviews({removalPopup,setRemovalPopup,selectedData
                 return
             }; 
         try { 
-          const docRef = doc(db, collectionName, selectedData.id); 
+          const docRef = doc(db, "MET_tasks", selectedData.id); 
           await deleteDoc(docRef); 
           alert("Review removed successfully"); 
           fetchData("start") // Refresh the table data 

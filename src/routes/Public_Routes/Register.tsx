@@ -111,11 +111,9 @@ export default function Register() {
       }
       else{
         alert("You might want to check your form again");
-        setLoading(false);
       }
-
-
     }
+    setLoading(false);
   }
 
   if (loading)

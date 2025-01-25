@@ -51,7 +51,7 @@ export default function EditProfileForm({editProfile,setEditProfile}:EditProfile
 
 
       const handleSubmit = ()=>{
-      
+      console.log(imageFile);
       }
 
 

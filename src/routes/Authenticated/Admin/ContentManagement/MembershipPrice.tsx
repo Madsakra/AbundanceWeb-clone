@@ -141,7 +141,6 @@ return (
           setLoading={setLoading}
           openForm={openForm}
           setOpenForm={setOpenForm}
-          mutation="Add"
           membershipTier={selectedTier}
           fetchData={fetchTiers}
           />

@@ -57,21 +57,12 @@ export default function NutritionistSubmission() {
 
       await setDoc(pendingApprovalRef, {
         name:name,
+        email:email,
         certificationURL: certURL,
         resumeURL: resumeURL,
         submittedAt: new Date().toISOString(),
       });
 
-      // save account info to accounts table
-      const docRef =  doc(db, "accounts",uid);
-
-      await setDoc(docRef, {
-        name: name,
-        email:email,
-        role:"nutritionist",
-      });
-
-      setLoading(false);
       // Sign out the user
       auth.signOut();
       navigate("/"); // Redirect to home or login page
@@ -81,19 +72,20 @@ export default function NutritionistSubmission() {
       catch(err)
       {
         alert(err)
-        setLoading(false);
         navigate("/")
       }
-      
       }
+
+      setLoading(false);
     }
   
   
     if (loading)
     {
       return( 
-      <div className='flex items-center justify-center h-screen'>
-      <span className="loading loading-infinity loading-lg"></span>      
+      <div className='flex flex-col items-center justify-center h-screen'>
+      <span className="loading loading-infinity loading-lg"></span> 
+      <h1>Loading...</h1>     
       </div>)
     }
 
