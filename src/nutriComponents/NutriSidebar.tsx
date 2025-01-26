@@ -61,9 +61,7 @@ export function NutriSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-       
-
-
+      
         <SidebarGroup>
         <SidebarGroupLabel className="mb-5">Account Details</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -82,9 +80,6 @@ export function NutriSidebar() {
         </SidebarGroup>
         <SidebarGroup>
 
-
-
-
           <SidebarGroupLabel>App Functionality</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -101,14 +96,6 @@ export function NutriSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
-   
-
-
-
-
-
-
               <SidebarFooter className="h-[60vh] flex justify-end">
                 <SidebarMenuButton onClick={logout} className="gap-5">
                   <Power/>

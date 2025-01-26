@@ -1,4 +1,4 @@
-import { useAuth } from "@/contextProvider";
+import { ProfileType, useAuth } from "@/contextProvider";
 import { useEffect, useState } from "react"
 import { BsCake2Fill } from "react-icons/bs";
 import { MdEmail } from "react-icons/md";
@@ -14,15 +14,31 @@ export default function Profile() {
  
   const [loading,setLoading] = useState(false);
   const [editProfile,setEditProfile] = useState(false);
-  const {profile,user} = useAuth();  
+  const {user} = useAuth();  
+  const [profile,setProfile] = useState<ProfileType | null>(null)
   const [resumeURL, setResumeURL] = useState(null); // State for Resume URL
   const [certificationURL, setCertificationURL] = useState(null); // State for Certificate URL
 
+
+  const fetchProfile = async()=>{
+
+    if (user)
+    {
+      const profileRef = doc(db,"accounts",user.uid,"profile","profile_info");
+      const profileSnap = await getDoc(profileRef);
+      if (profileSnap.exists())
+      {
+        console.log(profileSnap.data());
+        setProfile(profileSnap.data() as ProfileType);
+      }
+    }
+  }
 
 
   // Fetch resumeURL and certificateURL from Firestore
   useEffect(() => {
     if (user && user.uid) {
+      fetchProfile();
       const fetchPracticingInfo = async () => {
         try {
           const docRef = doc(db, "accounts", user.uid, "approval_info", "practicing_info");
@@ -83,6 +99,7 @@ export default function Profile() {
           <EditProfileForm
           editProfile={editProfile}
           setEditProfile={setEditProfile}
+          fetchProfile={fetchProfile}
           />
         }
 

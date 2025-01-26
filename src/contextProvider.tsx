@@ -3,7 +3,7 @@ import { onAuthStateChanged,signInWithEmailAndPassword,signOut,User } from 'fire
 import { auth, db} from '@/firebase-config';
 import { doc, getDoc } from 'firebase/firestore';
 
-type ProfileType = {
+export type ProfileType = {
   avatar:string,
   dob:string,
   title:string,
