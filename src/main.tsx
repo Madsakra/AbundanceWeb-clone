@@ -39,6 +39,8 @@ import NutritionistLayout from './routes/Authenticated/Nutritionist/Nutritionist
 import ViewArticles from './routes/Authenticated/Nutritionist/ViewArticles';
 import Profile from './routes/Authenticated/Nutritionist/Profile';
 import MetTask from './routes/Authenticated/Admin/ContentManagement/MetTask';
+import AdviceMessage from './routes/Authenticated/Nutritionist/Advice/AdviceMessage';
+import MealPlan from './routes/Authenticated/Nutritionist/Advice/MealPlan';
 
 
 
@@ -112,7 +114,19 @@ const router = createBrowserRouter([
           {
             path:'profile',
             element:<Profile/>
+          },
+
+          {
+            path:'advice/:clientID',
+            element:<AdviceMessage/>
+          },
+
+          {
+            path:'advice/:clientID/mealPlan',
+            element:<MealPlan/>
           }
+
+
         ],
       },
      
@@ -178,7 +192,6 @@ const router = createBrowserRouter([
             path:'met-task',
             element:<MetTask/>
           }
-
 
         ],
       },
