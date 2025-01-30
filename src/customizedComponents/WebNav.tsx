@@ -86,14 +86,24 @@ export default function WebNav(){
                 ))}
 
                 {
-                    accountDetails?.role === "admin"?
+                    accountDetails?.role === "admin" && 
                     <Link to="/admin"   className="lg:text-lg ml-8 text-[#009797]">
                     Dashboard
-                    </Link>:
+                    </Link>
+                }
+                {
+                    accountDetails?.role === "nutritionist" &&
                     <Link to="/nutri"   className="lg:text-lg ml-8 text-[#009797]">
                     Dashboard
                     </Link>
                 }
+                {
+                   accountDetails?.role === "user" &&
+                    <Link to="/user"   className="lg:text-lg ml-8 text-[#009797]">
+                    Membership
+                    </Link>
+                }
+                
                 
                 </div>:
                 

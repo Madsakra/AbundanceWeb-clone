@@ -5,6 +5,7 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getFunctions } from 'firebase/functions';
 
+
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -23,7 +24,7 @@ export const db = getFirestore(app);
 export const firestore = getFirestore(app);
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
-
+export const stripeFunctions = getFunctions(app,"asia-southeast2")
 
 
 

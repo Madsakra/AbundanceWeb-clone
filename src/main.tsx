@@ -15,7 +15,6 @@ import Register from './routes/Public_Routes/Register';
 import ForgetPassword from './routes/Public_Routes/ForgetPassword';
 
 import '@fontsource/poppins';
-import Dashboard from './routes/Authenticated/User/Dashboard';
 import NutritionistSubmission from './routes/Public_Routes/NutritionistSubmission';
 
 
@@ -41,6 +40,7 @@ import Profile from './routes/Authenticated/Nutritionist/Profile';
 import MetTask from './routes/Authenticated/Admin/ContentManagement/MetTask';
 import AdviceMessage from './routes/Authenticated/Nutritionist/Advice/AdviceMessage';
 import MealPlan from './routes/Authenticated/Nutritionist/Advice/MealPlan';
+import Membership from './routes/Authenticated/User/Membership';
 
 
 
@@ -80,7 +80,7 @@ const router = createBrowserRouter([
 
       // PROTECTED ROUTE WRAPPER
       {
-        path: "/general",
+        path: "/user",
         element: (<ProtectedRoute allowedRoles={["user"]}>
                     <UserLayout/>
                   </ProtectedRoute>
@@ -88,7 +88,7 @@ const router = createBrowserRouter([
         children: [
           {
             index:true, 
-            element: <Dashboard />,  // This should render if verified
+            element: <Membership />,  // This should render if verified
           },
         ],
       },

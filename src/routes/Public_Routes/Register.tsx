@@ -92,7 +92,7 @@ export default function Register() {
           
           alert("Account created")
           setLoading(false);
-          navigate('/general/')
+          navigate('/user/')
           setAccountDetails({
             name:userName,
             email:email,

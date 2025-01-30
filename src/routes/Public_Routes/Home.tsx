@@ -12,12 +12,11 @@ import reviewAvatar3 from '../../assets/Images/emma.png';
 import AppReviewCard from '@/customizedComponents/AppReviewCard';
 import ContactInfo from '@/customizedComponents/ContactInfo';
 import { useEffect, useState } from 'react';
-import { MembersipTier } from '../Authenticated/Admin/ContentManagement/MembershipPrice';
 import { AppFeature } from '../Authenticated/Admin/ContentManagement/Appfeatures';
 import { CompanyContactDetails, WebsiteLinks } from '../Authenticated/Admin/ContentManagement/WebsiteContent';
 import { collection, doc, getDoc, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '@/firebase-config';
-
+import { MembershipTier } from '@/types/userTypes';
 
 
 
@@ -44,7 +43,7 @@ export default function Home() {
   const [loading,setLoading] = useState(true);
   const [videoLinks,setVideoLinks] = useState<WebsiteLinks[]|null>([]);
   const [appFeatures,setAppFeatures] = useState<AppFeature []| null>(null);
-  const [membershipTier,setMembershiptier] = useState<MembersipTier []| null>(null); 
+  const [membershipTier,setMembershiptier] = useState<MembershipTier []| null>(null); 
   const [contactInfo,setContactInfo] = useState<CompanyContactDetails| null>(null);
 
   const fetchData = async()=>{
@@ -62,16 +61,17 @@ export default function Home() {
 
     setAppFeatures(tempAF);
 
-      const collectionRef = collection(db, "membership"); 
-      const q = query(collectionRef, orderBy("value", "asc"));
+      const collectionRef = collection(db, "membership","prod_RgC8KOaMNtX5PL","prices"); 
+      const q = query(collectionRef, orderBy("unit_amount", "asc"));
 
       const snapshot = await getDocs(q); 
+      console.log(snapshot);
       const tiersData = snapshot.docs.map((doc) => ({ 
-        id: doc.id, 
-        tier_name: doc.data().tier_name, 
-        value: doc.data().value, 
+        id:doc.id,
+        description: doc.data().description, 
+        unit_amount:doc.data().unit_amount, 
         currency: doc.data().currency, 
-        recurring: doc.data().recurring, 
+        interval:doc.data().interval,
       })); 
     setMembershiptier(tiersData);
 
@@ -251,7 +251,7 @@ export default function Home() {
                     whileInView={{opacity:1, y:0, transition:{delay: 0.2 ,duration: 0.4}}}
                     viewport={{once:false,amount:0.2}}
                     
-          className='mt-5 w-full h-auto grid grid-cols-1 lg:grid-cols-2 p-10 xl:grid-cols-4 gap-4 justify-items-center mb-32'>
+          className='mt-5 self-center w-[90%]  h-auto grid md:grid-cols-2 xl:grid-cols-4 gap-4 justify-items-center mb-32'>
             {membershipTier?.map((tier,index)=>(
               <Membershipbox {...tier} key={index}/>
             ))}

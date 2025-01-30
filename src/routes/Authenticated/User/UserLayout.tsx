@@ -1,6 +1,8 @@
 
 
 
+import MobileNav from '@/customizedComponents/MobileNav';
+import WebNav from '@/customizedComponents/WebNav';
 import { Outlet } from 'react-router-dom'
 
 
@@ -10,6 +12,8 @@ const UserLayout = () => {
    
   
       <main>
+        <WebNav/>
+        <MobileNav/>
         <Outlet/>
       </main>
    

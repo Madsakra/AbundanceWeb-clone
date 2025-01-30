@@ -63,7 +63,7 @@ export default function Login() {
               
               if (accountDetails.role === "user")
               {
-                navigate('/general/');
+                navigate('/user/');
               }
 
               else if (accountDetails.role === "nutritionist")
