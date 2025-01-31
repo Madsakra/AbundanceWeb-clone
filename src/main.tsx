@@ -41,6 +41,7 @@ import MetTask from './routes/Authenticated/Admin/ContentManagement/MetTask';
 import AdviceMessage from './routes/Authenticated/Nutritionist/Advice/AdviceMessage';
 import MealPlan from './routes/Authenticated/Nutritionist/Advice/MealPlan';
 import Membership from './routes/Authenticated/User/Membership';
+import ClientInfo from './routes/Authenticated/Nutritionist/Advice/ClientInfo';
 
 
 
@@ -103,7 +104,7 @@ const router = createBrowserRouter([
         children: [
           {
             index: true, 
-            element: <ManageClients/>,  // This should render if verified
+            element: <ManageClients/>, 
           },
 
           {
@@ -114,6 +115,10 @@ const router = createBrowserRouter([
           {
             path:'profile',
             element:<Profile/>
+          },
+          {
+            path:'clientInfo/:clientID',
+            element:<ClientInfo/>
           },
 
           {
