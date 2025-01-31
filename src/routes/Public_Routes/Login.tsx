@@ -3,8 +3,8 @@ import { Link,  useNavigate } from 'react-router-dom'
 import loginSplash from '../../assets/Images/login_splashes/login_splash.jpg'
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
-
-import { AccountDetails, useAuth } from '@/contextProvider';
+import { AccountDetails } from '@/types/userTypes';
+import { useAuth } from '@/contextProvider';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase-config';
 import { UserCredential } from 'firebase/auth';

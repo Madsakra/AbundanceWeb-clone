@@ -25,21 +25,8 @@ import { CiPhone } from "react-icons/ci";
 import WebsiteVideoForm from "@/adminComponents/WebsiteVideoForm";
 import RemoveVid from "@/adminComponents/RemoveVid";
 import { pageLimit } from "@/utils";
+import { CompanyContactDetails, WebsiteLinks } from "@/types/adminTypes";
 
-export type CompanyContactDetails = {
-  address:string,
-  openingTime:string,
-  closingTime:string,
-  embeddedLink:string,
-  phone:string, 
-
-};
-
-export type WebsiteLinks = { 
-  id: string; 
-  name:string;
-  link:string;
-}; 
 
 
 
@@ -68,8 +55,6 @@ export default function WebsiteContent() {
   const [editAddress,setEditAddress] = useState(false);
   
   
-
-
   const [selectedVid,setSelectedVid] = useState<WebsiteLinks|null>(null);
   const [vidLinkForm,setVidLinkForm] = useState(false);
   const [removeVid,setRemoveVid] = useState(false);

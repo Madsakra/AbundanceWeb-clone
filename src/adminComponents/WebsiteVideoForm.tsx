@@ -11,7 +11,7 @@ import {
 import {  useState } from "react"
 import {  addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase-config";
-import { WebsiteLinks } from "@/routes/Authenticated/Admin/ContentManagement/WebsiteContent";
+import { WebsiteLinks } from "@/types/adminTypes";
 
 type EditVideoProps = {
     video?: WebsiteLinks | null;

@@ -2,24 +2,9 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 import { onAuthStateChanged,signInWithEmailAndPassword,signOut,User } from 'firebase/auth';
 import { auth, db} from '@/firebase-config';
 import { doc, getDoc } from 'firebase/firestore';
-
-export type ProfileType = {
-  avatar:string,
-  dob:string,
-  title:string,
-  gender:string,
-}
-
-export type AccountDetails = {
-  name:string,
-  email:string,
-  role:string,
-  image?:string,
-  certificationURL?:string,
-  resumeURL?:string,
+import { AccountDetails, ProfileType } from './types/userTypes';
 
 
-}
 
 
 

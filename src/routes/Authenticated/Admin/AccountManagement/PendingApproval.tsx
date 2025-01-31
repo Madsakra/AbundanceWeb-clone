@@ -29,7 +29,7 @@ import emailjs from '@emailjs/browser';
 import {CalendarDate} from "@internationalized/date";
 import {Calendar} from "@heroui/calendar";
 import { deleteAccountAuth, pageLimit } from "@/utils";
-import { PendingAccounts } from "@/vite-env";
+import { PendingAccounts } from "@/types/userTypes";
 import { deleteObject, ref } from "firebase/storage";
 
 

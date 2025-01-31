@@ -1,4 +1,4 @@
-import { ProfileType, useAuth } from "@/contextProvider";
+import {  useAuth } from "@/contextProvider";
 import { useEffect, useState } from "react"
 import { BsCake2Fill } from "react-icons/bs";
 import { MdEmail } from "react-icons/md";
@@ -9,6 +9,7 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import EditProfileForm from "@/nutriComponents/EditProfileForm";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase-config";
+import { ProfileType } from "@/types/userTypes";
 
 export default function Profile() {
  

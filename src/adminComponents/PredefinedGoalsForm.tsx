@@ -1,6 +1,5 @@
 import { db } from "@/firebase-config";
-import { PredefinedGoalsType } from "@/routes/Authenticated/Admin/ContentManagement/PredefinedGoals";
-import { PredefinedGoalsCat } from "@/routes/Authenticated/Admin/ContentManagement/PredefinedGoalsCat";
+
 import { addDoc, collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
@@ -13,6 +12,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
+import { PredefinedGoalsCat, PredefinedGoalsType } from "@/types/adminTypes";
 
 
 type GoalsCatForm = {

@@ -7,27 +7,6 @@ type ProtectedRouteProps = PropsWithChildren & {
 };
 
 
-export interface UserType {
-    userId: string;
-    name: string;
-    email: string;
-    authToken?: string;
-  }
 
 
 
-export type ApprovedAccounts = {
-    id:string,
-    name:string,
-    role:string,
-    email:string,
-};
-
-
-export type PendingAccounts = {
-    id: string;
-    name:string,
-    email: string;
-    certificationURL: string;
-    resumeURL: string;
-  };

@@ -1,5 +1,5 @@
 import { sendPasswordResetEmail } from "firebase/auth";
-import { ApprovedAccounts, PendingAccounts } from "./vite-env";
+import { ApprovedAccounts,PendingAccounts } from "./types/userTypes";
 import { auth, db, functions } from "./firebase-config";
 import { httpsCallable } from "firebase/functions";
 import { deleteDoc, doc, setDoc } from "firebase/firestore";

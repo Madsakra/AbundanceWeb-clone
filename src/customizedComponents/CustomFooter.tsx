@@ -1,9 +1,10 @@
 
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useEffect, useState } from 'react';
-import { WebsiteLinks } from '@/routes/Authenticated/Admin/ContentManagement/WebsiteContent';
+
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase-config';
+import { WebsiteLinks } from "@/types/adminTypes";
 
 export default function CustomFooter() {
 

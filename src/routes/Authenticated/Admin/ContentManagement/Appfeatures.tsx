@@ -21,13 +21,9 @@ import { pageLimit } from "@/utils";
 import AppfeatureForm from "@/adminComponents/AppfeatureForm";
 
 import RemoveAppFeatureForm from "@/adminComponents/RemoveAppFeature";
+import { AppFeature } from "@/types/adminTypes";
 
-export type AppFeature = {
-    id:string,
-    name:string,
-    description:string,
-    image:string,
-};
+
 
 const headers = [
      "Image","Feature ID","Name","Description",
@@ -38,15 +34,12 @@ const headers = [
 export default function Appfeatures() {
 
 
-
   const [loading,setLoading] = useState(true);
   const [baseData,setBaseData] = useState<AppFeature[]|null>(null);
   const [filteredData, setFilteredData] = useState<AppFeature[] | null>(null); // Filtered accounts for display
   const [firstVisible, setFirstVisible] = useState<QueryDocumentSnapshot | null>(null);
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot | null>(null);
   const [searchQuery, setSearchQuery] = useState(""); // Search query state
-
-
   const [openForm,setOpenForm] = useState(false);
   const [selectedData,setSelectedData] = useState<AppFeature | undefined>(undefined)
   const [removalPopup,setRemovalPopup] = useState<boolean>(false);

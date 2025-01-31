@@ -1,4 +1,3 @@
-import { WebsiteLinks } from "@/routes/Authenticated/Admin/ContentManagement/WebsiteContent"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -11,6 +10,7 @@ import {
   } from "@/components/ui/alert-dialog"
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase-config";
+import { WebsiteLinks } from "@/types/adminTypes";
 
 
 

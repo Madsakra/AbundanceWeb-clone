@@ -12,11 +12,10 @@ import reviewAvatar3 from '../../assets/Images/emma.png';
 import AppReviewCard from '@/customizedComponents/AppReviewCard';
 import ContactInfo from '@/customizedComponents/ContactInfo';
 import { useEffect, useState } from 'react';
-import { AppFeature } from '../Authenticated/Admin/ContentManagement/Appfeatures';
-import { CompanyContactDetails, WebsiteLinks } from '../Authenticated/Admin/ContentManagement/WebsiteContent';
 import { collection, doc, getDoc, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '@/firebase-config';
 import { MembershipTier } from '@/types/userTypes';
+import { AppFeature, CompanyContactDetails, WebsiteLinks } from '@/types/adminTypes';
 
 
 

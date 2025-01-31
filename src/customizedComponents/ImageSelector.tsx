@@ -17,8 +17,6 @@ type ImageSelector = {
 
 export default function ImageSelector({handleFileChange,handleSvgClick,fileInputRef}:ImageSelector) {
   
-  
-  
     return (
                 <div className="absolute bottom-0 right-3 top-0">
                 {/* SVG or Image */}

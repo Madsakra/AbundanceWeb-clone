@@ -1,4 +1,5 @@
-import { CompanyContactDetails } from "@/routes/Authenticated/Admin/ContentManagement/WebsiteContent"
+
+import { CompanyContactDetails } from "@/types/adminTypes"
 import { motion } from "motion/react"
 
 

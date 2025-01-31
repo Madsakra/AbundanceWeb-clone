@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react"
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase-config";
-import { ReviewType } from "@/routes/Authenticated/Admin/ReviewsManagement/AppReviews";
+import { ReviewType } from "@/types/adminTypes";
 
 
 type ReviewsFormProps = {

@@ -9,7 +9,7 @@ import {
     AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
 import { db } from "@/firebase-config";
-import { WebsiteLinks } from "@/routes/Authenticated/Admin/ContentManagement/WebsiteContent";
+import { WebsiteLinks } from "@/types/adminTypes";
 import { deleteDoc, doc } from "firebase/firestore";
 
 

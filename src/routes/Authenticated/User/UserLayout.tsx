@@ -9,16 +9,11 @@ import { Outlet } from 'react-router-dom'
 
 const UserLayout = () => {
   return (
-   
-  
       <main>
         <WebNav/>
         <MobileNav/>
         <Outlet/>
       </main>
-   
-     
-   
   );
 };
 

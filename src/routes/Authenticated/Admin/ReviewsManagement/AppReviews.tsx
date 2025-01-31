@@ -20,17 +20,13 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import ReviewsForm from "@/adminComponents/ReviewsForm";
 import RemoveReviews from "@/adminComponents/RemoveReviews";
 import { pageLimit } from "@/utils";
+import { ReviewType } from "@/types/adminTypes";
 
 
 export const reviewHeaders = [
   "Review ID","Review Title","Value"
 ]
 
-export type ReviewType = {
-  id:string,
-  name:string,
-  value:number
-}
 
 
 export default function AppReviews() {

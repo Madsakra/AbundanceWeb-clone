@@ -13,8 +13,9 @@ import {
 import { useEffect, useState } from "react"
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db, storage } from "@/firebase-config";
-import { AppFeature } from "@/routes/Authenticated/Admin/ContentManagement/Appfeatures";
+
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { AppFeature } from "@/types/adminTypes";
 
 
 type ReviewsFormProps = {

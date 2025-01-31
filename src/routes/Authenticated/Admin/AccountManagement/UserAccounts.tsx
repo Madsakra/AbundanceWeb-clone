@@ -14,7 +14,7 @@ import {
 import CustomizedDropdown from "@/customizedComponents/CustomizedDropdown";
 import AdminTableHeader from "@/customizedComponents/AdminTableHeader";
 import TableHeaderBar from "@/customizedComponents/TableHeader";
-import { ApprovedAccounts } from "@/vite-env";
+import { ApprovedAccounts } from "@/types/userTypes";
 import { deleteAccountAuth, pageLimit, resetPassword } from "@/utils";
 
 

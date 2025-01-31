@@ -20,22 +20,13 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { pageLimit } from "@/utils";
 import MET_TaskForm from "@/adminComponents/MET_TaskForm";
 import RemoveMET from "@/adminComponents/RemoveMET";
+import { MET_Task_Type } from "@/types/adminTypes";
 
 
 
 export const reviewHeaders = [
     "ID","Task Name","Value"
   ]
-
-
-export type MET_Task_Type = {
-    id:string,
-    name:string,
-    value:number
-  }
-
-
-
 
 export default function MetTask() {
 

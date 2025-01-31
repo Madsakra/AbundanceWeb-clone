@@ -9,7 +9,7 @@ import {
     AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
 import { db } from "@/firebase-config";
-import { PredefinedGoalsType } from "@/routes/Authenticated/Admin/ContentManagement/PredefinedGoals";
+import { PredefinedGoalsType } from "@/types/adminTypes";
 import { deleteDoc, doc } from "firebase/firestore";
 
 

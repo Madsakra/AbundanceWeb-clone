@@ -20,12 +20,8 @@ import TableHeaderBar from "@/customizedComponents/TableHeader";
 import { pageLimit } from "@/utils";
 import GoalsCatForm from "@/adminComponents/GoalsCatForm";
 import RemoveGoalsCat from "@/adminComponents/RemoveGoalsCat";
+import { PredefinedGoalsCat } from "@/types/adminTypes";
 
-
-export type PredefinedGoalsCat = { 
-  id:string,
-  units:string [],
-};
 
 
 export default function PredefinedGoalsCategories() {

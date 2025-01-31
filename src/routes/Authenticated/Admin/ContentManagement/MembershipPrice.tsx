@@ -3,15 +3,7 @@
 export default function MembershipPrice() {
 
 
-
-
- 
-
-
-  
-
 return (
- 
  
   
         <div className="flex flex-col p-10 gap-7 w-full h-full justify-center text-center items-center">

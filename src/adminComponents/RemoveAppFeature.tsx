@@ -9,7 +9,8 @@ import {
     AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
 import { db, storage } from "@/firebase-config";
-import { AppFeature } from "@/routes/Authenticated/Admin/ContentManagement/Appfeatures";
+import { AppFeature } from "@/types/adminTypes";
+
 
 import { deleteDoc, doc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";

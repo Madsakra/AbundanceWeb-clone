@@ -13,7 +13,8 @@ import {
 import { useEffect, useState } from "react"
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase-config";
-import { MET_Task_Type } from "@/routes/Authenticated/Admin/ContentManagement/MetTask";
+import { MET_Task_Type } from "@/types/adminTypes";
+
 
 
 type ReviewsFormProps = {

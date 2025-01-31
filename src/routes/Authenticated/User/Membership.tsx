@@ -60,7 +60,7 @@ export default function Membership() {
       })); 
 
           setMembershiptiers(tiersData);
-          checkUserMembership();
+          await checkUserMembership();
     }
 
 
@@ -91,12 +91,17 @@ export default function Membership() {
           </div>      
       </>:
 
-      <div className="border-2 rounded-2xl w-96 xl:w-[55%] 
-      p-2 xl:p-20 h-96 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  flex flex-col *:items-center justify-center ">
-              <h1 className="text-4xl text-center">Membership Management</h1>
-              <h3 className="text-center my-2">Please select the following tier to upgrade your account</h3>
-        <a className="btn btn-ghost my-4 bg-[#00ACAC] text-white" href={customerURL}>Manage your membership</a>
-      </div>
+        <div className="hero bg-base-200 min-h-screen">
+          <div className="hero-content text-center">
+            <div className="max-w-md">
+              <h1 className="text-5xl font-bold">Manage Membership</h1>
+              <p className="py-6">
+                Please Head Over To Stripe To Manage Your Membership
+              </p>
+              <a className="btn btn-primary" href={customerURL}>Go to Stripe</a>
+            </div>
+          </div>
+        </div>
     
       }
 

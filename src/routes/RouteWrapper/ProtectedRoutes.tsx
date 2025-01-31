@@ -18,13 +18,6 @@ const ProtectedRoute = ({allowedRoles,children}:ProtectedRouteProps) => {
   const subMessage = "Please go to your email account and verify your abundance account. Alternatively, you can click on the link below to resend it";
 
 
-
- 
-
-
-
-
-
   const reSendEmail = async ()=>{
     if (user)
     {
@@ -53,12 +46,8 @@ const ProtectedRoute = ({allowedRoles,children}:ProtectedRouteProps) => {
   if (!user) {
       return <Navigate to="/login" replace />; 
     }
-
-
   if (!user.emailVerified && (accountDetails?.role === "user") )
   {
-
-
         return (<VerificationAlert
           logOut={logout}
           resendEmail={reSendEmail} 
@@ -67,37 +56,16 @@ const ProtectedRoute = ({allowedRoles,children}:ProtectedRouteProps) => {
           />)
   }
     
-
-
-      
-
-
    if (!allowedRoles?.includes(accountDetails?.role))
   {
     return <PermissionDenied/>; 
   }
   
-
-  
-  
   return (
-
     <>
     {children}
     </>
-  
   )
-    
-
-    
-
-
-
-  
-
-
-
-  // If user is not authenticated, navigate to login
 };
 
 export default ProtectedRoute;

@@ -1,4 +1,4 @@
-import { CompanyContactDetails } from "@/routes/Authenticated/Admin/ContentManagement/WebsiteContent"
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react"
 import {  doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase-config";
+import { CompanyContactDetails } from "@/types/adminTypes";
 
 type EditAddressProps = {
     companyAddress:CompanyContactDetails | null;

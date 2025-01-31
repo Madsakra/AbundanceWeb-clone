@@ -20,20 +20,14 @@ import {
   import { pageLimit } from "@/utils";
 import PredefinedGoalsForm from "@/adminComponents/PredefinedGoalsForm";
 import RemovePredefinedGoals from "@/adminComponents/RemovePredefinedGoals";
+import { PredefinedGoalsType } from "@/types/adminTypes";
 
 
 
 
 
 
-  export type PredefinedGoalsType = { 
-    id:string,
-    categoryID:string,
-    min:number,
-    max:number,
-    unit:string,
-  };
-  
+
 
 
 
