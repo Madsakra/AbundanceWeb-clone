@@ -29,19 +29,29 @@ export type ClientProfileInfoType = {
 export type CalorieLogType = {
     amount:number,
     category:string,
-    food_info:{
+    food_info?:{
         carbs:number,
         fats:number,
         image_url:string,
         name:string,
         protein:string,
-    }
+    },
+    MET_task?:{
+        id:string,
+        name:string,
+        value:number,
+    },
     timestamp:Timestamp,
     type:string,
-}
+};
 
 export type GlucoseLogType = {
     reading:number,
     timestamp:Timestamp,
     unit:string
-}
+};
+
+export type LogEntry = {
+    timestamp:Timestamp,
+} & (CalorieLogType|GlucoseLogType)
+

@@ -2,7 +2,9 @@ import { sendPasswordResetEmail } from "firebase/auth";
 import { ApprovedAccounts,PendingAccounts } from "./types/userTypes";
 import { auth, db, functions } from "./firebase-config";
 import { httpsCallable } from "firebase/functions";
-import { deleteDoc, doc, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, orderBy, query, setDoc, Timestamp, where } from "firebase/firestore";
+import { Dayjs } from "dayjs";
+import { CalorieLogType, GlucoseLogType, LogEntry } from "./types/nutritionistTypes";
 
 
 
@@ -71,3 +73,68 @@ export const deleteAccountAuth = async(account:ApprovedAccounts | PendingAccount
   }
 
   export const pageLimit = 6;
+
+
+export const fetchDataByDate = async (clientID:string, subcollectionName:string, date:Dayjs)=>{
+
+  const accountsCollection = collection(db, "accounts");
+  const userDocRef = doc(accountsCollection, clientID);
+
+  const subcollectionRef = collection(userDocRef, subcollectionName);
+
+  // 1. Convert Day.js object to Timestamp
+  const startOfDay = date.startOf('day'); // Day.js start of day
+  const endOfDay = date.endOf('day');     // Day.js end of day
+
+  const startTimestamp = Timestamp.fromDate(startOfDay.toDate());
+  const endTimestamp = Timestamp.fromDate(endOfDay.toDate());
+
+  // query db
+  const q = query(
+    subcollectionRef,
+    where("timestamp",">=",startTimestamp),
+    where("timestamp","<=",endTimestamp),
+    orderBy("timestamp")
+  );
+  try{
+    const querySnapshot = await getDocs(q);
+
+    let temp: (CalorieLogType | GlucoseLogType)[] = [];
+
+    
+
+    querySnapshot.forEach((doc) => {
+    
+
+      if (subcollectionName==="calories")
+      {
+        temp.push(doc.data() as CalorieLogType);
+      }
+      else if (subcollectionName==="glucose-logs")
+      {
+        temp.push(doc.data() as GlucoseLogType);
+      } 
+    });
+    
+    return temp;
+
+  }
+  catch(err)
+  {
+    console.log(err);
+    return[];
+  }
+}
+
+export const mergeAndSort = (calorieLogs:CalorieLogType[],glucoseLogs:GlucoseLogType[])=>{
+
+  // merge both and sort
+  const combinedLogs:LogEntry[] = [...calorieLogs,...glucoseLogs];
+
+  // sort in ascending order based on time stamp
+
+  combinedLogs.sort((a,b)=>a.timestamp.toMillis() - b.timestamp.toMillis());
+
+  return combinedLogs;
+
+}

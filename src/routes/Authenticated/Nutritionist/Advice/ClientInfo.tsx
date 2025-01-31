@@ -1,10 +1,12 @@
 
-import { useAuth } from '@/contextProvider';
+
 import { db } from '@/firebase-config';
 import ClientBmrBar from '@/nutriComponents/ClientBmrBar';
 import ClientHealthCondi from '@/nutriComponents/ClientHealthCondi';
 import GraphCalendar from '@/nutriComponents/GraphCalendar';
-import { ClientAccountType, ClientProfileInfoType } from '@/types/nutritionistTypes';
+import LogEntryItem from '@/nutriComponents/LogEntryItem';
+import { CalorieLogType, ClientAccountType, ClientProfileInfoType, GlucoseLogType, LogEntry } from '@/types/nutritionistTypes';
+import { fetchDataByDate,mergeAndSort } from '@/utils';
 import dayjs, { Dayjs } from 'dayjs';
 import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -14,12 +16,15 @@ export default function ClientInfo() {
     
     let { clientID } = useParams();
 
-    const {user} = useAuth();
+   
     const [loading,setLoading] = useState(false);
     const [clientAccount,setClientAccount] = useState<ClientAccountType | undefined>();
     const [clientProfile,setClientProfile] = useState<ClientProfileInfoType | undefined>();
-    const [graphDate, setGraphDate] = useState<Dayjs|null>(null);
-
+    const [graphDate, setGraphDate] = useState<Dayjs|null>(dayjs());
+    
+    const [caloriesData,setCaloriesData] = useState<CalorieLogType[] | undefined>();
+    const [glucoseData,setGlucoseData] = useState<GlucoseLogType[] | undefined>();
+    const [mergedData,setMergedData] = useState<LogEntry[]|undefined>();
 
     const getAge = (birthdate: string): number => {
         const birthDate = new Date(birthdate);
@@ -39,15 +44,13 @@ export default function ClientInfo() {
 
   // Move to previous date
   const handlePrevious = () => {
-    setGraphDate((prev) => (prev ? prev.subtract(1, "day") : dayjs()));
-    console.log(graphDate);  
+    setGraphDate((prev) => (prev ? prev.subtract(1, "day") : dayjs()));  
 };
 
   // Move to next date (only if not in the future)
   const handleNext = () => {
     if (!graphDate?.isSame(dayjs(), "day")) {
       setGraphDate((prev) => (prev ? prev.add(1, "day") : dayjs()));
-      console.log(graphDate);
     }
   };
 
@@ -55,12 +58,11 @@ export default function ClientInfo() {
 
     const fetchData = async ()=>{
             setLoading(true);
-
             try{
-                const accountsRef = doc(db, "accounts",user!.uid,"client_requests",clientID!);
+                const accountsRef = doc(db, "accounts",clientID!);
                 const accountDoc = await getDoc(accountsRef);
-        
-                const profileRef = doc(db,"accounts",user!.uid,"client_requests",clientID!,"profile","profile_info")
+
+                const profileRef = doc(db,"accounts",clientID!,"profile","profile_info")
                 const profileDoc = await getDoc(profileRef);
 
                 setClientAccount({
@@ -72,6 +74,17 @@ export default function ClientInfo() {
                 setClientProfile({
                     ...profileDoc.data()
                 } as ClientProfileInfoType);
+
+
+                // fetch client's calories data
+                const tempCaloriesData = await fetchDataByDate(clientID!, "calories", graphDate!);
+                const tempGlucoseData = await fetchDataByDate(clientID!, "glucose-logs", graphDate!);
+                setCaloriesData(tempCaloriesData as CalorieLogType[]);
+                setGlucoseData(tempGlucoseData as GlucoseLogType[]);
+                // Use fetched data directly instead of waiting for state update
+                const tempMergedData = mergeAndSort(tempCaloriesData as CalorieLogType[], tempGlucoseData as GlucoseLogType[]);
+                setMergedData(tempMergedData);
+              
             }
             catch(err)
             {
@@ -79,14 +92,40 @@ export default function ClientInfo() {
                 alert("Unable to get clients' data")
             }
 
-
-
             setLoading(false);
         }
 
+    const reFetchData = async()=>{
+      setLoading(true);
+      const tempCaloriesData = await fetchDataByDate(clientID!, "calories", graphDate!);
+      const tempGlucoseData = await fetchDataByDate(clientID!, "glucose-logs", graphDate!);
+      setCaloriesData(tempCaloriesData as CalorieLogType[]);
+      setGlucoseData(tempGlucoseData as GlucoseLogType[]);
+      // Use fresh data directly
+      const tempMergedData = mergeAndSort(tempCaloriesData as CalorieLogType[], tempGlucoseData as GlucoseLogType[]);
+      setMergedData(tempMergedData);
+      console.log(tempMergedData);
+      setLoading(false);
+    }
+    
+
+
+    // on start
     useEffect(()=>{
         fetchData();
+        console.log(glucoseData, caloriesData);
     },[])
+
+
+
+    // when nutri change date
+      // Fetch calories data when the graphDate changes
+      useEffect(() => {
+        if (graphDate) {
+          reFetchData();
+        }
+      }, [graphDate]);
+
 
 
   return (
@@ -107,12 +146,12 @@ export default function ClientInfo() {
     </div>
 
     {/* Main Container*/}
-    <div className=' flex flex-col w-full xl:w-[80vw] h-auto'>
+    <div className=' flex flex-col w-full xl:w-[80vw] h-auto my-16'>
        
-       <div className='flex flex-col xl:flex-row items-center gap-20'>
+       <div className='flex flex-col xl:flex-row items-center gap-20 mb-16'>
         
         {/*USER AVATART*/}
-       <img src={clientProfile?.image} className='w-52 h-52 rounded object-fit'/>
+       <img src={clientProfile?.image} className='w-64 h-64 rounded object-fit'/>
         
         {/*NAME SECTION*/}
         <div className='flex flex-col gap-1 text-center xl:text-start'>
@@ -123,7 +162,7 @@ export default function ClientInfo() {
 
        </div>
 
-        <div className='flex flex-col mt-20 gap-4 xl:w-1/2 '>
+        <div className='flex flex-col my-20 gap-4 xl:w-1/2 '>
             <h1 className='font-bold text-xl'>User Basal Metabolism (BMR)</h1>
             
             <div className='flex flex-col gap-2'>
@@ -161,7 +200,7 @@ export default function ClientInfo() {
 
 
         {/* USER'S HEALTH CONDITION */}
-        <div className='flex flex-col xl:flex-row my-10 gap-10 xl:gap-24'>
+        <div className='flex flex-col xl:flex-row mt-10 mb-28 gap-10 xl:gap-24'>
          <ClientHealthCondi
          label='Dietary Restrictions'
          data={clientProfile!.profileDiet}
@@ -179,6 +218,25 @@ export default function ClientInfo() {
         graphDate={graphDate}
         setGraphDate={setGraphDate}
         />
+
+
+        {mergedData &&
+        <div className='border-2 w-full p-4 mt-4'>
+        {mergedData.map((entry,index)=>(
+          <LogEntryItem
+          key={index}
+          entry={entry}
+          />
+        ))}
+
+        {mergedData.length === 0 &&
+        <div className='h-[20vh] flex items-center justify-center'>
+          <h1 className='text-2xl'>The client has no logged data on this date</h1>
+        </div>
+        }
+        
+        </div>        
+        }
 
 
 
