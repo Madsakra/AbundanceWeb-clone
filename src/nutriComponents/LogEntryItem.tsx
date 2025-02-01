@@ -32,12 +32,12 @@ export default function LogEntryItem({entry}:LogEntryItemProps) {
                     <div className="flex flex-col w-full ms-10 gap-2">
                     <p className="text-lg mb-4">Time: {entry.timestamp.toDate().toLocaleString()}</p>
                     <p className="text-xl font-bold text-[#C68F5E]">Food: {entry.food_info?.name}</p> 
-                    <p className="text-xl font-bold text-[#C68F5E]">Calories: {entry.amount} kcal</p>
+                    <p className="text-xl font-bold text-[#C68F5E]">Calories: + {entry.amount} kcal</p>
                     </div>:
                     <div className="flex flex-col w-full ms-10 gap-2">
                     <p className="text-lg mb-4">Time: {entry.timestamp.toDate().toLocaleString()}</p>
                     <p className="text-xl font-bold text-[#C68F5E]">Activity: {entry.MET_task?.name}</p> 
-                    <p className="text-xl font-bold text-[#C68F5E]">Calories: {Math.round(entry.amount).toFixed(2)} kcal</p>
+                    <p className="text-xl font-bold text-[#C68F5E]">Calories: - {Math.round(entry.amount).toFixed(2)} kcal</p>
                     </div>
                 }
 
