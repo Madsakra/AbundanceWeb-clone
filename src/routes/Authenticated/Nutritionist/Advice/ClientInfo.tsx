@@ -11,12 +11,13 @@ import { fetchDataByDate,mergeAndSort } from '@/utils';
 import dayjs, { Dayjs } from 'dayjs';
 import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { IoSendSharp } from "react-icons/io5";
 
 export default function ClientInfo() {
     
     let { clientID } = useParams();
-
+    let navigate = useNavigate();
    
     const [loading,setLoading] = useState(false);
     const [clientAccount,setClientAccount] = useState<ClientAccountType | undefined>();
@@ -245,10 +246,15 @@ export default function ClientInfo() {
         </div>        
         }
 
-
+        <button className='btn bg-black text-white h-14 mt-14 flex gap-5' onClick={()=>{
+          navigate(`/nutri/advice/${clientID}`)
+        }}>
+            <h1 className='text-[#00ACAC] text-lg'>Send Feedback</h1>
+          <IoSendSharp size={25} color='#00ACAC'/>
+        </button>
 
     </div>
-
+  
 
     </div>    
     
