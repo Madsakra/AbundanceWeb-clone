@@ -13,7 +13,7 @@ const FOOD_KEY = import.meta.env.VITE_EDAMAM_FOOD_KEY;
 export default function MealPlan() {
 
     let { clientID } = useParams();
-    
+    console.log(clientID);
     const [query, setQuery] = useState("");
 
     const [recipes, setRecipes] = useState<EdamamItem[]>([]);
