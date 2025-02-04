@@ -13,8 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contextProvider";
-import { TiMessages } from "react-icons/ti";
-import { GiMeal } from "react-icons/gi";
+
 // App Functionality
 const appFunctionality = [
 {
@@ -35,17 +34,9 @@ const appFunctionality = [
   icon:User
 },
 
-{
-  title:"AdviceMsg",
-  url:"/nutri/advice/888",
-  icon:TiMessages
-},
 
-{
-  title:"MealPlan",
-  url:"/nutri/advice/888/mealPlan",
-  icon:GiMeal
-},
+
+
 
 
 

@@ -42,6 +42,7 @@ import AdviceMessage from './routes/Authenticated/Nutritionist/Advice/AdviceMess
 import MealPlan from './routes/Authenticated/Nutritionist/Advice/MealPlan';
 import Membership from './routes/Authenticated/User/Membership';
 import ClientInfo from './routes/Authenticated/Nutritionist/Advice/ClientInfo';
+import GoalsAdvice from './routes/Authenticated/Nutritionist/Advice/GoalsAdvice';
 
 
 
@@ -129,7 +130,13 @@ const router = createBrowserRouter([
           {
             path:'advice/:clientID/mealPlan',
             element:<MealPlan/>
-          }
+          },
+
+          {
+            path:'advice/:clientID/goalsAdvice',
+            element:<GoalsAdvice/>
+          },
+          
 
 
         ],

@@ -1,13 +1,15 @@
-import {useState } from "react"
+import { useState } from "react"
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useAuth } from "@/contextProvider";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import { doc, setDoc } from "firebase/firestore";
+import { doc,  setDoc } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import {  useNavigate } from "react-router-dom";
 import { Dayjs } from "dayjs";
+import { ProfileSpecialisation, SelectedHealthProfile } from "@/types/nutritionistTypes";
+import ProfileSpecilisation from "./ProfileSpecilisation";
 
 export default function ProfileCreation() {
 
@@ -16,7 +18,11 @@ export default function ProfileCreation() {
     const [displayedTitle,setDisplayedTitle] = useState("");
     const [dob, setDOB] = useState<Dayjs|null>(null);
     const [gender,setGender] = useState<string>("");
+
+
     
+    const [profileSpec,setProfileSpec] = useState<SelectedHealthProfile[]>([]);
+    const [openProfSpc,setProfSpc] = useState(false);
 
     const {user,setLoading} = useAuth();
     let navigate = useNavigate();
@@ -32,7 +38,6 @@ export default function ProfileCreation() {
   };
 
 
-
   // submit documents
   const handleSubmit = async()=>{
 
@@ -45,6 +50,13 @@ export default function ProfileCreation() {
         setLoading(false);
     }
 
+    else if (profileSpec.length===0)
+    {
+      alert("Please do not miss out your profile specilization!");
+      setLoading(false);
+
+    }
+
     else{
 
             if (user)
@@ -55,14 +67,11 @@ export default function ProfileCreation() {
                     // 2. Upload files to Firebase Storage
                     const profileAvatarRef = ref(storage, `profileAvatar/${user.uid}`);
                   
- 
-                   
+   
                     // Upload certification
                     await uploadBytes(profileAvatarRef, imageFile);
                     const avatar = await getDownloadURL(profileAvatarRef);
                     
-
-
                     // upload profile info
                     // Create a reference to the profile_info document in a single line
                     const profileInfoDocRef = doc(db, "accounts", user.uid , "profile", "profile_info");
@@ -73,6 +82,7 @@ export default function ProfileCreation() {
                             avatar,
                             title:displayedTitle,
                             dob: dob.format("YYYY-MM-DD"),
+                            profileSpec,
                             gender
                             // ... other profile fields
                         }; 
@@ -97,7 +107,33 @@ export default function ProfileCreation() {
 
   }
 
- 
+  const handleNext = async()=>{
+    // check if documents are present
+    if (!imageFile || !displayedTitle || !dob || !gender)
+    {
+              alert("Please do not miss out the fields in the profile creation form!");
+              return;
+    }
+    else{
+      setProfSpc(true);
+
+    } 
+  };
+
+
+  const toggleCondition = (condition: ProfileSpecialisation) => {
+    setProfileSpec((prev) => {
+      const exists = prev.some((condi) => condi.id === condition.id);
+      return exists
+        ? prev.filter((condi) => condi.id !== condition.id) // Remove if already selected
+        : [...prev, { id: condition.id, name: condition.name, variation: '' }]; // Ensure name is included
+    });
+  };
+  const selectVariation = (conditionId: string, variation: string) => {
+    setProfileSpec((prev) =>
+      prev.map((condi) => (condi.id === conditionId ? { ...condi, variation } : condi))
+    );
+  };
 
 
   return (
@@ -110,10 +146,9 @@ export default function ProfileCreation() {
         <h2 className="text-[#929292]">We see that it is your first time logging in, help your clients to identify you by creating a profile!</h2>
         
 
-     
-        {/*Inner  Container */}
-        <div className="flex flex-col lg:flex-row gap-10 xl:gap-20 items-center">
-
+        {
+          !openProfSpc &&
+          <div className="flex flex-col lg:flex-row gap-10 xl:gap-20 items-center">
         {/*LEFT CONTAINER */}
         <div className="flex flex-col gap-8 mt-4 ">
             <h1 className="font-bold text-xl mt-4">Avatar</h1>
@@ -124,12 +159,8 @@ export default function ProfileCreation() {
             }
             <input type="file" accept="image/*" onChange={handleFileChange} className="file-input file-input-bordered file-input-sm w-full max-w-xs" />
         </div>
-
-
         {/*RIGHT CONTAINER */}
-        
         <div className="flex flex-col gap-4 w-full mt-10">
-
         <div className="flex flex-col">
         <label htmlFor="" className="font-bold">Displayed Name</label>
         <input 
@@ -140,8 +171,6 @@ export default function ProfileCreation() {
         </div>
 
 
-
-            {/* DOB SELECTOR */}
         <div className="flex flex-col gap-4 mt-4 ">
         <label htmlFor="" className="font-bold">Date of Birth</label>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -162,21 +191,25 @@ export default function ProfileCreation() {
           </select>     
         </div>
 
-
-
           <button 
           className="btn btn-ghost bg-[#00ACAC] mt-8
            text-white font-bold"
-           onClick={handleSubmit}
-           >Submit</button>
+           onClick={handleNext}
+           >Next</button>
 
         </div>
+          </div>
+        }
 
-          
-          
+        {openProfSpc &&
+        <ProfileSpecilisation
+        profileSpec={profileSpec}
+        toggleCondition={toggleCondition}
+        selectVariation={selectVariation}
+        handleSubmit={handleSubmit}
+        />  
+        }
 
-
-        </div>
 
 
     </div>
