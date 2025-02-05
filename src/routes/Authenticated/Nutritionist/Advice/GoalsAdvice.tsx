@@ -1,7 +1,7 @@
 import { useAuth } from "@/contextProvider";
 import { db } from "@/firebase-config";
 import { PredefinedGoalsType } from "@/types/adminTypes";
-import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -54,7 +54,8 @@ export default function GoalsAdvice() {
         if (clientID && user)
         {
         
-            const clientRef = doc(db,"accounts",clientID,"advice",user.uid);
+            const clientRef = doc(db,"accounts",clientID,"tailored_advice",user.uid,"advice","advice_information");
+            const statusRef = doc(db,"accounts",clientID,"tailored_advice",user.uid)
             const storedData = localStorage.getItem("adviceData");
             if (storedData) {
               const adviceArray = JSON.parse(storedData);
@@ -75,7 +76,9 @@ export default function GoalsAdvice() {
                 
                 try{
                     await setDoc(clientRef,combinedData);
-
+                    await updateDoc(statusRef,{
+                        status:"complete"
+                    })
 
 
                     // Remove the adviceData for the current client from the array
@@ -87,7 +90,9 @@ export default function GoalsAdvice() {
                     localStorage.setItem("adviceData", JSON.stringify(updatedAdviceArray));
 
                     const nutriClientRef = doc(db,"accounts",user.uid,"client_requests",clientID);
+                    const nutriClientSubRef = doc(db,"accounts",user.uid,"client_requests",clientID,"profile","profile_info")
                     await deleteDoc(nutriClientRef);
+                    await deleteDoc(nutriClientSubRef);
 
 
 

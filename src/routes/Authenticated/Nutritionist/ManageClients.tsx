@@ -13,7 +13,7 @@ import TableHeaderBar from "@/customizedComponents/TableHeader";
 import { db } from "@/firebase-config";
 import { ClientAccountType, ClientProfileInfoType } from "@/types/nutritionistTypes";
 import { pageLimit } from "@/utils";
-import { collection, doc, endBefore, getDoc, getDocs, limit, query, QueryDocumentSnapshot, startAfter } from "firebase/firestore";
+import { collection, doc, endBefore, getDoc, limit, onSnapshot, query, QueryDocumentSnapshot, startAfter } from "firebase/firestore";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -33,82 +33,71 @@ export default function ManageClients() {
   const [filteredData, setFilteredData] = useState<ClientAccountType[] | null>(null); // Filtered accounts for display
   const [firstVisible, setFirstVisible] = useState<QueryDocumentSnapshot | null>(null);
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot | null>(null);
+  const [unsubscribeFn, setUnsubscribeFn] = useState<(() => void) | null>(null); // Store listener
 
   const {user} = useAuth();
   const navigate = useNavigate();
-    const fetchData = async (action: "start" | "next" | "prev") => {
  
-      setLoading(true);
-      try {
+  const fetchData = async (action: "start" | "next" | "prev") => {
+    if (!user) return;
 
-        let q;
-        const accountsRef = collection(db, "accounts",user!.uid,"client_requests");
-    
-        if (action === "start") {
-          // Initial fetch
-          q = query(accountsRef, limit(pageLimit));
-        } 
-        
-        else if (action === "next" && lastVisible) {
-          // Fetch next page
-          q = query(accountsRef, startAfter(lastVisible), limit(pageLimit));
-        } 
-        
-        else if (action === "prev" && firstVisible) {
-          // Fetch previous page
-          q = query(accountsRef, endBefore(firstVisible), limit(pageLimit));
-        } 
-        
-        else {
-          console.warn("Invalid action or missing cursors.");
-          setLoading(false);
-          return;
-        }
-    
-        const querySnapshot = await getDocs(q);
-        const promises: Promise<ClientAccountType>[] = []; // Array to hold promises
+    setLoading(true);
 
-        if (!querySnapshot.empty) {
-       
-              setFirstVisible(querySnapshot.docs[0]);
-              setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+    let q;
+    const accountsRef = collection(db, "accounts", user.uid, "client_requests");
 
-            querySnapshot.forEach((snapshot) => {
-                const profileRef = doc(db, "accounts", user!.uid, "client_requests", snapshot.id, "profile", "profile_info");
-                const promise = getDoc(profileRef).then((profileClient) => { // Create and store promises
-                    const clientProfile = profileClient.data() as ClientProfileInfoType;
-                    return {
-                        uid: snapshot.id,
-                        name: snapshot.data().name,
-                        role: snapshot.data().role,
-                        avatar: clientProfile?.image, // Handle potential undefined image
-                        email: snapshot.data().email
-                    } as ClientAccountType;
-                });
-                promises.push(promise); // Add each promise to the array
-            });
-
-            // Wait for all promises to resolve
-            const temp = await Promise.all(promises);
-
-            setBaseData(temp);
-            setFilteredData(temp);
-
-        
-        
-          // Update state with fetched data
-          setBaseData(temp);
-          setFilteredData(temp);
-
-        } else {
-          console.warn("No documents found.");
-        }
-      } catch (error) {
-        console.error("Error fetching accounts:", error);
-      }
-    
+    if (action === "start") {
+      q = query(accountsRef, limit(pageLimit));
+    } else if (action === "next" && lastVisible) {
+      q = query(accountsRef, startAfter(lastVisible), limit(pageLimit));
+    } else if (action === "prev" && firstVisible) {
+      q = query(accountsRef, endBefore(firstVisible), limit(pageLimit));
+    } else {
+      console.warn("Invalid action or missing cursors.");
       setLoading(false);
-    };
+      return;
+    }
+
+    // Unsubscribe from previous snapshot listener
+    if (unsubscribeFn) unsubscribeFn();
+
+    // Set up new real-time listener
+    const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+      if (querySnapshot.empty) {
+        console.warn("No documents found.");
+        setBaseData([]);
+        setFilteredData([]);
+        setLoading(false);
+        return;
+      }
+
+      setFirstVisible(querySnapshot.docs[0]);
+      setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+
+      const promises = querySnapshot.docs.map(async (snapshot) => {
+        const profileRef = doc(db, "accounts", user.uid, "client_requests", snapshot.id, "profile", "profile_info");
+        const profileClient = await getDoc(profileRef);
+        const clientProfile = profileClient.data() as ClientProfileInfoType;
+
+        return {
+          uid: snapshot.id,
+          name: snapshot.data().name,
+          role: snapshot.data().role,
+          avatar: clientProfile?.image || "", // Handle potential undefined image
+          email: snapshot.data().email,
+        } as ClientAccountType;
+      });
+
+      const temp = await Promise.all(promises);
+      setBaseData(temp);
+      setFilteredData(temp);
+      setLoading(false);
+    });
+
+    setUnsubscribeFn(() => unsubscribe); // Store unsubscribe function
+  };
+
+
   // Handle search input changes
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -122,9 +111,14 @@ export default function ManageClients() {
       setFilteredData(filtered);
     }
   };
-  useEffect(()=>{
+
+  useEffect(() => {
     fetchData("start");
-  },[])
+    return () => {
+      if (unsubscribeFn) unsubscribeFn(); // Cleanup on unmount
+    };
+  }, [user]);
+
 
 
   return (
