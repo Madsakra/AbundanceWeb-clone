@@ -14,7 +14,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contextProvider";
 import { FaRunning } from "react-icons/fa";
-
+import { GiHealthCapsule } from "react-icons/gi";
+import { MdNoMeals } from "react-icons/md";
 // Account items
 const accountManagement = [
 {
@@ -37,6 +38,19 @@ const accountManagement = [
 ];
 
 const contentManagement = [
+
+  {
+    title:"Health Conditions",
+    url:"/admin/health-condi",
+    icon:GiHealthCapsule
+  },
+
+  {
+    title:"Dietary Restrictions",
+    url:"/admin/dietary-restri",
+    icon:MdNoMeals
+  },
+
 
   {
     title:"Predefined Goals",

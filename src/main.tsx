@@ -43,6 +43,8 @@ import MealPlan from './routes/Authenticated/Nutritionist/Advice/MealPlan';
 import Membership from './routes/Authenticated/User/Membership';
 import ClientInfo from './routes/Authenticated/Nutritionist/Advice/ClientInfo';
 import GoalsAdvice from './routes/Authenticated/Nutritionist/Advice/GoalsAdvice';
+import HealthConditions from './routes/Authenticated/Admin/ContentManagement/HealthConditions';
+import DietaryRestrictions from './routes/Authenticated/Admin/ContentManagement/DietaryRestrictions';
 
 
 
@@ -203,6 +205,14 @@ const router = createBrowserRouter([
           {
             path:'met-task',
             element:<MetTask/>
+          },
+          {
+            path:'health-condi',
+            element:<HealthConditions/>
+          },
+          {
+            path:'dietary-restri',
+            element:<DietaryRestrictions/>
           }
 
         ],
