@@ -31,21 +31,21 @@ export default function RemoveArticles({removalPopup,setRemovalPopup,selectedDat
     const handleRemoveTier = async () => { 
         if (!selectedData) 
             { 
-                alert("No Review to remove!")
+                alert("No Article to remove!")
                 return
             }; 
         try { 
             
           const docRef = doc(db, "articles",user!.uid,"written_articles",selectedData.id); 
           await deleteDoc(docRef); 
-          alert("Review removed successfully"); 
+          alert("Article removed successfully"); 
           fetchData("start") // Refresh the table data 
           setRemovalPopup(false);
 
 
         } catch (error) { 
-          console.error("Error removing review: ", error); 
-          alert("Failed to remove review. Please try again."); 
+          console.error("Error removing article: ", error); 
+          alert("Failed to remove article. Please try again."); 
         } 
       }; 
 
@@ -53,9 +53,9 @@ export default function RemoveArticles({removalPopup,setRemovalPopup,selectedDat
     <AlertDialog open={removalPopup} onOpenChange={setRemovalPopup}>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle className="text-destructive">Remove Review? </AlertDialogTitle>
+        <AlertDialogTitle className="text-destructive">Remove Article? </AlertDialogTitle>
         <AlertDialogDescription className="">
-          Do you want to remove review {selectedData.id} ? Do note that this action is irreversible!
+          Do you want to remove article: {selectedData.title} ? Do note that this action is irreversible!
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>

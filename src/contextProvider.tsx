@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { onAuthStateChanged,signInWithEmailAndPassword,signOut,User } from 'firebase/auth';
 import { auth, db} from '@/firebase-config';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { AccountDetails, ProfileType } from './types/userTypes';
 
 
@@ -44,13 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setAccountDetails(docSnap.data() as AccountDetails);
               }
 
-              const profileRef = doc(db,"accounts",user.uid,"profile","profile_info");
-              const profileSnap = await getDoc(profileRef);
-              if (profileSnap.exists())
-              {
-                console.log(profileSnap.data());
-                setProfile(profileSnap.data() as ProfileType);
-              }
+ 
       }
       
       setLoading(false);
@@ -59,6 +53,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return unsubscribe;
   }, []);
   
+
+  useEffect(() => {
+    if (user) {
+      const profileRef = doc(db, "accounts", user.uid, "profile", "profile_info");
+
+      const unsubscribe = onSnapshot(profileRef, (profileSnap) => {
+        if (profileSnap.exists()) {
+          console.log("Profile data updated:", profileSnap.data());
+          setProfile(profileSnap.data() as ProfileType);
+        } else {
+          console.log("Profile does not exist.");
+        }
+      });
+
+      // Clean up the listener on unmount
+      return () => unsubscribe();
+    }
+  }, [user]); // Re-run effect if `user` changes
+
 
   const fetchProfile = async ()=>{
     

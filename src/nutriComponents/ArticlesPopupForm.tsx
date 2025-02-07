@@ -32,8 +32,8 @@ export default function ArticlesPopupForm({
   setLoading
 }: ArticlesPopupFormProps) {
 
-  const {user} = useAuth();
-
+  const {user,profile} = useAuth();
+  
 
   const [formData, setFormData] = useState({
     title: selectedData?.title || "",
@@ -88,6 +88,11 @@ export default function ArticlesPopupForm({
           title: formData.title,
           description: formData.description,
           image: imageUrl,
+          writtenBy:{
+            name:profile?.title,
+            avatar:profile?.avatar,
+            email:user?.email
+          }
         };
   
         if (selectedData) {

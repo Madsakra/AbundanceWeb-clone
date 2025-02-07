@@ -34,12 +34,6 @@ const appFunctionality = [
   icon:User
 },
 
-
-
-
-
-
-
 ];
 
 

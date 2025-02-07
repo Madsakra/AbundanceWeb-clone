@@ -144,7 +144,7 @@ export default function ClientInfo() {
     
     {/* TOP LEFT HEADER */}
     <div className="flex lg:flex-row justify-between items-center mb-8">
-      <h1 className="text-lg text-[#656363]">View Clients / User {clientID}</h1>
+      <h1 className="text-lg text-[#656363]">View Clients / User: {clientAccount.name}</h1>
     </div>
 
     {/* Main Container*/}

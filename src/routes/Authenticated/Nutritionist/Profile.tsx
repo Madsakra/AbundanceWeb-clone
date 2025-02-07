@@ -7,9 +7,24 @@ import { FaRegEdit } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import EditProfileForm from "@/nutriComponents/EditProfileForm";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import { ProfileType } from "@/types/userTypes";
+import ReviewCard from "@/nutriComponents/ReviewCard";
+
+
+export type DisplayedReview={
+  name:string,
+  reasons:string[],
+  score:number,
+  userInfo:{
+    avatar:string,
+    name:string,
+    email:string,
+  }
+}
+
+
 
 export default function Profile() {
  
@@ -19,7 +34,8 @@ export default function Profile() {
   const [profile,setProfile] = useState<ProfileType | null>(null)
   const [resumeURL, setResumeURL] = useState(null); // State for Resume URL
   const [certificationURL, setCertificationURL] = useState(null); // State for Certificate URL
-
+  const [reviews, setReviews] = useState<DisplayedReview[]>([]);
+  const [averageScore, setAverageScore] = useState<number | null>(null);
 
   const fetchProfile = async()=>{
 
@@ -44,6 +60,7 @@ export default function Profile() {
         try {
           const docRef = doc(db, "accounts", user.uid, "approval_info", "practicing_info");
           const docSnap = await getDoc(docRef);
+
           
           if (docSnap.exists()) {
             const data = docSnap.data();
@@ -74,8 +91,42 @@ export default function Profile() {
 
 
 
+  useEffect(() => {
+    if (!user?.uid) {
+      setLoading(false);
+      return;
+    }
 
+    // Reference to the user_reviews collection
+    const reviewRef = collection(db, "accounts", user.uid, "user_reviews");
 
+    // Set up the real-time listener
+    const unsubscribe = onSnapshot(reviewRef, (querySnapshot) => {
+      const reviewsData: DisplayedReview[] = [];
+      let totalScore = 0;
+
+      querySnapshot.forEach((doc) => {
+        const review = doc.data() as DisplayedReview;
+        reviewsData.push(review);
+
+        // Assuming the review has a numerical `score` field
+        if (review.score !== undefined) {
+          totalScore += review.score;
+        }
+      });
+
+      setReviews(reviewsData);
+
+      // Calculate average score
+      const avgScore = reviewsData.length > 0 ? totalScore / reviewsData.length : null;
+      setAverageScore(avgScore);
+
+      setLoading(false);
+    });
+
+    // Clean up the listener when the component unmounts
+    return () => unsubscribe();
+  }, [user?.uid]);
 
 
 
@@ -169,34 +220,18 @@ export default function Profile() {
 
           <div className="flex flex-row items-center justify-between">
           <h1 className="text-[#8797DA] text-3xl">Overall Ratings</h1>
-          <h2 className="font-bold text-sm">View All</h2>
           </div>
         
           <div className="flex flex-row gap-4 mt-6 items-center mb-8">
-            <h2 className="text-2xl">4.5</h2>
+            <h2 className="text-2xl">{averageScore}</h2>
             <FaStar color="#00ACAC" size={25} />
-            <h3 className="text-lg">Ratings (20)</h3>
+            <h3 className="text-lg">Ratings ({reviews.length})</h3>
           </div>
 
           {/* SINGLE RATING */}
-          <div className="flex flex-col w-full border-2 h-auto p-10 rounded-xl shadow-lg">
-            <div className="flex gap-4 items-center">
-              <div className="w-10 h-10 bg-gray-600 rounded-full"></div>
-              <h2>Will Diddy</h2>
-            </div>
-
-            <div className="grid  lg:grid-cols-3 mt-6 gap-3">
-              <div className="w-auto flex items-center gap-5 h-auto p-3 rounded-3xl bg-[#00ACAC]">
-                <div className="bg-white w-5 h-5 rounded-full"></div>
-                <h2 className="text-white">Highly professional</h2>
-              </div>
-              <div className="w-auto flex items-center gap-5 h-auto p-3 rounded-3xl bg-[#00ACAC]">
-                <div className="bg-white w-5 h-5 rounded-full"></div>
-                <h2 className="text-white">Highly professional</h2>
-              </div>
-            </div>
-
-          </div>
+          {reviews.map((review)=>(
+            <ReviewCard {...review}/>
+          ))}
         </div>
 
 
