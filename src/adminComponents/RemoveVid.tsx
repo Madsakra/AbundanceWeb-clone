@@ -26,20 +26,20 @@ export default function RemoveVid({removeVid,setRemoveVid,selectedData,fetchData
     const handleRemoveTier = async () => { 
         if (!selectedData) 
             { 
-                alert("No Review to remove!")
-                return
+                alert("No video link to remove!")
+                return;
             }; 
         try { 
           const docRef = doc(db, "video_links", selectedData.id); 
           await deleteDoc(docRef); 
-          alert("Review removed successfully"); 
+          alert("Video link removed successfully"); 
           fetchData("start") // Refresh the table data 
           setRemoveVid(false);
 
 
         } catch (error) { 
-          console.error("Error removing review: ", error); 
-          alert("Failed to remove review. Please try again."); 
+          alert("Failed to remove video link. Please try again.");
+          return; 
         } 
       }; 
 
@@ -49,9 +49,9 @@ export default function RemoveVid({removeVid,setRemoveVid,selectedData,fetchData
     <AlertDialog open={removeVid} onOpenChange={setRemoveVid}>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle className="text-destructive">Remove Review? </AlertDialogTitle>
+        <AlertDialogTitle className="text-destructive">Remove Video Link? </AlertDialogTitle>
         <AlertDialogDescription className="">
-          Do you want to remove review {selectedData.id} ? Do note that this action is irreversible!
+          Do you want to remove  {selectedData.name} video link ? Do note that this action is irreversible!
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>

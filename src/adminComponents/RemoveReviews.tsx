@@ -52,9 +52,9 @@ export default function RemoveReviews({removalPopup,setRemovalPopup,selectedData
     <AlertDialog open={removalPopup} onOpenChange={setRemovalPopup}>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle className="text-destructive">Remove Review? </AlertDialogTitle>
+        <AlertDialogTitle className="text-destructive">Remove Predefined Review? </AlertDialogTitle>
         <AlertDialogDescription className="">
-          Do you want to remove review {selectedData.id} ? Do note that this action is irreversible!
+          Do you want to remove predefined review: {selectedData.name} ? Do note that this action is irreversible!
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>

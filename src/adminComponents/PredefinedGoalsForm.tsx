@@ -1,6 +1,6 @@
 import { db } from "@/firebase-config";
 
-import { addDoc, collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
     AlertDialog,
@@ -66,14 +66,15 @@ export default function PredefinedGoalsForm({openForm,setOpenForm,SelectedData,f
   // Handle category selection
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategory(categoryId);
-
+  
     // Find the selected category and update available units
     const category = displayedCategories?.find((cat) => cat.id === categoryId);
     if (category) {
       setAvailableUnits(category.units || []);
-      setSelectedUnit(null); // Reset the selected unit when category changes
+      setSelectedUnit(category.units?.[0] || null); // Set first available unit as default
     }
   };
+  
 
 
   // Handle unit selection
@@ -81,26 +82,51 @@ export default function PredefinedGoalsForm({openForm,setOpenForm,SelectedData,f
     setSelectedUnit(unit);
   };
 
-
-
+  const checkIfGoalExists = async (categoryID: string, min: number, max: number, goalID?: string) => {
+    try {
+      const goalsRef = collection(db, "predefined_goals_categories", categoryID, "predefined_goals");
+  
+      let q = query(
+        goalsRef,
+        where("min", "==", min),
+        where("max", "==", max)
+      );
+  
+      // Exclude the goal being edited
+      if (goalID) {
+        q = query(q, where("__name__", "!=", goalID)); // "__name__" refers to Firestore document ID
+      }
+  
+      const querySnapshot = await getDocs(q);
+      return !querySnapshot.empty;
+    } catch (error) {
+      console.error("Error checking predefined goal:", error);
+      return false;
+    }
+  };
+  
   const handleAddOrEditData = async ()=>{
-        
-        
+
 
         if (!selectedCategory || !selectedUnit || !minValue || !maxValue )
         {
             alert("You have missed out some fields !");
         }
 
-        if (maxValue! < minValue!)
+        else if (maxValue! < minValue!)
         {
             alert("You can't have a maximum value that is lesser than minimum!")
         }
 
-        if (maxValue === minValue)
+        else if (maxValue === minValue)
         {
             alert("Your minimum and maximum value can't be the same!")
 
+        }
+
+        else if (maxValue! < 0 || minValue! <0)
+        {
+          alert("Your Min / Max values can't be less than 0")
         }
 
 
@@ -110,12 +136,27 @@ export default function PredefinedGoalsForm({openForm,setOpenForm,SelectedData,f
                 
                 if (SelectedData)
                 {
+
+        
+                  const serverCheck = await checkIfGoalExists(selectedCategory!,minValue!,maxValue!,SelectedData.id);
+                  if (serverCheck === true)
+                  {
+                    alert("Predefined Goal already exists!");
+                    return;
+          
+                  }
+
                     if (!SelectedData.id)
                     {
                         throw new Error("Selected Data does not have an ID!");
                     }
-        
-                    const docRef = doc(db, "predefined_goals_categories", SelectedData.categoryID, "predefined_goals", SelectedData.id);
+
+                    // remove pre-existing trace if any
+                    const removeRef = doc(db,"predefined_goals_categories",SelectedData.categoryID,"predefined_goals",SelectedData.id);
+                    await deleteDoc(removeRef);
+
+                    // add the new ref to another
+                    const docRef = doc(db, "predefined_goals_categories", selectedCategory, "predefined_goals", SelectedData.id);
                     await setDoc(docRef,
                         { 
                             categoryID:selectedCategory,
@@ -123,13 +164,22 @@ export default function PredefinedGoalsForm({openForm,setOpenForm,SelectedData,f
                             min:minValue,
                             unit:selectedUnit,
                         }); // Use merge: true to update only the specified fields
-                        
                     alert("Predefined Goal updated successfully");
                 }
 
                 else{
+
                     if (!selectedCategory) {
                         throw new Error("Parent document ID (selectedCategory) is missing.");
+                      }
+
+                              
+                      const serverCheck = await checkIfGoalExists(selectedCategory!,minValue!,maxValue!);
+                      if (serverCheck === true)
+                      {
+                        alert("Predefined Goal already exists!");
+                        return;
+
                       }
                 
                       // Reference the parent document's subcollection
@@ -144,22 +194,18 @@ export default function PredefinedGoalsForm({openForm,setOpenForm,SelectedData,f
                         unit:selectedUnit,
                       });
                       alert("Predefined Goal updated successfully");
+                    
                 }
-                fetchData("start")
-            }
 
+                fetchData("start");
+            }
             catch(err)
             {
-                alert(err)
+                alert(err);
+                return;
             }
-
-
-
-
-
-        }
-
-
+          }
+      
   }
 
 

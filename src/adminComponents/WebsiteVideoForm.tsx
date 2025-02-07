@@ -56,7 +56,7 @@ export default function WebsiteVideoForm({video,fetchData,vidLinkForm,setVidLink
 
             catch(err)
             {
-                alert("Error updating"+err);
+                alert("Failed to update video link due to invalid data");
             }
 
         }
@@ -64,26 +64,18 @@ export default function WebsiteVideoForm({video,fetchData,vidLinkForm,setVidLink
         else if (!video)
         {
           try{
-            
-
-            console.log(vidName);
-            console.log(vidLink)
-            
+                    
           await addDoc(collection(db, "video_links"), {
               name:vidName,
               link:vidLink
             });
-
-
-
-
             alert("Video Link Added !")
             fetchData("start");
         }
 
         catch(err)
         {
-            alert("Error updating"+err);
+            alert("Failed to add video link due to invalid data");
         }
         }
 

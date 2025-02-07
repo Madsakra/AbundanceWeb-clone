@@ -193,11 +193,11 @@ export default function WebsiteContent() {
   const dropDowns = [
 
     { 
-      actionName:"Edit Link",
+      actionName:"Edit Website Link",
       action:editLink
     },
     {
-      actionName:"Delete Link",
+      actionName:"Delete Website Link",
       action:deleteLink
     }
 
@@ -393,8 +393,8 @@ export default function WebsiteContent() {
       <div className="flex border-2 p-8 flex-col rounded-xl w-auto h-auto">
         <div className="flex flex-row justify-between">
             <TableHeaderBar
-            mainText="Social Media Links"
-              subText="Manage your socail media links to reach more audience"
+            mainText="Website links"
+              subText="Manage all your website links on your webpage"
               />
               <button
               onClick={addLink} 

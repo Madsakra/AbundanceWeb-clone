@@ -9,7 +9,7 @@ import {
     AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
 import { db } from "@/firebase-config";
-import { ReviewType } from "@/types/adminTypes";
+import { MET_Task_Type } from "@/types/adminTypes";
 
 import { deleteDoc, doc } from "firebase/firestore";
 
@@ -17,7 +17,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 type RemoveMETProps = {
     removalPopup:boolean,
     setRemovalPopup:(open:boolean)=>void,
-    selectedData:ReviewType,
+    selectedData:MET_Task_Type,
     fetchData:(time:"start")=>void,
 }
 
@@ -28,20 +28,20 @@ export default function RemoveMET({removalPopup,setRemovalPopup,selectedData,fet
     const handleRemoveTier = async () => { 
         if (!selectedData) 
             { 
-                alert("No Review to remove!")
+                alert("No task to remove!")
                 return
             }; 
         try { 
           const docRef = doc(db, "MET_tasks", selectedData.id); 
           await deleteDoc(docRef); 
-          alert("Review removed successfully"); 
+          alert("MET Task removed successfully"); 
           fetchData("start") // Refresh the table data 
             setRemovalPopup(false);
 
 
         } catch (error) { 
-          console.error("Error removing review: ", error); 
-          alert("Failed to remove review. Please try again."); 
+          console.error("Error removing MET task: ", error); 
+          alert("Failed to remove MET task. Please try again."); 
         } 
       }; 
 
@@ -51,9 +51,9 @@ export default function RemoveMET({removalPopup,setRemovalPopup,selectedData,fet
     <AlertDialog open={removalPopup} onOpenChange={setRemovalPopup}>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle className="text-destructive">Remove Review? </AlertDialogTitle>
+        <AlertDialogTitle className="text-destructive">Remove MET Task? </AlertDialogTitle>
         <AlertDialogDescription className="">
-          Do you want to remove review {selectedData.id} ? Do note that this action is irreversible!
+          Do you want to remove task: {selectedData.name} ? Do note that this action is irreversible!
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>

@@ -33,14 +33,14 @@ export default function RemoveWebsiteLink({removalPopup,setRemovalPopup,selected
         try { 
           const docRef = doc(db, "website_links", selectedData.id); 
           await deleteDoc(docRef); 
-          alert("Membership tier removed successfully"); 
+          alert("Website Links removed successfully"); 
           fetchData("start") // Refresh the table data 
             setRemovalPopup(false);
 
 
         } catch (error) { 
-          console.error("Error removing tier: ", error); 
-          alert("Failed to remove tier. Please try again."); 
+          console.error("Error removing website links: ", error); 
+          alert("Failed to remove website link. Please try again."); 
         } 
       }; 
 
@@ -50,7 +50,7 @@ export default function RemoveWebsiteLink({removalPopup,setRemovalPopup,selected
     <AlertDialog open={removalPopup} onOpenChange={setRemovalPopup}>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle className="text-destructive">Remove Membershhip Tier</AlertDialogTitle>
+        <AlertDialogTitle className="text-destructive">Remove Website Link?</AlertDialogTitle>
         <AlertDialogDescription className="">
           Do you want to remove {selectedData.name} link ? Do note that this action is irreversible!
         </AlertDialogDescription>

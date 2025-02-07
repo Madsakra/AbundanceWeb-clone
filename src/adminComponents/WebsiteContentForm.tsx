@@ -10,7 +10,7 @@ import {
     AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
 import { useEffect, useState } from "react"
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import { WebsiteLinks } from "@/types/adminTypes";
 
@@ -34,9 +34,45 @@ export default function WebsiteContentForm({openForm,setOpenForm,websiteLink,fet
     
     const collectionName = "website_links";
 
+   const serverCheck = async () => {
+    try {
+      const colRef = collection(db, collectionName);
+  
+      let q = query(
+        colRef,
+        where("name", "==", name),
+        where("link", "==", link)
+      );
+  
+      // Exclude the goal being edited
+      if (websiteLink?.id) {
+        q = query(q, where("__name__", "!=", websiteLink.id)); // "__name__" refers to Firestore document ID
+      }
+  
+      const querySnapshot = await getDocs(q);
+      return !querySnapshot.empty;
+    } catch (error) {
+      console.error("Error checking predefined goal:", error);
+      return false;
+    }
+  };
+
+
+
     const handleAddOrEditTier = async () => { 
         
-    
+        if (name.trim()==="" || link.trim()==="")
+        {
+          alert("Please do not leave out the name or link blank!");
+          return;
+        }
+
+        const checkServer = await serverCheck();
+        if (checkServer)
+        {
+          alert("The name and link already exists, please check again");
+          return;
+        }
         
         try { 
           if (websiteLink?.id) { 
@@ -64,6 +100,7 @@ export default function WebsiteContentForm({openForm,setOpenForm,websiteLink,fet
         } catch (error) { 
           console.error("Error adding/updating website link: ", error); 
           alert("Failed to process request. Please try again."); 
+          return;
         } 
       }; 
     
@@ -85,9 +122,9 @@ export default function WebsiteContentForm({openForm,setOpenForm,websiteLink,fet
         <AlertDialog onOpenChange={setOpenForm} open={openForm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{websiteLink? <h2>Edit Social Media Link</h2>: <h1>Add Social Media Link</h1>}</AlertDialogTitle>
+            <AlertDialogTitle>{websiteLink? <h2>Edit Website Link</h2>: <h1>Add Website  Link</h1>}</AlertDialogTitle>
             <AlertDialogDescription>
-            {websiteLink?  <h2>Edit Social Media link for your users to view</h2>:<h1>Add Social Media link for your users to view</h1> } 
+            {websiteLink?  <h2>Edit Website link for your users to view</h2>:<h1>Add Website Media link for your users to view</h1> } 
             
             </AlertDialogDescription>
           </AlertDialogHeader>

@@ -122,7 +122,7 @@ export default function MetTask() {
       action:editTask
     },
     {
-      actionName:"Delete Link",
+      actionName:"Delete Task",
       action:deleteTask
     }
   ];

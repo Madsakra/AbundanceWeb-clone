@@ -1,10 +1,11 @@
 export type ReviewType = {
     id:string,
     name:string,
-    value:number
+    score:number,
+    reasons:string[];
   };
   
-  
+
   
   export type AppFeature = {
     id:string,

@@ -257,7 +257,12 @@ return (
                   <TableRow key={rev.id}>
                     <TableCell className="font-medium">{rev.id}</TableCell>
                     <TableCell>{rev.name}</TableCell>
-                    <TableCell>{rev.value}</TableCell>
+                    <TableCell>{rev.score}</TableCell>
+                    <TableCell className="align-middle">
+                      {rev.reasons.map((reason,index)=>(
+                        <h1 className="mt-2" key={index}>{reason}</h1>
+                      ))}
+                    </TableCell>
                     <TableCell className="flex justify-end">
                       
                       <CustomizedDropdown 
