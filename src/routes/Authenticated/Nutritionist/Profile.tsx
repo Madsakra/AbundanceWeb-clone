@@ -217,21 +217,33 @@ export default function Profile() {
 
         {/* RATINGS PORTION */}
         <div className="flex gap-2 flex-col mt-20  w-full  ">
-
           <div className="flex flex-row items-center justify-between">
           <h1 className="text-[#8797DA] text-3xl">Overall Ratings</h1>
           </div>
-        
-          <div className="flex flex-row gap-4 mt-6 items-center mb-8">
-            <h2 className="text-2xl">{averageScore}</h2>
-            <FaStar color="#00ACAC" size={25} />
-            <h3 className="text-lg">Ratings ({reviews.length})</h3>
-          </div>
 
-          {/* SINGLE RATING */}
-          {reviews.map((review)=>(
+          {
+            reviews.length>0?
+            <>
+            <div className="flex flex-row gap-4 mt-6 items-center mb-8">
+              <h2 className="text-2xl">{averageScore}</h2>
+              <FaStar color="#00ACAC" size={25} />
+              <h3 className="text-lg">Ratings ({reviews.length})</h3>
+            </div>
+              {/* SINGLE RATING */}
+            {reviews.map((review)=>(
             <ReviewCard {...review}/>
-          ))}
+              ))}
+      
+
+            </>:
+            <div className="my-6">
+              <h1 className="text-2xl">No reviews for now...</h1>
+            </div>
+            
+          }
+ 
+        
+    
         </div>
 
 

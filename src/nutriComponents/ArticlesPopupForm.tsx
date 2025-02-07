@@ -91,7 +91,8 @@ export default function ArticlesPopupForm({
           writtenBy:{
             name:profile?.title,
             avatar:profile?.avatar,
-            email:user?.email
+            email:user?.email,
+            uid:user?.uid
           }
         };
   

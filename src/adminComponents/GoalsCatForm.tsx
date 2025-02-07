@@ -29,12 +29,21 @@ export default function GoalsCatForm({openForm,setOpenForm,SelectedData,fetchDat
     const [disableName,setDisableName] = useState(false);
     const [categoryName,setCategoryName] = useState<string|undefined>(SelectedData?.id)
     const [inputUnit, setInputUnit] = useState("");
-
-
     const [unitContainer,setUnitContainer] = useState<string[] | undefined>(SelectedData?.units)
    
 
-
+      // Load data into input fields when SelectedData changes
+      useEffect(() => {
+        if (SelectedData) {
+            setDisableName(true);
+            setCategoryName(SelectedData.id);
+            setUnitContainer(SelectedData.units);
+        } else {
+            setDisableName(false);
+            setCategoryName("");
+            setUnitContainer([]);
+        }
+      }, [SelectedData]);
 
 
     const removeUnit = (unitToRemove:string)=>{
@@ -49,75 +58,73 @@ export default function GoalsCatForm({openForm,setOpenForm,SelectedData,fetchDat
 
 
     const addUnit = () => {
-
-      if (inputUnit.trim()==="")
-      {
-        alert("Please do not enter blank units!");
-        return;
+      if (inputUnit.trim() === "") {
+          alert("Please do not enter blank units!");
+          return;
       }
 
-        try {
-            {
-                setUnitContainer(prevUnits => {
-                    if (prevUnits) {
-                      if (prevUnits.includes(inputUnit)) {
-                        // Alert the user if duplicate is found
-                        alert('This unit is already added.');
-                        return prevUnits; // Return the previous state without modifying it
-                      } else {
-                        return [...prevUnits, inputUnit]; // Add the new unit if it's not a duplicate
-                      }
-                    }
-                    return [inputUnit]; // If unitContainer is undefined, initialize it with the new unit
-                  });
-                
-            }
-
-          } catch (error) {
-            // If an error occurs, the unit is invalid
-            return false; 
+      setUnitContainer(prevUnits => {
+          if (prevUnits) {
+              if (prevUnits.includes(inputUnit)) {
+                  alert('This unit is already added.');
+                  return prevUnits;
+              } else {
+                  return [...prevUnits, inputUnit];
+              }
           }
-      };
+          return [inputUnit];
+      });
+      setInputUnit(""); // Clear the input field after adding a unit
+  };
 
 
 
-      const handleAddOrEditTier = async () => { 
-        setLoading(true);
-        try { 
-          if (SelectedData?.id) { 
-            // Edit Tier 
-            const docRef = doc(db, "predefined_goals_categories",SelectedData.id); 
-            await updateDoc(docRef, { 
-                units:unitContainer
-            }); 
-            alert("Predefined Goals Category edited successfully"); 
-            
-          } else { 
-            // Add Tier 
-            
-            await setDoc(doc(db,"predefined_goals_categories",categoryName!),{ 
-                units:unitContainer
-            }); 
+  const handleAddOrEditTier = async () => {
+    setLoading(true);
 
-            alert("Predefined Goals Category added successfully"); 
-          } 
-          
-         fetchData("start");
-    
-        } catch (error) { 
-          console.error("Error adding/updating tier: ", error); 
-          alert("Failed to process request. Please try again."); 
-        } 
-      }; 
+    // Validate category name and unit container
+    if (categoryName?.trim() === "") {
+        alert("Please do not leave the category name blank.");
+        setLoading(false);
+        return;
+    }
 
+    if (!unitContainer || unitContainer.length === 0) {
+        alert("Please add at least one measurement unit.");
+        setLoading(false);
+        return;
+    }
 
-
-      useEffect(()=>{
-        if (SelectedData)
-        {
-            setDisableName(true);
+    try {
+        if (SelectedData?.id) {
+            // Edit Tier
+            const docRef = doc(db, "predefined_goals_categories", SelectedData.id);
+            await updateDoc(docRef, {
+                units: unitContainer
+            });
+            alert("Predefined Goals Category edited successfully");
+        } else {
+            // Add Tier
+            await setDoc(doc(db, "predefined_goals_categories", categoryName!), {
+                units: unitContainer
+            });
+            alert("Predefined Goals Category added successfully");
         }
-      },[])
+
+        fetchData("start");
+        setOpenForm(false); // Close the dialog after successful submission
+
+    } catch (error) {
+        console.error("Error adding/updating tier: ", error);
+        alert("Failed to process request. Please try again.");
+    } finally {
+        setLoading(false);
+    }
+};
+
+
+
+  
 
    
 

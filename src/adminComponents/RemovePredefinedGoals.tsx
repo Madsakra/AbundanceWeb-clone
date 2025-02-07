@@ -30,20 +30,20 @@ export default function RemovePredefinedGoals({removalPopup,setRemovalPopup,sele
     const handleRemoveTier = async () => { 
         if (!selectedData) 
             { 
-                alert("No Category to remove!")
+                alert("No Predefined goal to remove!")
                 return
             }; 
         try { 
           const docRef = doc(db, "predefined_goals_categories", selectedData.categoryID,"predefined_goals",selectedData.id); 
           await deleteDoc(docRef); 
-          alert("Goals Category Removed successfully"); 
+          alert("Predefined goal Removed successfully"); 
           fetchData("start") // Refresh the table data 
             setRemovalPopup(false);
 
 
         } catch (error) { 
           console.error("Error removing category: ", error); 
-          alert("Failed to remove category. Please try again."); 
+          alert("Failed to remove predefined goal. Please try again."); 
         } 
       }; 
 
@@ -60,9 +60,9 @@ export default function RemovePredefinedGoals({removalPopup,setRemovalPopup,sele
         <AlertDialog open={removalPopup} onOpenChange={setRemovalPopup}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-destructive">Remove Review? </AlertDialogTitle>
+            <AlertDialogTitle className="text-destructive">Remove Predefined Goal? </AlertDialogTitle>
             <AlertDialogDescription className="">
-              Do you want to remove goal: {selectedData.id} ? Do note that this action is irreversible!
+              Do you want to remove goal: {selectedData.categoryID} ? Do note that this action is irreversible!
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

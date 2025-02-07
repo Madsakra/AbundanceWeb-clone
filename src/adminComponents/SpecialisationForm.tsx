@@ -54,7 +54,7 @@ export default function SpecialisationForm({
       setVariations([...variations, newVariation.trim()]);
       setNewVariation(""); // Clear the input after adding
     } else {
-      alert("This variation already exists!"); // Optional feedback for the user
+      alert(`This ${naming} already exists!`); // Optional feedback for the user
     }
   };
 
@@ -69,26 +69,31 @@ export default function SpecialisationForm({
     return !querySnapshot.empty;
   };
 
+
+
+
+
   // Handle form submission
   const handleAddOrEditSpecialisation = async () => {
     // Validation
     if (!name.trim()) {
-      alert("Specialisation name cannot be empty.");
+      alert(`${naming} name cannot be empty.`);
       return;
     }
-    if (variations.length === 0) {
-      alert("Please add at least one variation.");
-      return;
-    }
+
 
     // Check for duplicate name (only for new specialisations)
     if (!selectedSpecialisation) {
       const isDuplicate = await isDuplicateName(name);
       if (isDuplicate) {
-        alert("A specialisation with this name already exists.");
+        alert(`A ${naming} with this name already exists.`);
         return;
       }
     }
+
+
+
+
 
     try {
       if (selectedSpecialisation?.id) {
@@ -98,7 +103,7 @@ export default function SpecialisationForm({
           name: name.charAt(0).toUpperCase() + name.slice(1).toLowerCase(),
           variation: variations,
         });
-        alert("Specialisation edited successfully");
+        alert(`${naming} edited successfully`);
       } else {
         // Add Specialisation
         const collectionRef = collection(db, collectionName);
@@ -106,13 +111,13 @@ export default function SpecialisationForm({
           name: name.charAt(0).toUpperCase() + name.slice(1).toLowerCase(),
           variation: variations,
         });
-        alert("Specialisation added successfully");
+        alert(`${naming} added successfully`);
       }
 
       fetchData("start");
       setOpenForm(false); // Close the form after submission
     } catch (error) {
-      console.error("Error adding/updating specialisation: ", error);
+      console.error(`Error adding/updating ${naming}: `, error);
       alert("Failed to process request. Please try again.");
     }
   };

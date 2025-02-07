@@ -50,7 +50,9 @@ export default function AdminAccountCreation({popupForm,setPopupForm,setLoading,
 
       try{
         setLoading(true);
-        const created = await createAccount(email,password,userName,"admins");
+        const created = await createAccount(email,password,userName);
+
+ 
         if (created)
         {
           alert("Admin Account created")
@@ -72,7 +74,7 @@ export default function AdminAccountCreation({popupForm,setPopupForm,setLoading,
 
     }
 
-
+    setLoading(false);
   }
 
 
@@ -89,12 +91,12 @@ export default function AdminAccountCreation({popupForm,setPopupForm,setLoading,
           <div className="flex flex-col gap-7">
 
           <input 
-          className="input mt-5" type="text" 
+          className="input input-bordered mt-5" type="text" 
           placeholder="Enter the new admin name"
           onChange={(e)=>setUsername(e.target.value)}
           />
 
-          <input className="input" 
+          <input className="input input-bordered" 
           type="email" 
           placeholder="Enter the new admin email"
           onChange={(e)=>setEmail(e.target.value)}
@@ -107,7 +109,7 @@ export default function AdminAccountCreation({popupForm,setPopupForm,setLoading,
                      <input
                        type={showPassword ? "text" : "password"}
                        placeholder="Enter your password here"
-                       className="input w-full"
+                       className="input w-full input-bordered"
                        onChange={(e)=>{setPassword(e.target.value)}}
                      />
                      <div

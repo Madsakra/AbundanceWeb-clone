@@ -67,7 +67,7 @@ export default function RemoveAppFeatureForm({removalPopup,setRemovalPopup,selec
       <AlertDialogHeader>
         <AlertDialogTitle className="text-destructive">Remove App Feature? </AlertDialogTitle>
         <AlertDialogDescription className="">
-          Do you want to remove App Feature  {selectedData.id} ? Do note that this action is irreversible!
+          Do you want to remove App Feature  {selectedData.name} ? Do note that this action is irreversible!
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>

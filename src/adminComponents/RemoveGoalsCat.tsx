@@ -58,9 +58,9 @@ export default function RemoveGoalsCat({removalPopup,setRemovalPopup,selectedDat
         <AlertDialog open={removalPopup} onOpenChange={setRemovalPopup}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-destructive">Remove Review? </AlertDialogTitle>
+            <AlertDialogTitle className="text-destructive">Remove Goal Category? </AlertDialogTitle>
             <AlertDialogDescription className="">
-              Do you want to remove goal: {selectedData.id} ? Do note that this action is irreversible!
+              Do you want to remove category: {selectedData.id} ? Do note that this action is irreversible!
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

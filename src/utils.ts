@@ -25,7 +25,7 @@ export const resetPassword = async (account:ApprovedAccounts)=>{
   }
 
 
-export const deleteAccountAuth = async(account:ApprovedAccounts | PendingAccounts,collectionName:string)=>{
+export const deleteAccountAuth = async(account:ApprovedAccounts | PendingAccounts)=>{
    
     try{
       const deleteAccount = httpsCallable(functions,'deleteAccount');
@@ -37,7 +37,7 @@ export const deleteAccountAuth = async(account:ApprovedAccounts | PendingAccount
       const responseJSON = await deleteAccount(data);
       const responseProperty = responseJSON.data
       console.log(responseProperty);
-      await deleteDoc(doc(db, collectionName,account.id));
+      await deleteDoc(doc(db, "accounts",account.id));
       alert("Account Deleted");
       return true;
     }
@@ -50,7 +50,7 @@ export const deleteAccountAuth = async(account:ApprovedAccounts | PendingAccount
 
   }
 
-  export const createAccount = async (email:string,password:string,userName:string,collectionName:string)=>{
+  export const createAccount = async (email:string,password:string,userName:string)=>{
     const createAccount = httpsCallable(functions,'addAccount');
     const data = {
       email:email,
@@ -60,7 +60,7 @@ export const deleteAccountAuth = async(account:ApprovedAccounts | PendingAccount
     const responseJSON = await createAccount(data);
     const responseProperty = responseJSON.data as any
     const newUID = responseProperty.id as string
-    const docRef =  doc(db, collectionName,newUID);
+    const docRef =  doc(db, "accounts",newUID);
 
         await setDoc(docRef, {
           name:userName,
