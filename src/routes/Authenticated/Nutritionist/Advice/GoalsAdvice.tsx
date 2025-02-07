@@ -1,7 +1,7 @@
 import { useAuth } from "@/contextProvider";
 import { db } from "@/firebase-config";
 import { PredefinedGoalsType } from "@/types/adminTypes";
-import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -54,7 +54,7 @@ export default function GoalsAdvice() {
         if (clientID && user)
         {
         
-            const clientRef = doc(db,"accounts",clientID,"tailored_advice",user.uid,"advice","advice_information");
+            const clientRef = collection(db,"accounts",clientID,"tailored_advice",user.uid,"advice");
             const statusRef = doc(db,"accounts",clientID,"tailored_advice",user.uid)
             const storedData = localStorage.getItem("adviceData");
             if (storedData) {
@@ -71,15 +71,16 @@ export default function GoalsAdvice() {
                     title:adviceForClient.title,
                     content:adviceForClient.content,
                     mealPlans:adviceForClient.mealPlan,
-                    goalAdvice 
+                    goalAdvice,
+                    timestamp:serverTimestamp(), 
                 };
                 
                 try{
-                    await setDoc(clientRef,combinedData);
+                    await addDoc(clientRef,combinedData);
                     await updateDoc(statusRef,{
-                        status:"complete"
+                        status:"complete",
+                        updatedAt: serverTimestamp(),
                     })
-
 
                     // Remove the adviceData for the current client from the array
                     const updatedAdviceArray = adviceArray.filter(
@@ -94,26 +95,17 @@ export default function GoalsAdvice() {
                     await deleteDoc(nutriClientRef);
                     await deleteDoc(nutriClientSubRef);
 
-
-
                     alert("Tailored Advice Sent!");
                     navigate("/nutri")
 
                 }
-
                 catch(err)
                 {
                    alert("Failed to send tailored advice.")
                 }
-     
-
             }
-        
             }
-
-
         }
-
     }
 
 

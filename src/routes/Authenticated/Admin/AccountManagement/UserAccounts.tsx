@@ -106,7 +106,7 @@ export default function UserAccounts() {
 
   const deleteAccount = async (approvedAccount:ApprovedAccounts)=>{
     setLoading(true);
-    const deleted = await deleteAccountAuth(approvedAccount,"accounts");
+    const deleted = await deleteAccountAuth(approvedAccount);
     if (deleted)
     {
       fetchAccounts("start");

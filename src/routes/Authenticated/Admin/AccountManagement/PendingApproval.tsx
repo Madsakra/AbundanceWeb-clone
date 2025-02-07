@@ -221,7 +221,7 @@ export default function PendingUserAccounts() {
 
 
 
-        const deleted = await deleteAccountAuth(account,"pending_approval");
+        const deleted = await deleteAccountAuth(account);
         if (deleted)
         {
           
