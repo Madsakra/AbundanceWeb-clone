@@ -36,6 +36,7 @@ export default function Profile() {
   const [certificationURL, setCertificationURL] = useState(null); // State for Certificate URL
   const [reviews, setReviews] = useState<DisplayedReview[]>([]);
   const [averageScore, setAverageScore] = useState<number | null>(null);
+  const [dueDate,setDueDate] = useState("");
 
   const fetchProfile = async()=>{
 
@@ -66,6 +67,7 @@ export default function Profile() {
             const data = docSnap.data();
             setResumeURL(data?.resumeURL || null);
             setCertificationURL(data?.certificationURL || null);
+            setDueDate(data?.dueDate || null)
           } else {
             console.log("No practicing info found");
           }
@@ -191,7 +193,7 @@ export default function Profile() {
         </div>
 
 
-        <div className="flex flex-col w-96 border-2 h-96 rounded-xl p-16 shadow-2xl ">
+        <div className="flex flex-col w-96 border-2 rounded-xl p-16 shadow-2xl ">
           <h1 className="text-[#6B7FD6] text-xl font-semibold mb-10">Practicing Information</h1>
           
               {/* Resume Button */}
@@ -210,7 +212,22 @@ export default function Profile() {
                   </button>
               </div>
 
-          <h1 className="text-lg text-[#5F5F5F] mt-10">Expiry Date: 12/12/25 </h1>
+              <div className="flex flex-col gap-1">
+              <h1 className="text-lg mb-4 font-semibold">Specialisation:</h1>
+         
+              {profile?.profileSpec?.map((spec)=>(
+                <>
+                  {
+                    spec.name === "Primary diet"?
+                    <div className="badge p-4 bg-[#00ACAC] text-white">{spec.variation}</div>:
+                    <div className="badge p-4 bg-[#00ACAC] text-white">{spec.name}</div>
+                  }
+                </>
+              ))}
+              </div>
+
+
+          <h1 className="text-lg text-[#5F5F5F] mt-10">Expiry Date: {dueDate}</h1>
         </div>
         </div>
       

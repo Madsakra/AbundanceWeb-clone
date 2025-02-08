@@ -24,6 +24,11 @@ export type MembershipTier = {
   dob:string,
   title:string,
   gender:string,
+  profileSpec?:{
+    id:string,
+    name:string,
+    variation:string,
+  }[]
 }
 
 export type AccountDetails = {
