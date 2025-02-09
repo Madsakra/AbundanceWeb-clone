@@ -22,21 +22,23 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { CalendarIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
 import emailjs from '@emailjs/browser';
-import {CalendarDate} from "@internationalized/date";
-import {Calendar} from "@heroui/calendar";
+
 import { deleteAccountAuth, pageLimit } from "@/utils";
 import { PendingAccounts } from "@/types/userTypes";
 import { deleteObject, ref } from "firebase/storage";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 
 
 const headers = ["UID","Email", "Name", "Certification", "Resume"];
 
 export default function PendingUserAccounts() {
+
   const [loading, setLoading] = useState(true);
   const [pendingAccounts, setPendingAccounts] = useState<PendingAccounts[] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,11 +46,10 @@ export default function PendingUserAccounts() {
   const [firstVisible, setFirstVisible] = useState<QueryDocumentSnapshot | null>(null);
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot | null>(null);
   const [popupForm, setPopupForm] = useState(false);
-  const [accountDueDate, setAccountDueDate] = useState<CalendarDate|null>(null);
-
+  const [accountDueDate, setAccountDueDate] = useState<Dayjs|null>(null);
   const [selectedAccount, setSelectedAccount] = useState<PendingAccounts | null>(null);
 
-
+  const today = dayjs().add(4,"month");
 
   const fetchAccounts = async (action: "start" | "next" | "prev") => {
     
@@ -103,8 +104,6 @@ export default function PendingUserAccounts() {
 
   useEffect(() => {
     fetchAccounts("start");
-
-
   }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -395,46 +394,42 @@ export default function PendingUserAccounts() {
         </div>
       )}
 
-      <AlertDialog onOpenChange={setPopupForm} open={popupForm}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Approve Application?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Please select the account due date below:
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <div className="flex flex-col gap-4 mt-4">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={`w-[240px] justify-start text-left font-normal ${!accountDueDate ? "text-muted-foreground" : ""}`}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {accountDueDate ? accountDueDate.toString(): "Pick a date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+<AlertDialog onOpenChange={setPopupForm} open={popupForm}>
+  <AlertDialogContent className="">
+    <AlertDialogHeader>
+      <AlertDialogTitle>Approve Application?</AlertDialogTitle>
+      <AlertDialogDescription>
+        Please select the account due date below:
+      </AlertDialogDescription>
+    </AlertDialogHeader>
 
-               {/*show date selector*/}
- 
-                    <div className="flex gap-x-4">
-                    <Calendar aria-label="Date (Controlled)" 
-                    value={accountDueDate}
-                    onChange={setAccountDueDate}
-                    />
-                  </div>
+    {/* Wrapper for better spacing */}
+    <div className="flex flex-col gap-4 mt-4">
+      <label htmlFor="due-date" className="font-bold">Account Due Date</label>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DatePicker 
+          value={accountDueDate} 
+          onChange={setAccountDueDate} 
+          minDate={today} 
+          slotProps={{ 
+            textField: { onClick: (e) => e.stopPropagation() }, // Prevents closing when clicked
+            popper: { disablePortal: true } // Ensures it renders inside the modal
+          }}
+        />
+      </LocalizationProvider>
+    </div>
+
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction onClick={handleApprove}>Approve</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
 
 
-              </PopoverContent>
-            </Popover>
-          </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleApprove}>Approve</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        
+
+
     </>
   );
 }

@@ -35,9 +35,8 @@ export type AccountDetails = {
   name:string,
   email:string,
   role:string,
-  image?:string,
-  certificationURL?:string,
-  resumeURL?:string,
+  pendingApproval?:string,
+
 
 
 }

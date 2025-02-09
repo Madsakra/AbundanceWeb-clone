@@ -7,7 +7,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { doc,  setDoc } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import {  useNavigate } from "react-router-dom";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { ProfileSpecialisation, SelectedHealthProfile } from "@/types/nutritionistTypes";
 import ProfileSpecilisation from "./ProfileSpecilisation";
 
@@ -41,6 +41,7 @@ export default function ProfileCreation() {
   // submit documents
   const handleSubmit = async()=>{
 
+    const primaryDiet = profileSpec.find((item) => item.name === "Primary diet");
     setLoading(true);
 
     // check if documents are present
@@ -56,6 +57,15 @@ export default function ProfileCreation() {
       setLoading(false);
 
     }
+      // Check if "Primary Diet" is selected
+  
+    else if (primaryDiet && !primaryDiet.variation) {
+        alert("Please select a variation for 'Primary Diet' before submitting.");
+        setLoading(false);
+        return;
+      }
+
+    
 
     else{
 
@@ -114,6 +124,17 @@ export default function ProfileCreation() {
               alert("Please do not miss out the fields in the profile creation form!");
               return;
     }
+
+      // Enforce age restriction (18+)
+      const today = dayjs();
+      const age = today.diff(dob, 'year');
+
+      if (age < 18) {
+        alert("You must be at least 18 years old to create a profile.");
+        return;
+      }
+
+
     else{
       setProfSpc(true);
 

@@ -86,7 +86,7 @@ export default function CustomizedDropdown({subjectData,dropDowns,disableDropdow
             <AlertDialogHeader>
               <AlertDialogTitle className="text-destructive">{focusedAction?.actionName}</AlertDialogTitle>
               <AlertDialogDescription className="">
-                Note that this action is not irreversible!
+                Note: This action is irreversible!
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

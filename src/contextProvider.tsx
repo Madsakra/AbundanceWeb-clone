@@ -55,22 +55,53 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   
 
   useEffect(() => {
-    if (user) {
-      const profileRef = doc(db, "accounts", user.uid, "profile", "profile_info");
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(true);
 
-      const unsubscribe = onSnapshot(profileRef, (profileSnap) => {
-        if (profileSnap.exists()) {
-          console.log("Profile data updated:", profileSnap.data());
-          setProfile(profileSnap.data() as ProfileType);
-        } else {
-          console.log("Profile does not exist.");
-        }
-      });
+      if (user) {
+        subscribeToAccountDetails(user.uid);
+        subscribeToProfile(user.uid);
+      } else {
+        setAccountDetails(null);
+        setProfile(null);
+      }
 
-      // Clean up the listener on unmount
-      return () => unsubscribe();
-    }
-  }, [user]); // Re-run effect if `user` changes
+      setLoading(false);
+    });
+
+    return unsubscribeAuth;
+  }, []);
+
+  // 🔥 Real-time listener for account details
+  const subscribeToAccountDetails = (uid: string) => {
+    const accountRef = doc(db, "accounts", uid);
+
+    return onSnapshot(accountRef, (docSnap) => {
+      if (docSnap.exists()) {
+        console.log("Account details updated:", docSnap.data());
+        setAccountDetails(docSnap.data() as AccountDetails);
+      } else {
+        console.log("No account details found.");
+        setAccountDetails(null);
+      }
+    });
+  };
+
+  // 🔥 Real-time listener for profile
+  const subscribeToProfile = (uid: string) => {
+    const profileRef = doc(db, "accounts", uid, "profile", "profile_info");
+
+    return onSnapshot(profileRef, (profileSnap) => {
+      if (profileSnap.exists()) {
+        console.log("Profile updated:", profileSnap.data());
+        setProfile(profileSnap.data() as ProfileType);
+      } else {
+        console.log("Profile does not exist.");
+        setProfile(null);
+      }
+    });
+  };
 
 
   const fetchProfile = async ()=>{

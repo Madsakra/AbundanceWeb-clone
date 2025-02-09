@@ -7,38 +7,51 @@ import { doc,  onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom'
 import ProfileCreation from './ProfileCreation';
+import Resubmission from './Resubmission';
+import dayjs from 'dayjs';
 
 export default function NutritionistLayout() {
-  const { logout } = useAuth();
-  const { user, setLoading, loading } = useAuth();
+
+  const { user, setLoading, loading} = useAuth();
   const [profileExist, setProfileExists] = useState(true);
   const [expire,setExpiry] = useState(false);
 
 
   useEffect(() => {
     if (!user) return;
-    
+
     setLoading(true);
 
-    // Reference to the practicing_info document
     const docRef = doc(db, "accounts", user.uid, "approval_info", "practicing_info");
+    const profileCollectionRef = doc(db, "accounts", user.uid, "profile", "profile_info");
 
-    // Real-time listener for due date updates
+    // Practicing Info Listener (Real-time)
     const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
-        const dueDateStr = data?.dueDate || null;
+        console.log("Firestore Update:", data); // Debugging log
 
-        if (dueDateStr) {
-          const dueDate = new Date(`${dueDateStr}T00:00:00`);
-          const today = new Date();
-          today.setHours(0, 0, 0, 0); // Normalize time to avoid issues
+        let dueDate;
 
-          if (dueDate < today) {
+        if (data?.dueDate?.toDate) {
+          // If Firestore Timestamp
+          dueDate = dayjs(data.dueDate.toDate());
+        } else if (typeof data?.dueDate === "string") {
+          // If Firestore string
+          dueDate = dayjs(data.dueDate);
+        } else {
+          dueDate = null;
+        }
+
+        if (dueDate) {
+          const today = dayjs().startOf("day");
+          console.log("Due Date:", dueDate.format("YYYY-MM-DD"), "Today:", today.format("YYYY-MM-DD"));
+
+          if (dueDate.isBefore(today)) {
             alert("Due date has passed, please renew your information");
-            console.log(expire);
             setExpiry(true);
-            return;
+          } else {
+            setExpiry(false);
           }
         }
       } else {
@@ -46,27 +59,32 @@ export default function NutritionistLayout() {
       }
     });
 
-    // Reference to the profile_info document
-    const profileCollectionRef = doc(db, "accounts", user.uid, "profile", "profile_info");
-    
-    const unsubscribeProfile = onSnapshot(profileCollectionRef, (subcollectionSnap) => {
-      if (!subcollectionSnap.exists()) {
-        setProfileExists(false);
-      }
+    // Profile Info Listener (Real-time)
+    const unsubscribeProfile = onSnapshot(profileCollectionRef, (profileSnap) => {
+      setProfileExists(profileSnap.exists());
     });
 
     setLoading(false);
 
-    // Cleanup listeners when the component unmounts
+    // Cleanup function
     return () => {
       unsubscribe();
       unsubscribeProfile();
     };
-  }, [user, logout]);
+  }, [user]);
+
 
   if (!loading && !profileExist) {
     return <ProfileCreation />;
   }
+
+  if (!loading && expire)
+  {
+    return <Resubmission/>;
+  }
+
+  
+
 
   return (
     <>
