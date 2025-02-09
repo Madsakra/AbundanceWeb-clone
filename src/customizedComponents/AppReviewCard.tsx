@@ -3,9 +3,12 @@
 
 type ReviewCardProps = {
     avatar:string;
+    email:string,
     name:string;
+
+    reasonName:string,
     score:number;
-    reviews:string[];
+    reasons:string[];
 
 }
 
@@ -13,7 +16,7 @@ type ReviewCardProps = {
 
 
 
-export default function AppReviewCard({avatar,name,score,reviews}:ReviewCardProps) {
+export default function AppReviewCard({avatar,name,score,reasons}:ReviewCardProps) {
   return (
     <div className="w-full md:w-96 h-auto shadow-2xl flex flex-col p-8 rounded-2xl" >
 
@@ -30,9 +33,9 @@ export default function AppReviewCard({avatar,name,score,reviews}:ReviewCardProp
         </div>
 
         <div className="flex flex-col gap-2 mt-10">
-        {reviews.map((review,index)=>(
+        {reasons.map((reason,index)=>(
             <div key={index} className="border-2 h-auto w-full p-2 rounded-lg flex-shrink">
-                <h1 className="text-sm">{review}</h1>
+                <h1 className="text-sm">{reason}</h1>
             </div>
         ))}
         </div>

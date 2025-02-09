@@ -1,14 +1,10 @@
 import { Button } from '@/components/ui/button'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faApple, faGooglePlay } from '@fortawesome/free-brands-svg-icons'; // Import the specific brand icon
+
 import abundance_dashboard from '../../assets/Images/DISPLAY_ART.png'
 import Membershipbox from '@/customizedComponents/Membershipbox';
 import { motion } from "motion/react"
 
 import MotionFeature from '@/customizedComponents/MotionFeature';
-import reviewAvatar1 from "../../assets/Images/peter.png";
-import reviewAvatar2 from "../../assets/Images/carrie.png";
-import reviewAvatar3 from '../../assets/Images/emma.png';
 import AppReviewCard from '@/customizedComponents/AppReviewCard';
 import ContactInfo from '@/customizedComponents/ContactInfo';
 import { useEffect, useState } from 'react';
@@ -16,6 +12,24 @@ import { collection, doc, getDoc, getDocs, orderBy, query } from 'firebase/fires
 import { db } from '@/firebase-config';
 import { MembershipTier } from '@/types/userTypes';
 import { AppFeature, CompanyContactDetails, WebsiteLinks } from '@/types/adminTypes';
+import { FaApple } from 'react-icons/fa';
+import { DiAndroid } from "react-icons/di";
+
+
+
+export type UserAppReviews = {
+  review:{
+    name:string,
+    reasons:string[],
+    score:number
+  },
+  user:{
+    avatar:string,
+    email:string,
+    name:string
+  }
+
+}
 
 
 
@@ -23,16 +37,6 @@ import { AppFeature, CompanyContactDetails, WebsiteLinks } from '@/types/adminTy
 
 
 
-
-
-
-// APP REVIEWS
-// DYNAMIC, PULL FROM DB LATER
-const appReviews = [
-  {name:"Bobbins Drow",score:3.7,reviews:["Helps me loose calories!","Beautiful UI designs","Glucose Levels dropped significantly!"],avatar:reviewAvatar1},
-  {name:"Carrie Ann",score:4.0,reviews:["Helps me loose calories!","Beautiful UI designs","Glucose Levels dropped significantly!","Slimmed down after cutting calories"],avatar:reviewAvatar2},
-  {name:"Emma Joe",score:3.2,reviews:["Helps me loose calories!","Beautiful UI designs"],avatar:reviewAvatar3}
-]
 
 
 
@@ -44,6 +48,10 @@ export default function Home() {
   const [appFeatures,setAppFeatures] = useState<AppFeature []| null>(null);
   const [membershipTier,setMembershiptier] = useState<MembershipTier []| null>(null); 
   const [contactInfo,setContactInfo] = useState<CompanyContactDetails| null>(null);
+  const [iosLink,setIosLink] = useState<string | null>(null);
+  const [androidLink,setAndroidLink] = useState<string | null>(null);
+
+  const [appReviews,setAppReviews] = useState<UserAppReviews []|null>(null)
 
   const fetchData = async()=>{
     try{
@@ -93,12 +101,44 @@ export default function Home() {
             id: doc.id,
             ...doc.data(),
           } as WebsiteLinks;
-          temp.push(data);
+            temp.push(data);
         })
         setVideoLinks(temp);
       };
       
-      
+
+      const reviewSnap = await getDocs(collection(db, "user-Reviews-App"));
+      if (reviewSnap)
+        {
+          let temp: UserAppReviews[] = [];
+          reviewSnap.forEach((doc) => {
+            const data = {
+              ...doc.data(),
+            } as UserAppReviews;
+              temp.push(data);
+          })
+          console.log(temp);
+          setAppReviews(temp);
+        };
+
+
+    const appLinksSnap = await getDocs(collection(db,"website_links"))
+    appLinksSnap.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      const data = {
+        id:doc.id,
+        ...doc.data()
+      }as WebsiteLinks;
+  
+      // Check if the name is not "ios_download" or "android_download"
+      if (data.name === "ios_download") {
+        setIosLink(data.link)
+      }
+      if (data.name === "android_download" ){
+        setAndroidLink(data.link);
+      }
+
+    });
 
 
   }
@@ -158,22 +198,29 @@ export default function Home() {
         
               <p className='text-lg md:text-2xl  tracking-wide my-4 xl:w-[90%] '>Use Our Mobile App Abundace, eat healthy, and take control of your insulin levels</p>
   
+              {
+                iosLink &&
+                <Button className='p-8 text-white bg-black shadow-lg font-bold rounded-3xl my-4 lg:my-2'>
+                <a className='flex items-center gap-2' href={iosLink} target="_blank" rel="noopener noreferrer">
+                 <h1>Download for IOS APK</h1>   
+                 <FaApple size={20}/>  
+                </a>
+                </Button>
+              }
+
   
-              <Button className='p-8 text-white bg-black shadow-lg font-bold rounded-3xl my-4 lg:my-2  '>
-                    <div className='flex items-end gap-2'>
-                     <h1>Download on IOS</h1>     
-                    <FontAwesomeIcon icon={faApple} className='size-6' /> 
-                    </div>
-                    </Button>
+              {
+                androidLink && 
+                <Button className='p-8 text-[#00ACAC] bg-black shadow-lg font-bold rounded-3xl '>
+                <a className='flex items-center gap-2' href={androidLink} target="_blank" rel="noopener noreferrer">
+                 <h1>Download Android APK</h1>     
+                 <DiAndroid size={20}/>
+                  </a>
+                </Button>
+
+              }
   
-   
-  
-                    <Button className='p-8 text-[#00ACAC] bg-black shadow-lg font-bold rounded-3xl '>
-                    <div className='flex items-end gap-2'>
-                     <h1>Download on Playstore</h1>     
-                      <FontAwesomeIcon icon={faGooglePlay} className='size-6' /> 
-                      </div>
-                    </Button>
+
   
   
           </div>
@@ -220,13 +267,16 @@ export default function Home() {
             
             className='flex flex-col xl:flex-row gap-10  xl:justify-evenly items-center p-5 '
             >
-            {appReviews.map((review,index)=>(
+            {appReviews?.map((review,index)=>(
               <AppReviewCard
-                avatar={review.avatar}
-                score={review.score}
-                name={review.name}
-                reviews={review.reviews}
-                key={index}
+              key={index}
+              name={review.user?.name}
+              avatar={review.user?.avatar}
+              email={review.user?.email}
+              reasonName={review?.review.name}
+              score={review.review?.score}
+              reasons={review.review?.reasons}
+
               />
             ))}
             </motion.div>

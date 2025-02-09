@@ -13,17 +13,20 @@ export default function CustomFooter() {
 
   const getData = async ()=>{
 
-
         try{
         const querySnapshot = await getDocs(collection(db, "website_links"));
         const tempAF:WebsiteLinks[] = []
         querySnapshot.forEach((doc) => {
           // doc.data() is never undefined for query doc snapshots
-          tempAF.push(
-            {
-              id:doc.id,
-              ...doc.data() 
-           } as WebsiteLinks)
+          const data = doc.data();
+      
+          // Check if the name is not "ios_download" or "android_download"
+          if (data.name !== "ios_download" && data.name !== "android_download") {
+            tempAF.push({
+              id: doc.id,
+              ...data,
+            } as WebsiteLinks);
+          }
         });
 
         setSocialLinks(tempAF);
