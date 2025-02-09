@@ -270,7 +270,7 @@ export default function ViewArticles() {
     
                   <TableFooter className="bg-white">
                   <TableRow>
-                    <TableCell colSpan={headers.length} className="pt-8">Showing 1 - {articles?.length} Membership Tiers</TableCell>
+                    <TableCell colSpan={headers.length} className="pt-8">Showing 1 - {articles?.length} Articles</TableCell>
                     <TableCell className="text-right pt-8">
            
                     <div> 

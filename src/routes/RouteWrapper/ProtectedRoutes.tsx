@@ -13,59 +13,50 @@ import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({allowedRoles,children}:ProtectedRouteProps) => {
 
-  const { user, loading, logout,accountDetails} = useAuth(); // Get loading state from context
+  const { user, loading, logout, accountDetails } = useAuth(); // Get loading state from context
   const mainMessage = "Verification Needed";
-  const subMessage = "Please go to your email account and verify your abundance account. Alternatively, you can click on the link below to resend it";
+  const subMessage = "Please go to your email account and verify your abundance account. Alternatively, you can click on the link below to resend it.";
 
-
-  const reSendEmail = async ()=>{
-    if (user)
-    {
-      try{
+  const reSendEmail = async () => {
+    if (user) {
+      try {
         await sendEmailVerification(user);
         alert("Email Resent");
-      }
-
-      catch(err)
-      {
+      } catch (err) {
         alert(err);
       }
     }
-  }
+  };
 
- 
-  if (loading) {
+  // Show a loading state if `user` is still being fetched or `accountDetails` is not available yet
+  if (loading || accountDetails === undefined) {
     return (
       <div className="flex h-screen w-screen justify-center items-center">
-      <span className="loading loading-infinity loading-lg"></span>
+        <span className="loading loading-infinity loading-lg"></span>
       </div>
-    )
+    );
   }
-
 
   if (!user) {
-      return <Navigate to="/login" replace />; 
-    }
-  if (!user.emailVerified && (accountDetails?.role === "user") )
-  {
-        return (<VerificationAlert
-          logOut={logout}
-          resendEmail={reSendEmail} 
-          mainMessage={mainMessage}
-          subMessage={subMessage}
-          />)
+    return <Navigate to="/login" replace />;
   }
-    
-   if (!allowedRoles?.includes(accountDetails?.role))
-  {
-    return <PermissionDenied/>; 
+
+  if (!user.emailVerified && accountDetails?.role === "user") {
+    return (
+      <VerificationAlert
+        logOut={logout}
+        resendEmail={reSendEmail}
+        mainMessage={mainMessage}
+        subMessage={subMessage}
+      />
+    );
   }
-  
-  return (
-    <>
-    {children}
-    </>
-  )
+
+  if (user && accountDetails?.role && !allowedRoles?.includes(accountDetails.role)) {
+    return <PermissionDenied />;
+  }
+
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

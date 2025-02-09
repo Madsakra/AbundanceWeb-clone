@@ -33,12 +33,12 @@ export default function ArticlesPopupForm({
 }: ArticlesPopupFormProps) {
 
   const {user,profile} = useAuth();
-  
+  const [imagePreview, setImagePreview] = useState<string>(selectedData?.image || "");
 
   const [formData, setFormData] = useState({
     title: selectedData?.title || "",
     description: selectedData?.description || "",
-    image: null as File | null,
+    image: null as File | string | null,
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -48,78 +48,72 @@ export default function ArticlesPopupForm({
     }));
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setFormData((prev) => ({
-        ...prev,
-        image: event.target.files![0],
-      }));
-    }
-  };
+// Handle Image Selection
+const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  if (event.target.files && event.target.files[0]) {
+    const file = event.target.files[0];
 
-  const handleSubmit = async () => {
-    if (!formData.title || !formData.description || !formData.image) {
-      alert("Please make sure the form is filled");
-      
-    }
+    setFormData((prev) => ({
+      ...prev,
+      image: file, // Store as File
+    }));
 
-    else{
-      setLoading(true);
-      try {
-        let imageUrl = "";
-        // If there's an image, upload it to Firebase Storage
-        if (formData.image) {
-  
-          // delete old image first
-          if (selectedData?.image)
-          {
-            const existingImageRef = ref(storage, selectedData.image);
-            await deleteObject(existingImageRef);
-          }
-  
-          // upload new one
-          const imageRef = ref(storage, `articles/${uuidv4()}-${formData.image.name}`);
-          await uploadBytes(imageRef, formData.image);
-          imageUrl = await getDownloadURL(imageRef); // Get the image URL
-        }
-  
-        // Prepare the article data to be saved to Firestore
-        const articleData = {
-          title: formData.title,
-          description: formData.description,
-          image: imageUrl,
-          writtenBy:{
-            name:profile?.title,
-            avatar:profile?.avatar,
-            email:user?.email,
-            uid:user?.uid
-          }
-        };
-  
-        if (selectedData) {
-          // Update existing article in Firestore
-       
-          await setDoc(doc(db, "articles",user!.uid,"written_articles",selectedData.id), articleData);
-          console.log("Article updated:", articleData);
-        } else {
-          // Add a new article to Firestore
-          await addDoc(collection(db, "articles",user!.uid,"written_articles"), articleData);
-          console.log("New article added:", articleData);
-        }
-        alert("Article saved successfully!");
-        setOpenForm(false);
-        fetchData("start");
+    setImagePreview(URL.createObjectURL(file)); // Update preview
+  }
+};
 
-      } catch (error) {
-        console.error("Error saving article:", error);
-        setOpenForm(false);
-        alert("Failed to save the article.");
+const handleSubmit = async () => {
+  if (!formData.title || !formData.description) {
+    alert("Please make sure the form is filled");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    let imageUrl = selectedData?.image || ""; // Default to existing image if not changed
+
+    if (formData.image && typeof formData.image !== "string") {
+      // Delete old image first if a new one is uploaded
+      if (selectedData?.image) {
+        const existingImageRef = ref(storage, selectedData.image);
+        await deleteObject(existingImageRef);
       }
 
+      // Upload new image
+      const imageRef = ref(storage, `articles/${uuidv4()}-${formData.image.name}`);
+      await uploadBytes(imageRef, formData.image);
+      imageUrl = await getDownloadURL(imageRef);
     }
 
+    // Prepare data for Firestore
+    const articleData = {
+      title: formData.title,
+      description: formData.description,
+      image: imageUrl,
+      writtenBy: {
+        name: profile?.title,
+        avatar: profile?.avatar,
+        email: user?.email,
+        uid: user?.uid,
+      },
+    };
 
-  };
+    if (selectedData) {
+      await setDoc(doc(db, "articles", user!.uid, "written_articles", selectedData.id), articleData);
+    } else {
+      await addDoc(collection(db, "articles", user!.uid, "written_articles"), articleData);
+    }
+
+    alert("Article saved successfully!");
+    setOpenForm(false);
+    fetchData("start");
+  } catch (error) {
+    console.error("Error saving article:", error);
+    alert("Failed to save the article.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <AlertDialog open={openForm} onOpenChange={setOpenForm}>
@@ -145,27 +139,20 @@ export default function ArticlesPopupForm({
               >
               Upload Image
             </label>
-
-
-      
-
-            {formData.image && (
-              <div style={{textAlign: "center" }}>
-                <img
-                  src={URL.createObjectURL(formData.image)}
-                  alt="Preview"
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "100px",
-                    borderRadius: "5px",
-                    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-                  }}
-
-  
-                />
-              </div>
-            )}
-
+            {imagePreview && (
+            <div style={{ textAlign: "center" }}>
+              <img
+                src={imagePreview}
+                alt="Preview"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100px",
+                  borderRadius: "5px",
+                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                }}
+              />
+                </div>
+              )}
 
 
 
