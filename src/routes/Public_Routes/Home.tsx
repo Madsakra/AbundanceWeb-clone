@@ -357,6 +357,7 @@ export default function Home() {
               phone={contactInfo.phone}
              openingTime={contactInfo.openingTime}
               closingTime={contactInfo.closingTime}
+              terms_and_condition={contactInfo.terms_and_condition}
               />            
                 
             }

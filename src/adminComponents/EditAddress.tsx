@@ -28,7 +28,7 @@ export default function EditAddress({companyAddress,fetchData,editAddress,setEdi
     const [addressName,setAddressName] = useState("");
     const [embeddedLink,setEmbeddedLink] = useState("");
     const [phone,setPhone] = useState("");
-
+    const [terms,setTerms] = useState("");
 
 
 
@@ -52,7 +52,8 @@ export default function EditAddress({companyAddress,fetchData,editAddress,setEdi
               await updateDoc(docRef,{
                   address:addressName,
                   embeddedLink:embeddedLink,
-                  phone:phone
+                  phone:phone,
+                  terms_and_condition:terms,
               });
               alert("Company Information Updated !")
               fetchData("start");
@@ -77,7 +78,8 @@ export default function EditAddress({companyAddress,fetchData,editAddress,setEdi
         {
             setAddressName(companyAddress.address);
             setEmbeddedLink(companyAddress.embeddedLink);
-            setPhone(companyAddress.phone)
+            setPhone(companyAddress.phone);
+            setTerms(companyAddress.terms_and_condition);
         }
 
       },[])
@@ -122,7 +124,10 @@ export default function EditAddress({companyAddress,fetchData,editAddress,setEdi
             onChange={handlePhoneChange} // Ensure numeric input
           />
            
-
+           <textarea className="textarea textarea-bordered w-full h-96" placeholder="Terms & Conditions"
+           value={terms}
+           onChange={(e)=>setTerms(e.target.value)}
+           />
  
     
     

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import registerSplash from '../../assets/Images/login_splashes/register_splash.jpg'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 import {
   Select,
@@ -12,11 +12,23 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-
+import { Checkbox } from "@/components/ui/checkbox"
 import { createUserWithEmailAndPassword,sendEmailVerification } from 'firebase/auth';
 import { auth, db } from '@/firebase-config';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from '@/contextProvider';
+import { CompanyContactDetails } from '@/types/adminTypes';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+
+} from "@/components/ui/alert-dialog"
 
 
 export default function Register() {
@@ -29,14 +41,34 @@ export default function Register() {
   const [error,setError]= useState(false);
   const [showPassword, setShowPassword] = useState(false);
   let navigate = useNavigate();
+  const [terms,setTerms] = useState("");
+  const [showTerms,setShowTerms] = useState(false)
+  const [agreeTerms,setAgreeTerms] = useState(false);
+
+
 
   const {setLoading,loading,setAccountDetails} = useAuth();
+
 
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
+
+  const fetchTerms = async ()=>{
+    const companyAdRef= doc(db, "company_info", "contact_details");
+    const docSnap = await getDoc(companyAdRef);
+
+
+    if (docSnap.exists()) {
+      const coyDetails = docSnap.data() as CompanyContactDetails;
+      setTerms(coyDetails.terms_and_condition);
+    } else {
+      console.log("No such document!");
+    }
+
+  }
 
   const handleSubmit = async ()=>{
 
@@ -46,11 +78,13 @@ export default function Register() {
     if (email.trim() === "" || password.trim() === "" || userName.trim() === "" || role === "") {
       alert("You have missed out some fields, please check again");
       setError(true);
+      return;
     }
     
     if (!emailRegex.test(email.trim())) {
       alert("Please enter a valid email address!");
       setError(true);
+      return;
     }
 
 
@@ -58,6 +92,7 @@ export default function Register() {
     {
       alert("Your password does not match with the confirmation. Please try again");
       setError(true);
+      return;
     }
 
     if (role === "nutritionist") 
@@ -66,6 +101,9 @@ export default function Register() {
       navigate('/nutritionist-submission', { state: { name:userName ,email:email, password:password }})
       
     }
+
+
+ 
 
     else {
 
@@ -116,6 +154,28 @@ export default function Register() {
     setLoading(false);
   }
 
+  const handleContinue = async (e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>)=>{
+    if (agreeTerms)
+    {
+      
+      await handleSubmit();
+      
+    }
+
+    else{
+      alert("Please agree to the terms before signing up")
+      e.preventDefault();
+    }
+  }
+
+
+
+    useEffect(()=>{
+    fetchTerms();
+  },[])
+
+
+
   if (loading)
     {
       return (
@@ -134,6 +194,37 @@ export default function Register() {
      flex flex-col lg:flex-row mt-14 
      items-center justify-evenly my-10'>
       
+      {showTerms && 
+      
+      <AlertDialog onOpenChange={setShowTerms} open={showTerms}>
+
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Please Read the following before signing up</AlertDialogTitle>
+          <AlertDialogDescription>
+          <div className="h-96 overflow-y-auto p-2">{terms}</div>
+          <div className="flex items-center space-x-2 mt-5">
+              <Checkbox id="terms"   onCheckedChange={(checked) => setAgreeTerms(checked === true)}/>
+              <label
+                htmlFor="terms"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Accept terms and conditions
+              </label>
+            </div>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={(e)=>handleContinue(e)}>Sign up</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+      
+      }
+
+
+
       <img src={registerSplash} className='w-96 h-96 '></img>
         
         {/* INPUT FORM */}
@@ -214,7 +305,7 @@ export default function Register() {
 
 
               {/*LOGIN BUTTON*/}
-              <button className='w-full p-4 bg-[#009797] mt-6 text-white text-lg font-semibold rounded-full' onClick={handleSubmit}>
+              <button className='w-full p-4 bg-[#009797] mt-6 text-white text-lg font-semibold rounded-full' onClick={()=>setShowTerms(true)}>
                 Sign Up
               </button>
         

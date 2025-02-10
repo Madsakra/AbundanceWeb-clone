@@ -328,6 +328,11 @@ export default function WebsiteContent() {
               <h3>{companyAddress?.phone}</h3>
             </div>
 
+            <div className="flex flex-col gap-4 mt-10">
+              <h1 className="underline">Terms and conditions</h1>
+              <h3 className="truncate">{companyAddress?.terms_and_condition}</h3>
+            </div>
+
           </div>
 
 

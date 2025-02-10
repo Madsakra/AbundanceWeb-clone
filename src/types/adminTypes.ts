@@ -41,7 +41,7 @@ export type CompanyContactDetails = {
   closingTime:string,
   embeddedLink:string,
   phone:string, 
-
+  terms_and_condition:string,
 };
 
 export type WebsiteLinks = { 
