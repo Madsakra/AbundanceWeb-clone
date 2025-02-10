@@ -1,7 +1,6 @@
 
 
 import { db } from '@/firebase-config';
-import CaloriesGlucoseChart from '@/nutriComponents/CaloriesGlucoseChart';
 import ClientBmrBar from '@/nutriComponents/ClientBmrBar';
 import ClientHealthCondi from '@/nutriComponents/ClientHealthCondi';
 import GraphCalendar from '@/nutriComponents/GraphCalendar';
@@ -222,10 +221,10 @@ export default function ClientInfo() {
         />
 
 
-        <CaloriesGlucoseChart
+        {/* <CaloriesGlucoseChart
         caloriesData={caloriesData}
         glucoseData={glucoseData}
-        />
+        /> */}
 
 
         {mergedData &&

@@ -8,12 +8,13 @@ import MotionFeature from '@/customizedComponents/MotionFeature';
 import AppReviewCard from '@/customizedComponents/AppReviewCard';
 import ContactInfo from '@/customizedComponents/ContactInfo';
 import { useEffect, useState } from 'react';
-import { collection, doc, getDoc, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, limit, orderBy, query } from 'firebase/firestore';
 import { db } from '@/firebase-config';
 import { MembershipTier } from '@/types/userTypes';
 import { AppFeature, CompanyContactDetails, WebsiteLinks } from '@/types/adminTypes';
 import { FaApple } from 'react-icons/fa';
 import { DiAndroid } from "react-icons/di";
+import ComparisonTable from '@/customizedComponents/ComparisonTable';
 
 
 
@@ -107,7 +108,8 @@ export default function Home() {
       };
       
 
-      const reviewSnap = await getDocs(collection(db, "user-Reviews-App"));
+      const reviewQuery = query(collection(db, "user-Reviews-App"), limit(3));
+      const reviewSnap = await getDocs(reviewQuery);
       if (reviewSnap)
         {
           let temp: UserAppReviews[] = [];
@@ -306,6 +308,20 @@ export default function Home() {
             ))}
           </motion.div>
   
+          <motion.h1 
+            initial={{opacity:0, y: 80}}
+            whileInView={{opacity:1, y:0, transition:{delay: 0.2 ,duration: 0.4}}}
+            viewport={{once:false,amount:0.4}}
+            className='text-center text-5xl font-bold text-[#5D5D5D]  p-5  m-2 xl:p-14 h-[20vh] mt-32'>
+            Premium Tier <span className='text-[#009797]'>Benefits</span></motion.h1>
+
+
+
+            <ComparisonTable
+            appFeatures={appFeatures}
+            />
+
+
 
 
           <motion.h1 
@@ -317,7 +333,7 @@ export default function Home() {
             
             <div className='flex flex-col gap-4 items-center'>
             {videoLinks?.map((vid,index)=>(
-              <iframe width="520" height="415"
+              <iframe  className='w-96 h-96 xl:w-[1000px] xl:h-[900px]'
               key={index}
               src={vid.link}>
               </iframe>
